@@ -29,6 +29,18 @@ After this catalog change, press the circular refresh icon in the Repository sec
 
 If you choose Install/Update, Payload Manager itself asks to replace the existing version, updates its autoload filename and removes old files in its managed payload folder. Changing or refreshing this JSON performs none of those console operations; this fix does not access the PS5 or change the existing local Release ELF.
 
+## Optional separate Game Patches test
+
+At the owner's explicit request, the same source now has a second item, **331HEN Game Patches TEST**. It downloads the already-published `v0.0.13-331.1/331HEN.elf` asset (SHA-256 `88a0d3d64cf5ba35fd1e67de51f57599844390c7668b7b08027edc313b46433c`) and saves it as `331HEN-GamePatches-TEST_v0.0.13-331.1.elf`.
+
+The official frontend and backend normalize that filename to `331HEN-GamePatches-TEST`, while the approved item normalizes to `331HEN`. Installation uses different manager storage folders. The experiment therefore appears as a separate new download against a stable-only installation, with no stable-file replacement or stable autoload filename update. Future experimental filenames remain in their own family. The original approved catalog entry is unchanged.
+
+Experiments are explicitly recorded in `distribution/experimental.json`, separate from `distribution/approved.json`. Refreshes verify both records, actual uploaded assets, SHA256SUMS.txt, exact test reports and ELF structure before writing JSON. The experimental record must identify an untested pre-release, the catalog clearly labels its status, and it cannot pass the hardware-approval gate. New unapproved releases are never inferred into the default entry. Automatic source refresh retains the selected experiment rather than removing it.
+
+Press the circular refresh icon, expand 331HEN, and choose **331HEN Game Patches TEST** to download it directly. The existing working ELF remains available. Use only the experimental HEN in a separate test session, with games closed initially and without a separate ps-patch-system payload; follow HARDWARE-TEST.md. Installing two files does not make them concurrent HEN services or isolate their runtime/configuration paths: both use the existing 331HEN settings and cheat directory, and patches use `/data/331HEN/patches`. PS5 execution of this experimental binary remains unverified.
+
+The actual C parser tests compare both entries and verify their distinct backend folders. Actual frontend tests cover independent visibility/update families in both directions (nine cases), including stable-only and test-only installations. Source-policy tests verify the second entry cannot impersonate stable, normal refresh preserves both entries and the unchanged approved default, and a failed experimental download leaves the working JSON unchanged.
+
 ## Preserved baseline
 
 Initial default: `v0.0.13-331.2`, SHA-256 `72f00d524636f8c96746d551fb495c1af319048a6af3703ffe5ae19e6abc197d`. This is the exact existing local `Release/331HEN.elf`, not the Game Patches experiment (`88a0d3...`). Source is retained separately on `preserved-working-source` and attached in full, with original GPL-3.0 license and developer attribution.

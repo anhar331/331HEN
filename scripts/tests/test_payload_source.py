@@ -97,5 +97,49 @@ class SourceTests(unittest.TestCase):
                 with self.subTest(change=change), self.assertRaises(ValueError): source.verify_asset(release, record)
                 contents.clear(); contents.update(old)
 
+    def test_experiment_cannot_use_stable_saved_filename_or_hide_status(self):
+        record = dict(tag="v0.0.13-331.1", sha256="a" * 64, kind="experimental",
+                      firmware="12.70", ps5_runtime_tested=False, listed_by="anhar331", purpose="Separate test")
+        source.verify_experiment(record)
+        url = "https://github.com/anhar331/331HEN/releases/download/" + record["tag"] + "/331HEN.elf"
+        document = source.catalog(self.release, self.record,
+                                  "https://github.com/anhar331/331HEN/releases/download/" + source.BASELINE_TAG + "/331HEN.elf")
+        document["payloads"].append(source.experimental_item(self.release, record, url))
+        source.validate_catalog(document)
+        self.assertEqual(document["payloads"][1]["filename"], "331HEN-GamePatches-TEST_v0.0.13-331.1.elf")
+        for change in [{"filename": source.saved_filename(record["tag"])}, {"category": "Homebrew Enablers"},
+                       {"description": "Stable build"}, {"name": "331HEN"}]:
+            bad = copy.deepcopy(document); bad["payloads"][1].update(change)
+            with self.subTest(change=change), self.assertRaises(ValueError): source.validate_catalog(bad)
+        with self.assertRaises(ValueError): source.verify_approval(record)
+        with self.assertRaises(ValueError): source.verify_experiment({**record, "ps5_runtime_tested": True})
+
+    def test_explicit_listing_preserves_default_and_survives_refresh(self):
+        experiment = dict(tag="v0.0.13-331.1", sha256="a" * 64, kind="experimental", firmware="12.70",
+                          ps5_runtime_tested=False, listed_by="anhar331", purpose="Separate test")
+        release = {**self.release, "tag_name": experiment["tag"]}
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "payloads.json"
+            with patch.object(source, "get_release", side_effect=lambda tag: self.release if tag == self.record["tag"] else release), \
+                 patch.object(source, "verify_asset", side_effect=lambda rel, rec, **kw:
+                              "https://github.com/anhar331/331HEN/releases/download/" + rec["tag"] + "/331HEN.elf"):
+                initial = source.refresh({"approvals": [self.record]}, output)
+                for _ in range(2):
+                    combined = source.refresh({"approvals": [self.record]}, output, [experiment])
+                    self.assertEqual(combined["payloads"][0], initial["payloads"][0])
+                    self.assertEqual(len(combined["payloads"]), 2)
+
+    def test_failed_experimental_download_preserves_entire_source(self):
+        experiment = dict(tag="v0.0.13-331.1", sha256="a" * 64, kind="experimental", firmware="12.70",
+                          ps5_runtime_tested=False, listed_by="anhar331", purpose="Separate test")
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "payloads.json"
+            output.write_text(json.dumps({"payloads": [{"version": self.record["tag"], "checksum": self.record["sha256"]}]}))
+            before = output.read_bytes()
+            with patch.object(source, "get_release", side_effect=[self.release, OSError("Experimental download failed")]), \
+                 patch.object(source, "verify_asset", return_value="https://github.com/anhar331/331HEN/releases/download/" + self.record["tag"] + "/331HEN.elf"):
+                with self.assertRaises(OSError): source.refresh({"approvals": [self.record]}, output, [experiment])
+            self.assertEqual(before, output.read_bytes())
+
 
 if __name__ == "__main__": unittest.main()

@@ -23,12 +23,13 @@ def main():
     item = document["payloads"][0]
     with tempfile.TemporaryDirectory() as directory:
         work = Path(directory)
-        (work / "input.json").write_text(json.dumps({"helpers": helpers, "filtering": filtering, "item": item}))
+        (work / "input.json").write_text(json.dumps({"helpers": helpers, "filtering": filtering, "item": item,
+                                                    "experiment": document["payloads"][1] if len(document["payloads"]) > 1 else None}))
         (work / "test.cjs").write_text(r'''
 const fs = require('node:fs');
 const vm = require('node:vm');
 const assert = require('node:assert/strict');
-const {helpers, filtering, item} = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
+const {helpers, filtering, item, experiment} = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
 const check = (files, payload, expected) => {
   const script = `const localFilenames=${JSON.stringify(files)};
     ${helpers}
@@ -47,7 +48,16 @@ check([], item, {isInstalled:false,isUpdate:false,visible:true,base:'331HEN'});
 check([item.filename], item, {isInstalled:true,isUpdate:false,visible:false,base:'331HEN'});
 // A later approved distribution version must appear as an update as well.
 check([item.filename], {...item,filename:'331HEN_v0.0.13-331.999.elf'}, {isInstalled:false,isUpdate:true,visible:true,base:'331HEN',installedFilename:item.filename});
-console.log('Official StorageHub: original empty-source cause reproduced; legacy, fresh, installed and future version filtering passed (5 cases)');
+if (experiment) {
+  // Stable-only installations must see the test as a new, separate payload.
+  check(['331HEN.elf', item.filename], experiment, {isInstalled:false,isUpdate:false,visible:true,base:'331HEN-GamePatches-TEST'});
+  // Installing the experiment must not turn the stable entry into its update.
+  check([experiment.filename], item, {isInstalled:false,isUpdate:false,visible:true,base:'331HEN'});
+  check([experiment.filename], experiment, {isInstalled:true,isUpdate:false,visible:false,base:'331HEN-GamePatches-TEST'});
+  check([experiment.filename], {...experiment,filename:'331HEN-GamePatches-TEST_v0.0.13-331.999.elf'},
+    {isInstalled:false,isUpdate:true,visible:true,base:'331HEN-GamePatches-TEST',installedFilename:experiment.filename});
+}
+console.log(`Official StorageHub: installed/update visibility and distinct channel families passed (${experiment ? 9 : 5} cases)`);
 ''')
         subprocess.run(["node", str(work / "test.cjs"), str(work / "input.json")], check=True)
 
