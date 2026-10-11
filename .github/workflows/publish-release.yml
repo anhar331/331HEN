@@ -16,6 +16,9 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           submodules: recursive
+          # The BearSSL server cannot fetch an old unadvertised SHA from a
+          # shallow clone. Full history retains the exact pinned working commit.
+          fetch-depth: 0
           persist-credentials: false
       - name: Host test dependencies
         run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev pkg-config
