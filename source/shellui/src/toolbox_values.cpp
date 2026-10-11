@@ -3,6 +3,7 @@
  * Shared value providers for toolbox UI binding (XML path + optional hooks).
  */
 #include "toolbox_values.hpp"
+#include "game_patches.hpp"
 
 #include "hooked_funcs.hpp"
 #include "external_symbols.hpp"
@@ -86,7 +87,7 @@ const ExactValueEntry kExactValues[] = {
        return bool_str(g_settings.app_jailbreak_enabled);
      }},
     {"id_custom_game_opts",
-     +[]() -> std::string { return bool_str(g_settings.onionhen_game_opts); }},
+     +[]() -> std::string { return bool_str(g_settings.hen331_game_opts); }},
     {"id_overlay_change_pos",
      +[]() -> std::string { return int_str(g_settings.overlay_pos); }},
     {"id_overlay_align",
@@ -236,6 +237,8 @@ bool try_dynamic_control_value(const std::string &id, std::string &out) {
 std::string resolve_toolbox_control_value(const std::string &id) {
   std::string value;
 
+  if (game_patch_value(id, value))
+    return value;
   if (try_payload_control_value(id, value))
     return value;
   if (try_exact_value(id, value))

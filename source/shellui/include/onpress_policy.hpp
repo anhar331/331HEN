@@ -50,6 +50,7 @@ constexpr OnPressDomain onpress_domain_for_page(Page page) {
     return OnPressDomain::PluginConfig;
   case Page::AutoPayloads:
     return OnPressDomain::AutoPayloads;
+  case Page::GamePatches:
   case Page::Cheats:
     return OnPressDomain::Cheats;
   case Page::Account:

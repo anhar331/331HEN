@@ -17,6 +17,7 @@ along with this program; see the file COPYING. If not, see
 #include "ipc.hpp"
 #include "cheats/cheat_service.hpp"
 #include "util_language.h"
+#include "patches/service.hpp"
 #include "util_toolbox.h"
 #include <onion/settings.hpp>
 #include <onion/log_settings.hpp>
@@ -105,7 +106,7 @@ int main(void) {
     sceNetCtlInit();
     sceUserServiceInitialize(NULL);
     onion_log_configure(
-        "OnionHEN utils", "/data/OnionHEN/OnionHEN_util_daemon.log");
+        "331HEN utils", "/data/331HEN/331HEN_util_daemon.log");
     /* Real linked kernel export (not a dlsym function-pointer variable). */
     onion_notify_set_send(reinterpret_cast<onion_notify_send_fn>(
         sceKernelSendNotificationRequest));
@@ -128,9 +129,9 @@ int main(void) {
     /* pt_* / code-cave require PTRACE_AUTHID (not DEBUG_AUTHID). */
     set_ucred_to_ptrace();
 
-    unlink("/data/OnionHEN/OnionHEN_util_crash.log");
+    unlink("/data/331HEN/331HEN_util_crash.log");
 
-    LOG_INFO("=========== starting OnionHEN Utilities... ===========");
+    LOG_INFO("=========== starting 331HEN Utilities... ===========");
 
     LoadSettings();
 
@@ -150,8 +151,10 @@ int main(void) {
     LOG_INFO("Initializing cheat engine...");
     onion::cheats::CheatService::instance().ensureDir();
 
+    hen331::patches::initialize();
     for (;;) {
-        sleep(1);
+        hen331::patches::tick();
+        usleep(200 * 1000);
     }
 
     return 0;

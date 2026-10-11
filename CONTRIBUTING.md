@@ -9,9 +9,9 @@ modules, IPC, runtime paths, or dependencies.
 ## Runtime
 
 ```
-OnionHEN.elf (unpacker)
+331HEN.elf (unpacker)
   → bootstrapper.elf
-    → onion_elfldr.elf :9020
+    → 331HEN_ldr.elf :9020
       → util.elf → kstuff.elf → daemon.elf
         → inject shellui.elf into SceShellUI
 ```

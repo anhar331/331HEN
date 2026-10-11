@@ -1,5 +1,5 @@
 ###################################################################################################
-# OnionHEN shared ptrace + ELF inject primitives (single authid policy).
+# 331HEN shared ptrace + ELF inject primitives (single authid policy).
 ###################################################################################################
 
 cmake_minimum_required(VERSION 3.20)

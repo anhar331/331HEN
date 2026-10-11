@@ -7,6 +7,7 @@
 #include <onion/proc_query.h>
 #include "ipc.hpp"
 #include "util_language.h"
+#include "patches/service.hpp"
 #include <msg.hpp>
 #include <onion/settings.hpp>
 #include "common_utils.h"
@@ -114,6 +115,32 @@ void handleIPC(clientArgs *client, std::string &inputStr,
   }
 
   switch (command) {
+  case BREW_UTIL_PATCH_LIST:
+  case BREW_UTIL_PATCH_TOGGLE:
+  case BREW_UTIL_PATCH_DOWNLOAD:
+  case BREW_UTIL_PATCH_LAUNCH:
+  try {
+    std::string response;
+    if (command == BREW_UTIL_PATCH_LIST)
+      response = hen331::patches::list(static_cast<size_t>(
+          std::max(0, onion_cjson::int_item(my_json.get(), "offset", 0))));
+    else if (command == BREW_UTIL_PATCH_TOGGLE)
+      response = hen331::patches::toggle(
+          onion_cjson::string_item(my_json.get(), "key", ""),
+          onion_cjson::string_item(my_json.get(), "session", ""),
+          onion_cjson::bool_item(my_json.get(), "enabled", false));
+    else if (command == BREW_UTIL_PATCH_DOWNLOAD)
+      response = hen331::patches::download();
+    else
+      response = hen331::patches::launch(
+          onion_cjson::int_item(my_json.get(), "pid", 0),
+          onion_cjson::string_item(my_json.get(), "title", ""));
+    reply(sender_app, false, response);
+  } catch (...) {
+    reply(sender_app, true,
+          "{\"status\":\"Patch operation failed: resource error\"}");
+  }
+  break;
   case BREW_UTIL_TEST_CONNECTION: {
     reply(sender_app, false, out_var);
     break;
@@ -199,7 +226,7 @@ void handleIPC(clientArgs *client, std::string &inputStr,
     }
     const std::string request_id = std::to_string(
         static_cast<unsigned long long>(g_cheat_request_id.fetch_add(1)));
-    std::string shm_path = "/user/data/OnionHEN/" + title_id + "_cheats_" +
+    std::string shm_path = "/user/data/331HEN/" + title_id + "_cheats_" +
                            request_id;
 
     onion::cheats::CheatRequest request;

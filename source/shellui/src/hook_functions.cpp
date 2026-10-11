@@ -133,7 +133,7 @@ MonoString *GetString_Hook(MonoObject *Instance, MonoString *str) {
       return mono_str_ui(toolbox_i18n::tr("pkg.msg.select_all"));
     }
 
-    // XML title/description literals (e.g. "★OnionHEN 工具箱") are already valid
+    // XML title/description literals (e.g. "★331HEN 工具箱") are already valid
     // MonoStrings. Re-allocating with mono_string_new(Root_Domain, ...) on the UI
     // thread has crashed ShellUI (wrong domain / GC). Pass the original through.
     if (resourceName.rfind("msg_", 0) != 0) {
@@ -205,7 +205,7 @@ MonoString * CxmlUri_Hook(MonoObject * Instance, MonoString * uri) {
   /*
    * NPXS40008 registers its Debug Settings icon as icon_setting.png.  Do not
    * rewrite that asset on disk (or mutate the RNPS string table): the stock
-   * file must remain visible whenever OnionHEN is not loaded.  CxmlUri is the
+   * file must remain visible whenever 331HEN is not loaded.  CxmlUri is the
    * SettingsPlugin asset resolver, so redirect only this request while our
    * hooks are ready.
    */

@@ -345,7 +345,7 @@ static int test_matrix(void) {
 static int test_dynamic_cheat_state(void) {
   ToolboxUiState state;
   const std::string id =
-      "id_cheat_cheat-1-123-1|src|/user/data/OnionHEN/cheats/game.json|0";
+      "id_cheat_cheat-1-123-1|src|/user/data/331HEN/cheats/game.json|0";
   TEST_ASSERT_TRUE(ToolboxUiState::is_cheat_toggle_id(id));
   TEST_ASSERT_TRUE(!ToolboxUiState::is_cheat_toggle_id("id_cheat_title"));
   TEST_ASSERT_TRUE(!ToolboxUiState::is_cheat_toggle_id("id_cheat_view_0"));
@@ -461,8 +461,26 @@ static int test_progress_page_restore_is_reusable(void) {
   return 0;
 }
 
+static int test_game_patches_route_and_back(void) {
+  const std::string resource=std::string(kSettingsPluginsPrefix)+"game_patches.xml";
+  TEST_ASSERT_TRUE(resolve_resource(make_in(resource)).page==Page::GamePatches);
+  TEST_ASSERT_TRUE(resolve_resource(make_in(resource,true)).page==Page::Cheats);
+  TEST_ASSERT_TRUE(onpress_domain_for_page(Page::GamePatches)==OnPressDomain::Cheats);
+  ToolboxUiState state;
+  for(int i=0;i<20;++i) {
+    state.set_active_page(Page::DebugSettings);
+    state.set_active_page(Page::GamePatches);
+    TEST_ASSERT_TRUE(state.parent_pages.size()==1);
+    state.leave_page(Page::GamePatches);
+    TEST_ASSERT_TRUE(state.active_page==Page::DebugSettings);
+    TEST_ASSERT_TRUE(state.parent_pages.empty());
+  }
+  return 0;
+}
+
 extern "C" int test_toolbox_route_suite(void) {
   int fails = 0;
+  fails += onion_test_run("route.game_patches_navigation",test_game_patches_route_and_back);
   fails += onion_test_run("route.unknown", test_unknown_passthrough);
   fails += onion_test_run("route.payloads", test_payloads_page);
   fails += onion_test_run("route.debug", test_debug_settings_page);

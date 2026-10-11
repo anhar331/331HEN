@@ -1,6 +1,6 @@
-# OnionHEN documentation
+# 331HEN documentation
 
-This directory documents OnionHEN's runtime architecture, module contracts,
+This directory documents 331HEN's runtime architecture, module contracts,
 and supported behavior. See the [root README](../README.md) for features,
 configuration, usage, and credits.
 

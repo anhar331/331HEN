@@ -231,7 +231,7 @@ void handleIPC(clientArgs *client, std::string &inputStr,
     reply(sender_app, true);
     break;
   case BREW_UNUSED_DECRYPT_DIR:
-    /* SELF directory decrypt removed from OnionHEN. */
+    /* SELF directory decrypt removed from 331HEN. */
     LOG_WARN("BREW_DECRYPT_DIR: unsupported (removed)");
     reply(sender_app, true);
     break;

@@ -50,12 +50,12 @@ void escapeXML(std::string& input) {
 namespace {
 
 constexpr const char* kIconPlugins =
-    "/user/data/OnionHEN/assets/icon_xml_plugins.png";
+    "/user/data/331HEN/assets/icon_xml_plugins.png";
 
 /* Defined with the other dynamic control helpers below. */
 std::string toolbox_val(const char* id, const char* fallback);
 
-/** Payload .elf only (OnionHEN no longer supports .plugin packages). */
+/** Payload .elf only (331HEN no longer supports .plugin packages). */
 std::string payload_list_status(const PayloadEntry& entry) {
   const bool running = shellui_payload_is_running(entry.tid.c_str());
   const bool auto_start = if_exists((entry.shellui_path + ".auto_start").c_str());
@@ -72,7 +72,7 @@ void append_payload_entry(const std::string& directory,
                           const char* filename) {
   if (!toolbox::is_payload_elf_name(filename))
     return;
-  if (toolbox::display_path_for_ui(directory) == "/data/OnionHEN/payloads" &&
+  if (toolbox::display_path_for_ui(directory) == "/data/331HEN/payloads" &&
       toolbox::is_legacy_payload_staging_name(filename))
     return;
 
@@ -275,18 +275,18 @@ void generate_account_xml(std::string& xml_buffer) {
 
 static bool payloads_model(ps5ui::Node& model) {
   static const std::vector<std::string> kPayloadDirs = {
-      "/user/data/OnionHEN/payloads",
-      "/user/data/onionhen/payloads",
-      "/data/OnionHEN/payloads",
-      "/data/onionhen/payloads",
-      "/usb0/OnionHEN/payloads",
-      "/usb0/onionhen/payloads",
-      "/usb1/OnionHEN/payloads",
-      "/usb1/onionhen/payloads",
-      "/usb2/OnionHEN/payloads",
-      "/usb2/onionhen/payloads",
-      "/usb3/OnionHEN/payloads",
-      "/usb3/onionhen/payloads",
+      "/user/data/331HEN/payloads",
+      "/user/data/331HEN/payloads",
+      "/data/331HEN/payloads",
+      "/data/331HEN/payloads",
+      "/usb0/331HEN/payloads",
+      "/usb0/331HEN/payloads",
+      "/usb1/331HEN/payloads",
+      "/usb1/331HEN/payloads",
+      "/usb2/331HEN/payloads",
+      "/usb2/331HEN/payloads",
+      "/usb3/331HEN/payloads",
+      "/usb3/331HEN/payloads",
   };
 
   g_ui.payloads_list.clear();
@@ -400,7 +400,7 @@ void generate_overlay_metric_xml(std::string& xml_buffer,
 
 static bool overlay_metrics_model(ps5ui::Node &model) {
   constexpr const char *kIcon =
-      "/user/data/OnionHEN/assets/icon_xml_overlay.png";
+      "/user/data/331HEN/assets/icon_xml_overlay.png";
   ps5ui::Page page("id_overlay_metrics", toolbox_i18n::tr("overlay.items"));
   auto order = g_settings.overlay_order;
   onion::overlay_normalize_order(order);
@@ -599,52 +599,42 @@ void generate_cheats_xml(std::string& new_xml, std::string& not_open_tid,
 namespace {
 
 constexpr const char* kIconPkg =
-    "/user/data/OnionHEN/assets/icon_xml_package.png";
-constexpr const char* kIconGame = "/user/data/OnionHEN/assets/icon_xml_game.png";
+    "/user/data/331HEN/assets/icon_xml_package.png";
+constexpr const char* kIconGame = "/user/data/331HEN/assets/icon_xml_game.png";
 constexpr const char* kIconCheats =
-    "/user/data/OnionHEN/assets/icon_xml_cheats.png";
+    "/user/data/331HEN/assets/icon_xml_cheats.png";
 constexpr const char* kIconDownload =
-    "/user/data/OnionHEN/assets/icon_xml_download.png";
+    "/user/data/331HEN/assets/icon_xml_download.png";
 constexpr const char* kIconMonitor =
-    "/user/data/OnionHEN/assets/icon_xml_monitor.png";
+    "/user/data/331HEN/assets/icon_xml_monitor.png";
 constexpr const char* kIconAccount =
-    "/user/data/OnionHEN/assets/icon_xml_account.png";
+    "/user/data/331HEN/assets/icon_xml_account.png";
 constexpr const char* kIconSettings =
-    "/user/data/OnionHEN/assets/icon_xml_settings.png";
+    "/user/data/331HEN/assets/icon_xml_settings.png";
 constexpr const char* kIconShortcuts =
-    "/user/data/OnionHEN/assets/icon_xml_shortcuts.png";
+    "/user/data/331HEN/assets/icon_xml_shortcuts.png";
 constexpr const char* kIconDebug =
-    "/user/data/OnionHEN/assets/icon_xml_debug.png";
+    "/user/data/331HEN/assets/icon_xml_debug.png";
 constexpr const char* kIconAbout =
-    "/user/data/OnionHEN/assets/icon_xml_about.png";
+    "/user/data/331HEN/assets/icon_xml_331HEN.png";
 constexpr const char* kIconOverlay =
-    "/user/data/OnionHEN/assets/icon_xml_overlay.png";
+    "/user/data/331HEN/assets/icon_xml_overlay.png";
 constexpr const char* kIconTitleId =
-    "/user/data/OnionHEN/assets/icon_xml_title_id.png";
+    "/user/data/331HEN/assets/icon_xml_title_id.png";
 constexpr const char* kIconMenuOption =
-    "/user/data/OnionHEN/assets/icon_xml_menu_option.png";
+    "/user/data/331HEN/assets/icon_xml_menu_option.png";
 constexpr const char* kIconFan =
-    "/user/data/OnionHEN/assets/icon_xml_fan.png";
+    "/user/data/331HEN/assets/icon_xml_fan.png";
 constexpr const char* kIconRestMode =
-    "/user/data/OnionHEN/assets/icon_xml_restmode.png";
+    "/user/data/331HEN/assets/icon_xml_restmode.png";
 constexpr const char* kIconHardDrive =
-    "/user/data/OnionHEN/assets/icon_xml_hardrive.png";
+    "/user/data/331HEN/assets/icon_xml_hardrive.png";
 constexpr const char* kIconDiscLicense =
-    "/user/data/OnionHEN/assets/icon_xml_disc_license.png";
-constexpr const char* kIconDonations =
-    "/user/data/OnionHEN/assets/icon_xml_donations.png";
+    "/user/data/331HEN/assets/icon_xml_disc_license.png";
 constexpr const char* kIconThanks =
-    "/user/data/OnionHEN/assets/icon_xml_thanks.png";
+    "/user/data/331HEN/assets/icon_xml_thanks.png";
 constexpr const char* kIconProject =
-    "/user/data/OnionHEN/assets/icon_xml_project.png";
-constexpr const char* kIconAuthorAvatar =
-    "/user/data/OnionHEN/assets/icon_xml_author_avatar.png";
-constexpr const char* kIconDonatorLjf =
-    "/user/data/OnionHEN/assets/icon_xml_donator_ljf.png";
-constexpr const char* kIconDonatorSzx =
-    "/user/data/OnionHEN/assets/icon_xml_donator_szx.png";
-constexpr const char* kIconDonatorAglx =
-    "/user/data/OnionHEN/assets/icon_xml_donator_aglx.png";
+    "/user/data/331HEN/assets/icon_xml_project.png";
 
 bool toolbox_on(const char* id) {
   return resolve_toolbox_control_value(id) == "1";
@@ -672,16 +662,21 @@ void append_toolbox_payloads_group(ps5ui::Group& g) {
   /* SPRX catalog UI is untested; restore id_sprx -> sprx.xml when it is. */
 }
 
-void append_toolbox_game_group(ps5ui::Group& g) {
+void append_toolbox_game_group(ps5ui::Group &g) {
   g.link("id_cheats", toolbox_i18n::tr("cheats.link"), "cheats.xml",
          toolbox_i18n::tr("cheats.link.sub"), kIconCheats)
       .button("id_download_cheats", toolbox_i18n::tr("cheats.repo.download"),
               toolbox_i18n::tr("cheats.repo.download.desc"), std::nullopt,
               kIconDownload, ps5ui::Style::None,
               toolbox_i18n::tr("cheats.repo.download.confirm"),
-              toolbox_i18n::tr("cheats.repo.download.confirm_phrase"));
+              toolbox_i18n::tr("cheats.repo.download.confirm_phrase"))
+      .link("id_game_patches", "Game Patches", "game_patches.xml",
+            "Enable or disable patches for the currently running game.",
+            kIconCheats)
+      .button("id_download_patches", "Download patch collection", std::nullopt,
+              "Download and update the latest game patches from GitHub.",
+              kIconDownload);
 }
-
 void append_toolbox_network_group(ps5ui::Group& g) {
   Activator activator(true);
   std::optional<std::string> remote_play_alert;
@@ -898,39 +893,16 @@ void append_toolbox_debug_group(ps5ui::Group& g) {
 }
 
 void append_toolbox_about_group(ps5ui::Group& g) {
-  /* About page top: same ONIONHEN_VERSION as welcome toast / beta banner. */
+  /* About page top: same HEN331_VERSION as welcome toast / beta banner. */
   const std::string build_line =
-      toolbox_i18n::format("about.build", ONIONHEN_VERSION);
+      toolbox_i18n::format("about.build", HEN331_VERSION);
 
   g.label("id_about_build", build_line, ps5ui::Style::Center)
       .group(
-       "id_donation_methods", toolbox_i18n::tr("about.donate"),
-       [](ps5ui::Group& d) {
-         d.label("id_method_info", toolbox_i18n::tr("about.donate.methods"),
-                    ps5ui::Style::Center)
-             .label("id_method_1",
-                    "- Ko-fi  | https://ko-fi.com/0xp0co",
-                    ps5ui::Style::Center)
-             .label("id_method_2", toolbox_i18n::tr("about.wechat"),
-                    ps5ui::Style::Center)
-             .button("id_author_0xp0co", "麒麟/0xp0co", std::nullopt, "@0xp0co",
-                     kIconAuthorAvatar)
-             .label("id_author_donor_spacer", "　", ps5ui::Style::Center)
-             .label("id_donor_info", toolbox_i18n::tr("about.donors"),
-                    ps5ui::Style::Center)
-             .button("id_donator_aglx", "爱过流星", std::nullopt,
-                     std::nullopt, kIconDonatorAglx)
-             .button("id_donator_ljf", "狂爱龙卷風", std::nullopt,
-                     std::nullopt, kIconDonatorLjf)
-             .button("id_donator_szx", "石之心", std::nullopt,
-                     std::nullopt, kIconDonatorSzx);
-       },
-       toolbox_i18n::tr("about.donate.sub"), kIconDonations)
-      .group(
-          "id_onionhen_credits", toolbox_i18n::tr("about.credits"),
+          "id_hen331_credits", toolbox_i18n::tr("about.credits"),
           [](ps5ui::Group& c) {
             const std::string ver =
-                std::string("★ OnionHEN ") + ONIONHEN_VERSION;
+                std::string("★ 331HEN ") + HEN331_VERSION;
             c.label("id_about_version", ver, ps5ui::Style::Center)
                 .label("id_about_lineage", toolbox_i18n::tr("about.lineage"),
                        ps5ui::Style::Center)
@@ -1051,7 +1023,7 @@ void generate_toolbox_xml(std::string& new_xml) {
           toolbox_i18n::tr("group.debug.sub"), kIconDebug,
           "id_app_jailbreak_enabled")
       .group(
-          "id_onionhen_credit_options", toolbox_i18n::tr("group.about"),
+          "id_hen331_credit_options", toolbox_i18n::tr("group.about"),
           [](ps5ui::Group& g) { append_toolbox_about_group(g); },
           toolbox_i18n::tr("group.about.sub"), kIconAbout, std::nullopt,
           ps5ui::Style::Center);

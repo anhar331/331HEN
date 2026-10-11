@@ -6,6 +6,8 @@
 
 #include <onion/app_lifecycle.hpp>
 #include <onion/log.h>
+#include <onion/ipc_client.hpp>
+#include "onion_cjson.hpp"
 
 namespace onion::daemon::app_lifecycle {
 namespace {
@@ -57,14 +59,38 @@ public:
   }
 };
 
+class GamePatchSubscriber final : public onion::lifecycle::ISubscriber {
+public:
+  int priority() const noexcept override { return 20; }
+  bool on_event(const onion::lifecycle::Event &event) noexcept override {
+    try {
+      if (event.type == onion::lifecycle::EventType::BigAppStarted) {
+        cJSON *j = cJSON_CreateObject();
+        cJSON_AddNumberToObject(j, "pid", event.app.pid);
+        cJSON_AddStringToObject(j, "title", event.app.title_id.c_str());
+        std::string reply;
+        IPC_Client::getInstance(true).IPCSendCommand(
+            BREW_UTIL_PATCH_LAUNCH, reply, onion_cjson::print_owned(j));
+      }
+      return true;
+    } catch (...) {
+      LOG_WARN("[patches] launch notification failed; native manual toggles "
+               "remain available");
+      return false;
+    }
+  }
+};
+
 struct Runtime {
   AppJailbreakLifecycleSubscriber app_jailbreak;
   SprxLifecycleSubscriber sprx;
+  GamePatchSubscriber patches;
   onion::lifecycle::Dispatcher dispatcher;
 
   Runtime() : dispatcher(32) {
     (void)dispatcher.subscribe(app_jailbreak);
     (void)dispatcher.subscribe(sprx);
+    (void)dispatcher.subscribe(patches);
   }
 };
 

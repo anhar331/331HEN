@@ -29,13 +29,13 @@ typedef struct PayloadList {
 } PayloadList;
 
 static const char *const kPayloadDirectories[] = {
-    "/mnt/usb0/onionhen/payloads", "/mnt/usb0/OnionHEN/payloads",
-    "/mnt/usb1/onionhen/payloads", "/mnt/usb1/OnionHEN/payloads",
-    "/mnt/usb2/onionhen/payloads", "/mnt/usb2/OnionHEN/payloads",
-    "/mnt/usb3/onionhen/payloads", "/mnt/usb3/OnionHEN/payloads",
-    "/user/data/OnionHEN/payloads",
-    "/user/data/onionhen/payloads", "/data/OnionHEN/payloads",
-    "/data/onionhen/payloads",
+    "/mnt/usb0/331HEN/payloads", "/mnt/usb0/331HEN/payloads",
+    "/mnt/usb1/331HEN/payloads", "/mnt/usb1/331HEN/payloads",
+    "/mnt/usb2/331HEN/payloads", "/mnt/usb2/331HEN/payloads",
+    "/mnt/usb3/331HEN/payloads", "/mnt/usb3/331HEN/payloads",
+    "/user/data/331HEN/payloads",
+    "/user/data/331HEN/payloads", "/data/331HEN/payloads",
+    "/data/331HEN/payloads",
 };
 
 static void payload_list_destroy(PayloadList *list) {

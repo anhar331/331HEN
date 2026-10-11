@@ -252,8 +252,8 @@ SyncStatus Ps5HttpTransport::perform(
   curl_easy_setopt(curl, CURLOPT_URL, url);
   curl_easy_setopt(curl, CURLOPT_USERAGENT,
                    req.user_agent && req.user_agent[0] ? req.user_agent
-                                                       : "OnionHEN");
-  curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+                                                       : "331HEN");
+  curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, req.follow_redirects ? 1L : 0L);
   curl_easy_setopt(curl, CURLOPT_MAXREDIRS, 3L);
   curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
   const size_t ca_bundle_size = static_cast<size_t>(

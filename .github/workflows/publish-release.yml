@@ -1,0 +1,33 @@
+name: Publish 331HEN pre-release
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: 331hen-release-publishing
+  cancel-in-progress: false
+jobs:
+  build-test-publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - name: Host test dependencies
+        run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev pkg-config
+      - name: Build without replacing a stable ELF
+        run: |
+          mkdir -p .cache/release-tests
+          bash scripts/build-container.sh --build-only > .cache/release-tests/BUILD.log 2>&1
+      - name: Run tests and inspect embedded payloads
+        run: bash scripts/test-release.sh
+      - name: Test publishing safeguards
+        run: python3 -m unittest discover -s scripts/tests -v
+      - name: Publish a new incrementing pre-release and verify public download
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/publish_release.py --elf build/bin/331HEN.elf --tests-dir .cache/release-tests

@@ -29,8 +29,8 @@ extern "C" {
 #endif
 
 /* Notification service reads this user-visible path. Config/payload stay
- * under /data/OnionHEN. */
-#define ONION_NOTIFY_ICON_PATH "/user/data/OnionHEN/onionhen.png"
+ * under /data/331HEN. */
+#define ONION_NOTIFY_ICON_PATH "/user/data/331HEN/331HEN.png"
 
 /** Kernel/userland toast send — matches sceKernelSendNotificationRequest. */
 typedef int32_t (*onion_notify_send_fn)(int32_t device, void *req, size_t size,
@@ -65,7 +65,7 @@ void onion_notify_try_rich(const char *payload, const char *plain_key);
 
 /**
  * Format a notification body: onion_notify_tr(key) then vsnprintf.
- * show_watermark non-zero prefixes "[OnionHEN] ".
+ * show_watermark non-zero prefixes "[331HEN] ".
  */
 void onion_notify_format(char *out, size_t out_sz, int show_watermark,
                          const char *fmt, va_list ap);

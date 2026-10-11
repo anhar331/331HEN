@@ -31,6 +31,7 @@ enum class Page : unsigned char {
   PluginProgress,    /**< external plugin start/stop progress transition page */
   SuperuserPass,      /**< recognized; still use original stream */
   RedirectOgDebug,    /**< og_debug.xml → debug_settings resource */
+  GamePatches,
 };
 
 struct ResourceNames {
@@ -77,7 +78,7 @@ RouteResult resolve_resource(const RouteInput &in);
 
 /** Child routes whose page-stack pop should restore the owning parent route. */
 constexpr bool restores_parent_on_pop(Page page) {
-  return page == Page::CheatProgress || page == Page::RemotePlay ||
+  return page == Page::GamePatches || page == Page::CheatProgress || page == Page::RemotePlay ||
          page == Page::PayloadConfig || page == Page::OverlayMetricConfig ||
          page == Page::PluginConfig ||
          page == Page::SprxConfig ||

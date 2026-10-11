@@ -1,6 +1,6 @@
-# OnionHEN 架构
+# 331HEN 架构
 
-OnionHEN 是 PS5 的 All-in-One Homebrew Enabler，提供提权、后台服务、Toolbox UI 和 fPKG/fSELF 支持。
+331HEN 是 PS5 的 All-in-One Homebrew Enabler，提供提权、后台服务、Toolbox UI 和 fPKG/fSELF 支持。
 
 | 维度 | 说明 |
 |------|------|
@@ -9,7 +9,7 @@ OnionHEN 是 PS5 的 All-in-One Homebrew Enabler，提供提权、后台服务�
 | 许可证 | GPLv3 |
 | 构建 | CMake + Ninja + `PS5_PAYLOAD_SDK`（clang） |
 
-**运行时前置条件：** 必须先有 **外部 elfldr（端口 9021）** 完成首跳。bootstrapper 启动后会拉起 OnionHEN 自己的私有 **9020** `onion_elfldr.elf`。用户 Payload 只能走 9020，并且必须取得加载器返回的精确 PID；失败时不做进程快照、不自动重试、也不回退 9021。9021 仅作为首次引导和 9020 恢复通道。
+**运行时前置条件：** 必须先有 **外部 elfldr（端口 9021）** 完成首跳。bootstrapper 启动后会拉起 331HEN 自己的私有 **9020** `331HEN_ldr.elf`。用户 Payload 只能走 9020，并且必须取得加载器返回的精确 PID；失败时不做进程快照、不自动重试、也不回退 9021。9021 仅作为首次引导和 9020 恢复通道。
 
 ---
 
@@ -21,7 +21,7 @@ OnionHEN 是 PS5 的 All-in-One Homebrew Enabler，提供提权、后台服务�
 [WebKit / IPV6 等 Kernel Exploit]
         │
         ▼
-  OnionHEN.elf  (unpacker)
+  331HEN.elf  (unpacker)
         │  LZMA 解压内嵌 bootstrapper
         │  经 9021 送出 bootstrapper.elf
         ▼
@@ -29,9 +29,9 @@ OnionHEN 是 PS5 的 All-in-One Homebrew Enabler，提供提权、后台服务�
         │  1. 提权 (elfldr_raise_privileges)
         │  2. remount /system、/system_ex
         │  3. unmount /update（阻止系统更新）
-        │  4. 经 9021 启动内嵌 onion_elfldr.elf（监听 9020）
+        │  4. 经 9021 启动内嵌 331HEN_ldr.elf（监听 9020）
         │  5. 将内嵌 ELF 字节经 9020 顺序启动：util → kstuff → daemon
-        │  6. 扫描并启动 /data/OnionHEN/plugins/ 下带 descriptor 的 .elf
+        │  6. 扫描并启动 /data/331HEN/plugins/ 下带 descriptor 的 .elf
         ▼
 ┌───────────────┬────────────────┬──────────────────┐
 │  util.elf     │  kstuff.elf    │  daemon.elf      │
@@ -52,7 +52,7 @@ OnionHEN 是 PS5 的 All-in-One Homebrew Enabler，提供提权、后台服务�
 
 - util 先提供网络/IPC 等服务
 - kstuff 需先完成 ShellUI 补丁
-- daemon 启动插件管理器，发现并管理 `/data/OnionHEN/plugins/` 中的外部插件
+- daemon 启动插件管理器，发现并管理 `/data/331HEN/plugins/` 中的外部插件
 - daemon 再注入 Toolbox
 
 若并行 ptrace 同一进程，容易导致 Toolbox 超时或崩溃。
@@ -62,14 +62,14 @@ OnionHEN 是 PS5 的 All-in-One Homebrew Enabler，提供提权、后台服务�
 ```
 shellui.elf ───────┐
 util.elf ──────────┼──► 嵌入 daemon.elf ──┐
-onion_elfldr.elf ──┘                       │
+331HEN_ldr.elf ──┘                       │
                      util.elf ─────────────┼──► 嵌入 bootstrapper.elf
                      kstuff.elf ───────────┤         │
-                     onion_elfldr.elf ─────┘         ▼ LZMA
+                     331HEN_ldr.elf ─────┘         ▼ LZMA
                                                bootstrapper.elf.lzma
                                               │
                                               ▼ 嵌入
-                                         OnionHEN.elf  (最终用户 payload)
+                                         331HEN.elf  (最终用户 payload)
 ```
 
 构建阶段（`scripts/build.sh`）：
@@ -79,18 +79,18 @@ onion_elfldr.elf ──┘                       │
 3. sync vendor（kstuff）
 4. `daemon` + `util`
 5. `bootstrapper`（再 lzma 压缩）
-6. `unpacker` → `OnionHEN.elf`
+6. `unpacker` → `331HEN.elf`
 
-> 用户 Payload 使用裸 `.elf` 文件，存放在 `/data/OnionHEN/payloads/`
+> 用户 Payload 使用裸 `.elf` 文件，存放在 `/data/331HEN/payloads/`
 > 或 USB 的 `.../payloads/` 目录。插件也是标准 `.elf`，但必须包含
-> `.onion_plugin` descriptor，并存放在 `/data/OnionHEN/plugins/`。
+> `.onion_plugin` descriptor，并存放在 `/data/331HEN/plugins/`。
 
 产物落在仓库根目录 `build/bin/`（静态库 `build/lib/`；CMake 树 `build/`）。
 
 ### 1.3 仓库布局
 
 ```
-OnionHEN/
+331HEN/
 ├── assets/           # 图标等
 ├── docs/             # 技术文档（含本文）
 ├── scripts/          # 构建与主机侧工具
@@ -99,7 +99,7 @@ OnionHEN/
 │   ├── daemon/       # 核心守护
 │   ├── util/         # 工具守护（金手指、IPC 等）
 │   ├── shellui/      # Toolbox
-│   ├── unpacker/     # 最终 OnionHEN.elf
+│   ├── unpacker/     # 最终 331HEN.elf
 │   ├── libhijacker/ libNineS/ libNidResolver/
 │   ├── libonion_*    # 共享：ipc/settings/proc/platform/ready/detour/payload/elfldr
 │   ├── common/       # 项目共享的底层实现
@@ -114,7 +114,7 @@ OnionHEN/
 
 ## 2. 模块职责
 
-### 2.1 `unpacker` → `OnionHEN.elf`
+### 2.1 `unpacker` → `331HEN.elf`
 
 - 用户侧最终 payload
 - 内嵌 **LZMA 压缩** 的 `bootstrapper.elf`
@@ -124,30 +124,30 @@ OnionHEN/
 ### 2.2 `bootstrapper` → `bootstrapper.elf`（再压成 `.lzma`）
 
 - 提权、分区 remount、阻止更新
-- 以 `.incbin` 嵌入 `onion_elfldr.elf`、`daemon.elf`、`util.elf`、`kstuff.elf` 与图标资源
-- 先用外部 9021 启动内置 `onion_elfldr.elf`，再通过 9020 启动 util / daemon / kstuff
+- 以 `.incbin` 嵌入 `331HEN_ldr.elf`、`daemon.elf`、`util.elf`、`kstuff.elf` 与图标资源
+- 先用外部 9021 启动内置 `331HEN_ldr.elf`，再通过 9020 启动 util / daemon / kstuff
 - 扫描并自动启动带 `.auto_start` 标记的用户 Payload ELF
 - 可选日志端口 **9088**
 
 关键启动策略：
 
 1. 检查 `127.0.0.1:9021` 上的外部 elfldr（首跳必需）
-2. 启动内置 `onion_elfldr.elf`，并通过握手确认 `127.0.0.1:9020`
+2. 启动内置 `331HEN_ldr.elf`，并通过握手确认 `127.0.0.1:9020`
 3. 顺序发送内部 ELF 字节：util → kstuff → daemon；9020 是正常路径，9021 仅承担引导/恢复职责
 4. 各子 ELF 启动后把主线程名设为稳定进程名（`onion_util.elf` / `kstuff.elf` / `onion_daemon.elf`）
-5. 仅在 9020 健康时加载 `/data/OnionHEN/payloads/` 下带 `.auto_start` 的用户 `.elf`；插件由
-   `libonion_plugin_manager` 扫描 `/data/OnionHEN/plugins/`，校验 `.onion_plugin`
+5. 仅在 9020 健康时加载 `/data/331HEN/payloads/` 下带 `.auto_start` 的用户 `.elf`；插件由
+   `libonion_plugin_manager` 扫描 `/data/331HEN/plugins/`，校验 `.onion_plugin`
    descriptor 后按 `AUTO_START` 启动。已有有效 PID 记录时保持现有实例，否则必须取得精确 PID
 
 可用 Toolbox「启动时自动加载 Kstuff」（默认开启）关闭，或放 `/mnt/usb0/no_kstuff` 跳过 kstuff。
 
 ### 2.3 `daemon` → `daemon.elf`（Critical 守护进程）
 
-- 内嵌 `shellui.elf`、`util.elf` 与 `onion_elfldr.elf`
+- 内嵌 `shellui.elf`、`util.elf` 与 `331HEN_ldr.elf`
 - 经 **libNineS** 将 Toolbox 注入 `SceShellUI`
 - 按依赖顺序监视私有 9020 与 util：9020 异常时先通过外部 9021 恢复加载器，再通过 9020 恢复 util
 - 9020 在同步加载 Payload 时发布 busy 标记，避免健康检查误杀；超过有界宽限期仍未恢复则按卡死处理
-- Unix socket：`/system_tmp/onionhen/ipc/crit_service`
+- Unix socket：`/system_tmp/331HEN/ipc/crit_service`
 - IPC 前缀 `0x9000000`（`BREW_*`）
 - 休息后 Toolbox 恢复：SceSysCore `NOTE_EXEC` 认出新 `NPXS40087`，等 `libSceNpTrophy.sprx` 与 `libSceNpTrophy2.sprx`，再按 `rest_mode.resume_reinject_delay_seconds` 等待后注入（参考 [kstuff-lite](https://github.com/EchoStretch/kstuff-lite)）
 - Unix IPC 与 TCP **9048** 在 `accept` 失败时关闭并重新 listen（参考 [ps5-payload-manager](https://github.com/itsplk/ps5-payload-manager)）
@@ -162,7 +162,7 @@ OnionHEN/
 ### 2.4 `util` → `util.elf`（Utility 守护进程）
 
 - 与 critical 分离，承载网络/IO 与较重业务，提高稳定性
-- Unix socket：`/system_tmp/onionhen/ipc/util_service`
+- Unix socket：`/system_tmp/331HEN/ipc/util_service`
 - IPC 前缀 `0x8000000`（`BREW_UTIL_*`）
 
 | 服务 | 端口 / 入口 | 说明 |
@@ -182,7 +182,7 @@ OnionHEN/
 
 - 内容安装与管理（系统 PkgInstaller UI、附加内容管理）
 - Payload 与内核组件（用户 Payload；插件：kstuff 及已安装外部插件）
-- 游戏辅助（金手指引擎、OnionHEN 游戏选项）
+- 游戏辅助（金手指引擎、331HEN 游戏选项）
 - 监控与显示（ShellUI 监控条、Title ID）
 - 账号激活
 - 系统与硬件（风扇、外置 HDD、BD 激活）
@@ -193,7 +193,7 @@ OnionHEN/
 Remote Play 由 `remote_play.cpp` 负责：通过 `libSceRemoteplay.sprx` 解析
 原生 `sceRemoteplay*` API，启用 Remote Play 注册表设置，生成 PIN，并在后台
 确认客户端注册。视频串流与客户端传输仍由 PS5 原生 Remote Play 服务处理；
-OnionHEN 只负责配对和设备注册。配对信息可从网络页面保存到 USB。
+331HEN 只负责配对和设备注册。配对信息可从网络页面保存到 USB。
 
 注入路径详见 [shellui-injection.md](shellui-injection.md)。
 
@@ -217,8 +217,8 @@ RAM 与 IP。采样实现参考 [PHU Games Tools](https://github.com/ArkSama)（
 | **libonion_sprx** | 标准 SPRX/PRX 加载用例与最小 INI `SprxCatalog`；策略层与 ptrace 运行时解耦，生产适配器通过远程 `pthread_create` 调用 `sceKernelLoadStartModule`，支持幂等检查、超时、返回码、依赖排序和临时内存清理 |
 | **libonion_detour** | 共享 Detour + hde64 钩子栈 |
 | **libonion_proc** | 共享 proc/ucred（allproc 遍历、dynlib、authid）+ **sysctl 进程查询**（`find_pid` / `onion_find_pid_ex` / `isProcessAlive`）；daemon / util / shellui / bootstrapper 共用 |
-| **libonion_platform** | 平台叶子：`if_exists` / `touch_file` / `rmtree`、`OnionHEN_log`（可配置 tag/路径）、`onion_notify`；修一处全树受益 |
-| **libonion_ready** | 跨进程 ready/runtime 标记（`/system_tmp/onionhen/ready/<name>`）及 wait/timeout 协调 |
+| **libonion_platform** | 平台叶子：`if_exists` / `touch_file` / `rmtree`、`331HEN_log`（可配置 tag/路径）、`onion_notify`；修一处全树受益 |
+| **libonion_ready** | 跨进程 ready/runtime 标记（`/system_tmp/331HEN/ready/<name>`）及 wait/timeout 协调 |
 | **onion/lnc.h** | 共享 LNC 启动 ABI（`LncAppParam` / `Flag` / 错误码）；daemon `launcher.hpp` 仅为 shim |
 | **libNineS** | ptrace 注入编排；**proc/ucred → libonion_proc**；**pt/elfldr → libonion_elfldr** |
 
@@ -231,7 +231,7 @@ RAM 与 IP。采样实现参考 [PHU Games Tools](https://github.com/ArkSama)（
 | **daemon_inject.cpp** | Toolbox 注入：冷启动/IPC 立即注入；休息恢复参考 kstuff-lite（SysCore EXEC + trophy sprx + 可配置延时） |
 | **daemon_settings.cpp** | LoadSettings + mtime 缓存 |
 | **daemon_fs.cpp** | remount / chmod / test_sb / reply / fan / ForceKill / pid 查找 |
-| **daemon_fps.cpp** | render/skip-hook FPS 线程 + 独立 V-sync 采样线程；原始值无效时由 V-sync 线程兜底；仅 render 线程发布 `/system_tmp/onionhen/fps_sample` |
+| **daemon_fps.cpp** | render/skip-hook FPS 线程 + 独立 V-sync 采样线程；原始值无效时由 V-sync 线程兜底；仅 render 线程发布 `/system_tmp/331HEN/fps_sample` |
 
 #### ShellUI 模块
 
@@ -254,7 +254,7 @@ RAM 与 IP。采样实现参考 [PHU Games Tools](https://github.com/ArkSama)（
 | `kstuff` | bootstrapper 在 mprotect 成功后 | daemon 注入 toolbox 前 |
 | `daemon` | daemon 在 IPC 线程启动后，内容为自身 PID | bootstrapper 识别内置 daemon 实例 |
 | `toolbox` | shellui 注入完成后，内容为自身 PID | daemon 按当前 SceShellUI PID 判断跳过或重注入 |
-| `fps_overlay` | 启动时 clear | ABI 占位标记；实时 FPS 状态发布在 `/system_tmp/onionhen/fps_sample` |
+| `fps_overlay` | 启动时 clear | ABI 占位标记；实时 FPS 状态发布在 `/system_tmp/331HEN/fps_sample` |
 | `util_booted` | util 冷启动完成后 | util 崩溃/重拉后向 daemon 请求再注入 Toolbox |
 
 #### IPC 分层（加深后）
@@ -298,11 +298,11 @@ OverlayLayout         仅 shellui：由 overlay.edge + overlay.align 派生；�
 ```
 shellui / homebrew
         │ Unix domain socket
-        ├─► /system_tmp/onionhen/ipc/crit_service  (daemon, 0x9xxxxxxx)
-        └─► /system_tmp/onionhen/ipc/util_service  (util,   0x8xxxxxxx)
+        ├─► /system_tmp/331HEN/ipc/crit_service  (daemon, 0x9xxxxxxx)
+        └─► /system_tmp/331HEN/ipc/util_service  (util,   0x8xxxxxxx)
 
 homebrew (app jailbreak)
-        └─► sandbox file  …/download0/etahen_jailbreak|onionhen_jailbreak
+        └─► sandbox file  …/download0/etahen_jailbreak|hen331_jailbreak
              (SceSysCore 进程事件触发 Running Big App 补扫 + 沙盒 vnode + 白名单 TID)
 ```
 
@@ -359,24 +359,24 @@ struct IPCMessage {
 
 | 路径 | 用途 |
 |------|------|
-| `/data/OnionHEN/` | 数据根目录 |
-| `/data/OnionHEN/config.ini` | 配置 |
-| `/data/OnionHEN/OnionHEN.log` | 日志 |
-| `/data/OnionHEN/OnionHEN_crash.log` | daemon 崩溃信号与回溯日志；跨重启追加保留 |
-| `/data/OnionHEN/payloads/` | 用户 payload `.elf`（启动时 stage 到同目录） |
-| `/data/OnionHEN/plugins/` | OnionHEN plugin `.elf`（含 `.onion_plugin` descriptor） |
-| `/system_tmp/onionhen/ipc/*` | Unix IPC socket |
-| `/system_tmp/onionhen/ready/<name>` | ready/runtime 标记；`toolbox` 内容为 SceShellUI PID |
-| `/system_tmp/onionhen/pid/<key>.PID` | 用户 Payload PID 状态 |
-| `/system_tmp/onionhen/app_launched` | ShellUI LaunchApp 返回值 |
-| `/system_tmp/onionhen/patch_plugin` | LaunchApp patch gate（外部标记；ShellUI 只读取） |
+| `/data/331HEN/` | 数据根目录 |
+| `/data/331HEN/config.ini` | 配置 |
+| `/data/331HEN/331HEN.log` | 日志 |
+| `/data/331HEN/331HEN_crash.log` | daemon 崩溃信号与回溯日志；跨重启追加保留 |
+| `/data/331HEN/payloads/` | 用户 payload `.elf`（启动时 stage 到同目录） |
+| `/data/331HEN/plugins/` | 331HEN plugin `.elf`（含 `.onion_plugin` descriptor） |
+| `/system_tmp/331HEN/ipc/*` | Unix IPC socket |
+| `/system_tmp/331HEN/ready/<name>` | ready/runtime 标记；`toolbox` 内容为 SceShellUI PID |
+| `/system_tmp/331HEN/pid/<key>.PID` | 用户 Payload PID 状态 |
+| `/system_tmp/331HEN/app_launched` | ShellUI LaunchApp 返回值 |
+| `/system_tmp/331HEN/patch_plugin` | LaunchApp patch gate（外部标记；ShellUI 只读取） |
 
 ### 3.4 Itemzflow 兼容状态
 
 - `ITEM00001` 默认位于 `app_jailbreak.exact_title_ids`，避免 Loader 因未进入 jailbreak 流程而等待 30 秒；精确 Title ID 与前缀白名单均可通过 `config.ini` 覆盖。
 - Critical IPC 的 `0x9000004` 是稳定 ABI 占位值，后续命令序号与 Itemzflow 客户端一致。
 - ItemzCore 连接 `/system_tmp/etaHEN_crit_service`，daemon 监听
-  `/system_tmp/onionhen/ipc/crit_service`；使用固定前一路径的客户端可能等待最长一分钟。
+  `/system_tmp/331HEN/ipc/crit_service`；使用固定前一路径的客户端可能等待最长一分钟。
 
 ---
 
@@ -406,19 +406,19 @@ struct IPCMessage {
 ### 4.3 网络服务
 
 - 首跳依赖外部 **9021 elfldr**；它同时是私有 9020 的恢复根。用户 Payload 严格使用内置 **9020 onion_elfldr**，不回退 9021
-- **FTP**：由可选的外部 `onionHEN-ftpsrv-plugin` 提供；daemon 负责进程生命周期，插件通过动态 UI 提供启用、端口与重启控制
-- **ShadowMount+**：由可选的外部 `onionHEN-shadowmountplus-plugin` 提供；daemon 负责进程生命周期，插件通过动态 UI 提供立即扫描操作
-- **DPI v2**：由可选的外部 `onionHEN-dpiv2-plugin` 提供；浏览器负责上传与安装操作，插件动态 UI 提供启停、API/WebUI 端口与重启配置
+- **FTP**：由可选的外部 `331HEN-ftpsrv-plugin` 提供；daemon 负责进程生命周期，插件通过动态 UI 提供启用、端口与重启控制
+- **ShadowMount+**：由可选的外部 `331HEN-shadowmountplus-plugin` 提供；daemon 负责进程生命周期，插件通过动态 UI 提供立即扫描操作
+- **DPI v2**：由可选的外部 `331HEN-dpiv2-plugin` 提供；浏览器负责上传与安装操作，插件动态 UI 提供启停、API/WebUI 端口与重启配置
 - **Remote Play**：ShellUI 调用 PS5 原生 Remote Play API 完成 PIN 生成和客户端注册确认
 
 用户 Payload 的所有 `.elf` 文件名都使用相同的 Payload 页面、自动启动扫描和共享
 加载器。用户 Payload 仅由 Payload 页的明确停止操作终止；已有有效 PID 记录时，
 后续启动和自动启动请求保持现有实例。带 `.onion_plugin` descriptor 的插件则放在
-`/data/OnionHEN/plugins/`，由插件管理器独立发现、校验和管理。
+`/data/331HEN/plugins/`，由插件管理器独立发现、校验和管理。
 
 ### 4.4 扩展
 
-- 自定义插件（使用 [OnionHEN Plugin SDK](https://github.com/OnionBuddies/onionHEN-plugin-sdk)）
+- 自定义插件（使用 [331HEN Plugin SDK](https://github.com/OnionBuddies/onionHEN-plugin-sdk)）
 - `config.ini` 驱动的开关（overlay、快捷键等）
 
 ## 5. 依赖组件
@@ -429,8 +429,8 @@ struct IPCMessage {
 |------|------|
 | **ps5-payload-sdk** (`PS5_PAYLOAD_SDK`) | Prospero 工具链、`prospero-cmake`、系统头文件 |
 | **clang** | 目标 `x86_64-sie-ps5` |
-| **elfldr @ 9021** | 首跳必需，不随 OnionHEN 打包 |
-| **onion_elfldr @ 9020** | OnionHEN 内置私有运行时 loader；由 bootstrapper 拉起 |
+| **elfldr @ 9021** | 首跳必需，不随 331HEN 打包 |
+| **onion_elfldr @ 9020** | 331HEN 内置私有运行时 loader；由 bootstrapper 拉起 |
 | Kernel exploit | 如 IPV6 等，用于先获得代码执行 |
 
 ### 5.2 第三方依赖（`third_party/`）
@@ -519,10 +519,10 @@ checksum，只有完整 commit 才替换可见 contribution。断连通过 owner
 这里采用的是适合自制软件生态的协作式身份，不是安全认证：`HELLO` 不校验签名、
 ELF、PID 或启动来源，capability 也只是功能协商与 API 门禁，不能防御恶意插件。
 它解决的是误用、连接中途换 ID、重复 ID 和断连遗留 UI。daemon 中的
-`/system_tmp/onionhen/ipc/plugin_service` 使用独立持久连接 listener，每条
+`/system_tmp/331HEN/ipc/plugin_service` 使用独立持久连接 listener，每条
 accepted stream 拥有一个 `ConnectionSession`。它处理完整 SDK frame、`HELLO`、
 `PING`、9 号非阻塞事件轮询和 10–15 号 UI 命令。跨进程 snapshot 使用独立
-`/system_tmp/onionhen/ipc/shellui_plugin_bridge` stream，避免异步消息破坏插件
+`/system_tmp/331HEN/ipc/shellui_plugin_bridge` stream，避免异步消息破坏插件
 socket 的 request/response 配对。休眠恢复会关闭旧连接并重新监听，整体关停会
 停止 listener 并触发 contribution 与待处理事件清理。日志、通知、配置等其它
 Host Service handler 仍属于后续集成。
@@ -532,7 +532,7 @@ Host Service handler 仍属于后续集成。
 ## 6. 架构特点小结
 
 1. **分层嵌入**  
-   用户只下发一个 `OnionHEN.elf`，内部层层解压/拉起全套服务。
+   用户只下发一个 `331HEN.elf`，内部层层解压/拉起全套服务。
 
 2. **双守护进程**  
    critical（注入/监视）与 util（网络/IO）分离，util 可崩溃恢复。
@@ -544,7 +544,7 @@ Host Service handler 仍属于后续集成。
    Toolbox 不是独立 App，而是 ptrace 注入 ShellUI 的 Mono 代码。
 
 5. **kstuff 来源**
-   fPKG/fSELF 能力来自 kstuff-lite；可用 `/data/OnionHEN/kstuff.elf` 覆盖。
+   fPKG/fSELF 能力来自 kstuff-lite；可用 `/data/331HEN/kstuff.elf` 覆盖。
 
 6. **IPC 协议稳定**  
    Unix socket；ABI 占位命令保持已发布的命令序号稳定。

@@ -1,0 +1,16 @@
+# Known limitations
+
+- This is one experimental ELF for hardware testing. It contains a real native runtime executor, not a UI-only XML browser. PS5 firmware 12.70 execution remains untested in this environment.
+- Guaranteed patch-before-entry launch timing is not implemented. The existing dispatcher observes the process after exec. Closing/relaunching the game persists/reapplies selections, but a strict early-startup patch may still be too late. No safe existing pre-entry hook was available without adding the separate upstream ShellCore integration. Startup-only effects are not claimed compatible.
+- Only exact-version eboot.bin direct-address definitions execute. Other executables/modules, sprx, mask scans/caves, wildcard versions, 120 Hz or display/kernel extras are unsupported. The complete database may contain those definitions; unsupported entries are clearly labelled.
+- Application depends on the existing working 331HEN process-memory backend, valid module section sizes, live ShellCore metadata and the normal AppJailbreak/ptrace capability. Missing/uncertain identity or mappings fails closed. No offsets are guessed.
+- A game running when util starts must be restarted before patch writes are permitted. This prevents false original-byte recovery after payload/util restart. Closing/restarting the game does not require rebooting the PS5.
+- Restoring instruction bytes cannot undo initialized game state or an effect that already occurred. Restart the game when needed. Original-byte ownership is in memory for the current process generation, not a durable cross-util memory journal.
+- Conflicts are detected for overlapping owned native patches/cheats and known active patch-server names. Unrelated semantic conflicts, modified executables with unchanged title/version and unknown external memory writers are not inferred from metadata. There is no upstream executable cryptographic hash to verify.
+- The upstream Bloodborne 60 FPS note warns of a possible softlock in Laurence's optional DLC cinematic. Hardware performance and this issue were not tested here.
+- PS5 TLS/DNS/storage behavior remains to test. GitHub rate limits, unavailable Internet, incorrect console time, exhausted storage or malformed newer upstream content produce failure rather than replacing the working collection.
+- Temporary files and snapshot pointers use fsync plus atomic rename, but the parent directory is not fsynced; abrupt power loss durability is not guaranteed. Storage exhaustion was represented by write-failure paths, not by filling a real PS5 disk.
+- The native page gathers at most 256 matching definitions. The installer caps archive entries, per-file bytes and total extraction. All 508 definitions in the inspected source snapshot installed; this is not proof that all execute.
+- runtime.log is append-only and has no dedicated rotation. General project logging remains bounded by its existing policy.
+- A transient unsanitized mock async-status failure was not reproduced in ten repeat runs or final sanitized runs. A long-running hardware stress test remains outstanding.
+- The current XML database repository has no explicit root LICENSE at the inspected revision. Its patch Metadata authors and original XML are preserved; the historical console-game-patches MIT license is not assumed to license a different repository.

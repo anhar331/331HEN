@@ -26,6 +26,9 @@ struct HttpRequest {
   void *progress_user = nullptr;
   SyncCancelFn should_cancel = nullptr;
   void *cancel_user = nullptr;
+  // Existing cheat downloads retain their redirect behavior. Immutable patch
+  // downloads opt out so their host allow-list also covers every response.
+  bool follow_redirects = true;
 };
 
 /**

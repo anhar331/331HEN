@@ -29,7 +29,7 @@ restoring the interrupted ShellUI registers.
 After every required hook is ready, `shellui.elf` writes its PID to:
 
 ```text
-/system_tmp/onionhen/ready/toolbox
+/system_tmp/331HEN/ready/toolbox
 ```
 
 The daemon waits up to 45 seconds for the expected PID. The marker is an

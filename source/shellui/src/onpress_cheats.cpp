@@ -1,5 +1,6 @@
 /* Copyright (C) 2025 OnionHEN / LightningMods — OnPress cheats domain */
 #include "onpress.hpp"
+#include "game_patches.hpp"
 #include "shellui_state.hpp"
 #include "toolbox_route.hpp"
 #include <cstring>
@@ -55,7 +56,9 @@ static OnPressResult prefix_id_cheat_view(OnPressContext &ctx) {
   return OnPressResult::Consumed;
 }
 
+static OnPressResult patch_press(OnPressContext &ctx) { return game_patch_press(ctx)?OnPressResult::Consumed:OnPressResult::NotMine; }
 static const OnPressPrefixEntry kPrefix[] = {
+    {"id_gp_", patch_press},
     {"id_cheat_view_", prefix_id_cheat_view},
     {"id_cheat_", prefix_id_cheat},
 };

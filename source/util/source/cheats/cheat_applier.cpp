@@ -1,6 +1,7 @@
 #include <onion/log.h>
 #include <onion/notify.h>
 #include "cheats/cheat_applier.hpp"
+#include "patches/coordination.hpp"
 
 #include <cstdarg>
 #include <cstdio>
@@ -132,6 +133,7 @@ bool isMasterDependent(const onion_cheat_file_t &file, int index) {
 int CheatApplier::toggle(const game_context_t &game, onion_cheat_file_t &file,
                          int index, std::string &status,
                          const std::string &source_key) {
+  std::lock_guard<std::recursive_mutex> memory_lock(hen331::memorycoord::mutex());
   status.clear();
   if (index < 0 || static_cast<size_t>(index) >= file.cheat_count) {
     status = status_tr("notify.cheats.invalid_index");
@@ -221,6 +223,12 @@ int CheatApplier::toggle(const game_context_t &game, onion_cheat_file_t &file,
                         patch.on_len, patch.off_len});
   }
 
+  for (const auto &candidate : resolved) {
+    if (hen331::memorycoord::patch_conflict(pid,candidate.address,std::max(candidate.on_len,candidate.off_len))) {
+      status="Conflict with enabled Game Patch; disable the patch first";
+      return -1;
+    }
+  }
   const bool enabling = !entry.enabled;
   if (enabling) {
     for (const ResolvedPatch &candidate : resolved) {
@@ -330,11 +338,18 @@ int CheatApplier::toggle(const game_context_t &game, onion_cheat_file_t &file,
                        }),
         active_ranges_.end());
   }
+  auto &shared_ranges=hen331::memorycoord::cheats()[this];
+  shared_ranges.clear();
+  for(const auto &range:active_ranges_)shared_ranges.push_back({range.pid,range.start,range.length});
   status = std::string(entry.name) + (entry.enabled ? " -> enabled" : " -> disabled");
   LOG_INFO("[Cheat] %s", status.c_str());
   return 0;
 }
 
-void CheatApplier::clearOwnership() { active_ranges_.clear(); }
+CheatApplier::~CheatApplier() {clearOwnership();}
+void CheatApplier::clearOwnership() {
+ std::lock_guard<std::recursive_mutex> lock(hen331::memorycoord::mutex());
+ active_ranges_.clear();hen331::memorycoord::cheats().erase(this);
+}
 
 } // namespace onion::cheats

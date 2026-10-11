@@ -1,5 +1,5 @@
 ###################################################################################################
-# OnionHEN user Payload helpers (strict private :9020 + exact PID files)
+# 331HEN user Payload helpers (strict private :9020 + exact PID files)
 ###################################################################################################
 
 cmake_minimum_required(VERSION 3.20)
@@ -18,7 +18,7 @@ set(CMAKE_C_FLAGS "${ONION_PS5_TARGET_FLAGS_MARCH} -fPIC -fstack-protector-all -
 target_include_directories(${PROJECT_NAME}
   PUBLIC  "${D_CWD}/include"
   PRIVATE
-    "${ONIONHEN_THIRD_PARTY_DIR}/cjson"
+    "${HEN331_THIRD_PARTY_DIR}/cjson"
     "${D_CWD}/../include"
     "${D_CWD}/../libonion_proc/include"
     "${D_CWD}/../libonion_platform/include"

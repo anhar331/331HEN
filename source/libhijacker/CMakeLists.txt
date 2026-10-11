@@ -37,5 +37,5 @@ target_include_directories(${PROJECT_NAME}
 	PUBLIC  "${D_CWD}/include"
 	PRIVATE "${D_CWD}/../include"
 	PRIVATE "${D_CWD}/../libonion_platform/include"
-	PRIVATE "${ONIONHEN_THIRD_PARTY_DIR}/sha1"
+	PRIVATE "${HEN331_THIRD_PARTY_DIR}/sha1"
 )

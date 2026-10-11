@@ -25,12 +25,14 @@ file(GLOB SrcFiles CONFIGURE_DEPENDS
   ${D_SRC}/cheats/*.c
   ${D_SRC}/cheats/*.cpp
   ${D_SRC}/cheats/sync/*.cpp
-  ${ONIONHEN_THIRD_PARTY_DIR}/cheat_support/*.c
+  ${D_SRC}/patches/*.cpp
+  ${HEN331_THIRD_PARTY_DIR}/pugixml/pugixml.cpp
+  ${HEN331_THIRD_PARTY_DIR}/cheat_support/*.c
   ${D_SRC}/../include/*.h
   ${D_SRC}/../include/*.hpp
   ${D_SRC}/*.s
-  ${ONIONHEN_THIRD_PARTY_DIR}/cjson/*.cpp
-  ${ONIONHEN_THIRD_PARTY_DIR}/cjson/*.hpp
+  ${HEN331_THIRD_PARTY_DIR}/cjson/*.cpp
+  ${HEN331_THIRD_PARTY_DIR}/cjson/*.hpp
  
 )
 
@@ -41,14 +43,15 @@ set(CMAKE_C_FLAGS_RELEASE "-Os -DNDEBUG")
 set(CMAKE_CXX_FLAGS_RELEASE "-Os -DNDEBUG")
 
 target_sources(${PROJECT_NAME} PRIVATE ${SrcFiles}
-  "${ONIONHEN_COMMON_DIR}/elfldr_remote.c")
+  "${HEN331_COMMON_DIR}/elfldr_remote.c")
 onion_target_debug_define(${PROJECT_NAME})
 target_include_directories(${PROJECT_NAME} PRIVATE
   "${D_CWD}/include"
-  "${ONIONHEN_THIRD_PARTY_DIR}/cjson"
+  "${HEN331_THIRD_PARTY_DIR}/cjson"
+  "${HEN331_THIRD_PARTY_DIR}/pugixml"
   # miniz / sha256 / mc4 headers live beside their vendored .c files.
-  "${ONIONHEN_THIRD_PARTY_DIR}/cheat_support"
-  "${ONIONHEN_THIRD_PARTY_DIR}/keystone/include"
+  "${HEN331_THIRD_PARTY_DIR}/cheat_support"
+  "${HEN331_THIRD_PARTY_DIR}/keystone/include"
   "${PROJECT_ROOT}/libhijacker/include"
   "${PROJECT_ROOT}/libonion_settings/include"
   "${PROJECT_ROOT}/libonion_ipc/include"
@@ -82,8 +85,8 @@ set_source_files_properties(
 	PROPERTIES OBJECT_DEPENDS "${ONION_CURL_CA_BUNDLE}"
 )
 target_link_directories(${PROJECT_NAME} PUBLIC
-  "${ONIONHEN_PS5_STUB_DIR}"
-  "${ONIONHEN_THIRD_PARTY_DIR}/keystone/lib"
+  "${HEN331_PS5_STUB_DIR}"
+  "${HEN331_THIRD_PARTY_DIR}/keystone/lib"
   "${ONION_CURL_ROOT}/lib"
   "${PS5_PAYLOAD_SDK}/target/lib"
 )
@@ -114,10 +117,10 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
     z
 )
 set_source_files_properties(
-  ${ONIONHEN_THIRD_PARTY_DIR}/cheat_support/aes.c
-  ${ONIONHEN_THIRD_PARTY_DIR}/cheat_support/base64.c
-  ${ONIONHEN_THIRD_PARTY_DIR}/cheat_support/miniz.c
-  ${ONIONHEN_THIRD_PARTY_DIR}/cheat_support/sha256.c
+  ${HEN331_THIRD_PARTY_DIR}/cheat_support/aes.c
+  ${HEN331_THIRD_PARTY_DIR}/cheat_support/base64.c
+  ${HEN331_THIRD_PARTY_DIR}/cheat_support/miniz.c
+  ${HEN331_THIRD_PARTY_DIR}/cheat_support/sha256.c
   PROPERTIES COMPILE_FLAGS "-Wno-error -Wno-unused-function -Wno-sign-compare -Wno-unused-parameter"
 )
 # miniz.h ships static-inline helpers that trip PS5's global -Werror in C++.
@@ -131,3 +134,7 @@ set_source_files_properties(${CHEAT_ENGINE_SRCS} PROPERTIES
 )
 
 onion_strip_debug(${PROJECT_NAME})
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE GP_BLOODBORNE_XML="${CMAKE_CURRENT_SOURCE_DIR}/../../assets/gamepatches/Bloodborne-Orbis.xml")
+set_source_files_properties(${D_SRC}/patches/service.cpp PROPERTIES OBJECT_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/../../assets/gamepatches/Bloodborne-Orbis.xml")
+set_source_files_properties(${D_SRC}/patches/collection.cpp PROPERTIES COMPILE_FLAGS "-Wno-unused-function")

@@ -7,6 +7,7 @@ namespace toolbox {
 
 RouteResult resolve_resource(const RouteInput &in) {
   RouteResult out{};
+  if (in.resource == std::string(kSettingsPluginsPrefix) + "game_patches.xml" && !in.cheats_shortcut && !in.cheats_shortcut_not_open) { out.page=Page::GamePatches; return out; }
 
   if (in.resource == kOgDebugXml) {
     out.page = Page::RedirectOgDebug;

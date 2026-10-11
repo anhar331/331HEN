@@ -30,6 +30,7 @@ void generate_plugins_xml(std::string &xml_buffer);
 void generate_sprx_xml(std::string &xml_buffer);
 void generate_plugin_config_xml(std::string &xml_buffer);
 void generate_account_xml(std::string &xml_buffer);
+void generate_game_patches_xml(std::string &xml);
 void generate_toolbox_xml(std::string &new_xml);
 void generate_cheats_xml(std::string &new_xml, std::string &not_open_tid,
                          bool running_as_debug_settings,
@@ -170,6 +171,9 @@ uint64_t GetManifestResourceStream_Hook(uint64_t inst, MonoString *FileName) {
     generate_plugin_config_xml(new_xml_string);
     break;
   }
+  case toolbox::Page::GamePatches:
+    generate_game_patches_xml(new_xml_string);
+    break;
   case toolbox::Page::Cheats:
     generate_cheats_xml(new_xml_string, g_ui.current_menu_tid, shortcut,
                         shortcut_not_open);

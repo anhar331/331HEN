@@ -105,7 +105,7 @@ pid_t owned_ready_process_pid(const char *ready_name,
 
 pid_t private_loader_pid() {
   const pid_t recorded = read_pid_marker(ONION_SYSTEM_TMP_ELFLDR_STATE);
-  if (process_has_name(recorded, "onion_elfldr.elf"))
+  if (process_has_name(recorded, "331HEN_ldr.elf"))
     return recorded;
 
   if (recorded > 1)
@@ -117,7 +117,7 @@ bool private_loader_busy(pid_t loader_pid) {
   const pid_t busy_pid = read_pid_marker(ONION_SYSTEM_TMP_ELFLDR_BUSY);
   if (busy_pid <= 1)
     return false;
-  if (!process_has_name(busy_pid, "onion_elfldr.elf")) {
+  if (!process_has_name(busy_pid, "331HEN_ldr.elf")) {
     unlink(ONION_SYSTEM_TMP_ELFLDR_BUSY);
     return false;
   }

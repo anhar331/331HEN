@@ -1,9 +1,9 @@
 <p align="center">
-  <img src="assets/logo.png" alt="OnionHEN" height="128" width="128"/>
+  <img src="assets/logo.png" alt="331HEN" height="128" width="128"/>
 </p>
 
 <p align="center">
-  <b>OnionHEN</b><br/>
+  <b>331HEN</b><br/>
   面向 PlayStation 5 的一体化 HEN 与工具箱
 </p>
 
@@ -38,45 +38,45 @@
 </p>
 
 <p align="center">
-  OnionHEN 是一套模块化的 PS5 payload。一个入口 ELF 完成系统准备、注入<br/>
+  331HEN 是一套模块化的 PS5 payload。一个入口 ELF 完成系统准备、注入<br/>
   ShellUI 工具箱，再拉起监控条、金手指、用户 payload 和后台服务。
 </p>
 
 <p align="center">
-  <img src="assets/screenshot_01.png" alt="OnionHEN 主界面入口"/>
+  <img src="assets/screenshot_01.png" alt="331HEN 主界面入口"/>
 </p>
 
 <p align="center">
-  <img src="assets/screenshot_02.png" alt="OnionHEN 游戏监视条"/>
+  <img src="assets/screenshot_02.png" alt="331HEN 游戏监视条"/>
 </p>
 
 <p align="center">
-  <img src="assets/screenshot_03.png" alt="OnionHEN Toolbox"/>
+  <img src="assets/screenshot_03.png" alt="331HEN Toolbox"/>
 </p>
 
 <br>
 
 # 功能
 
-OnionHEN 面向已越狱的 PS5，提供一套能日常使用、也方便维护的自制环境。
+331HEN 面向已越狱的 PS5，提供一套能日常使用、也方便维护的自制环境。
 
 - **ShellUI 工具箱** — 注入 PS5 ShellUI 的设置页
 - **系统准备** — 提权、重新挂载文件系统、阻断系统更新分区
 - **fSELF / fPKG** — 内嵌 kstuff，用来跑自制 SELF / PKG；默认加载，可在工具箱关掉
 - **插件运行时** — 发现、校验、启动、停止和删除带 descriptor 的插件 ELF
-- **PS5 FTP 服务器** — 由可选的外部 `onionHEN-ftpsrv-plugin` 提供
-- **ShadowMount+** — 由可选的外部 `onionHEN-shadowmountplus-plugin` 提供
+- **PS5 FTP 服务器** — 由可选的外部 `331HEN-ftpsrv-plugin` 提供
+- **ShadowMount+** — 由可选的外部 `331HEN-shadowmountplus-plugin` 提供
 - **远程游玩配对** — 在网络菜单中启用 PS5 原生远程游玩服务、生成配对 PIN 并注册客户端
 - **用户 Payload 管理** — 启动和停止用户添加的普通 `.elf` payload，可选自动启动
 - **游戏监控条** — 游戏中显示 FPS、CPU、GPU、内存、温度和网络信息
 - **金手指** — 本地 JSON、SHN、MC4、ShnExt 文件，运行中即可开关
 - **主机工具** — 账号激活、外接硬盘、Title ID、风扇、快捷键和游戏选项
-- **DPI v2** — 由可选的外部 `onionHEN-dpiv2-plugin` 提供
+- **DPI v2** — 由可选的外部 `331HEN-dpiv2-plugin` 提供
 - **应用越狱** — 白名单自制软件可通过守护进程沙盒 FIFO 申请提权
 - **可恢复运行时** — 关键守护进程和工具守护进程分开；主进程可以拉起工具进程
 - **统一配置** — 工具箱和守护进程共用一份带版本号的 `config.ini`
 
-OnionHEN 不内置内核漏洞。第一次引导仍需要外部 **9021** 上的 `elfldr`。
+331HEN 不内置内核漏洞。第一次引导仍需要外部 **9021** 上的 `elfldr`。
 之后会启动自己的私有 **9020** 加载器，用来加载后续 ELF 和用户 payload。
 
 <br>
@@ -88,18 +88,18 @@ OnionHEN 不内置内核漏洞。第一次引导仍需要外部 **9021** 上的 
 1. 一台已越狱的 PS5
 2. 一个监听 **9021**、用于第一次引导的外部 [PS5 `elfldr`](https://github.com/ps5-payload-dev/elfldr)
 
-### 加载 OnionHEN
+### 加载 331HEN
 
 1. 运行内核漏洞利用，并启动外部 `elfldr` 服务。
-2. 用漏洞加载端提供的加载器发送 `OnionHEN.elf`。
+2. 用漏洞加载端提供的加载器发送 `331HEN.elf`。
 3. 按顺序等待工具守护进程、`kstuff` 和主守护进程启动。
-4. 打开 PS5 设置，进入 OnionHEN 工具箱。
+4. 打开 PS5 设置，进入 331HEN 工具箱。
 
-启动是按固定顺序进行的。第一次引导之后，OnionHEN 使用自己的
-`onion_elfldr.elf`（端口 **9020**），**9021** 只作为兼容回退。
+启动是按固定顺序进行的。第一次引导之后，331HEN 使用自己的
+`331HEN_ldr.elf`（端口 **9020**），**9021** 只作为兼容回退。
 
 ```text
-OnionHEN.elf → bootstrapper → onion_elfldr.elf (:9020) → util.elf → kstuff.elf → daemon.elf → Toolbox
+331HEN.elf → bootstrapper → 331HEN_ldr.elf (:9020) → util.elf → kstuff.elf → daemon.elf → Toolbox
 ```
 
 `kstuff` 就绪后，daemon 会发现并启动外部插件。
@@ -107,24 +107,24 @@ OnionHEN.elf → bootstrapper → onion_elfldr.elf (:9020) → util.elf → kstu
 ### FTP 服务器
 
 FTP 由独立的
-[`onionHEN-ftpsrv-plugin`](https://github.com/OnionBuddies/onionHEN-ftpsrv-plugin)
-提供。将其安装为 `/data/OnionHEN/plugins/FTPS00001.elf` 后，OnionHEN 会自动发现
+[`331HEN-ftpsrv-plugin`](https://github.com/OnionBuddies/onionHEN-ftpsrv-plugin)
+提供。将其安装为 `/data/331HEN/plugins/FTPS00001.elf` 后，331HEN 会自动发现
 并启动；插件动态设置页提供启用、端口和重启控制。插件保留上游 `ftpsrv` 的
 `KILL`、`SELF`、`SCHK`、`MTRW`、`AUTHID` 等命令（视固件支持而定）。
 
 ### ShadowMount+
 
 ShadowMount+ 由可选的外部
-[`onionHEN-shadowmountplus-plugin`](https://github.com/OnionBuddies/onionHEN-shadowmountplus-plugin)
-提供。将带 descriptor 的 ELF 安装到 `/data/OnionHEN/plugins/` 后，daemon 统一负责
+[`331HEN-shadowmountplus-plugin`](https://github.com/OnionBuddies/onionHEN-shadowmountplus-plugin)
+提供。将带 descriptor 的 ELF 安装到 `/data/331HEN/plugins/` 后，daemon 统一负责
 发现、启动、停止、替换和删除；插件动态页面提供立即扫描操作。它依赖
 `kstuff`，自身选项保存在 `/data/shadowmount/config.ini`。
 
 ### DPI（网络包安装器）
 
 DPI v2 由可选的外部
-[`onionHEN-dpiv2-plugin`](https://github.com/OnionBuddies/onionHEN-dpiv2-plugin)
-提供。将其安装为 `/data/OnionHEN/plugins/DPIV00001.elf` 后，OnionHEN 会自动发现
+[`331HEN-dpiv2-plugin`](https://github.com/OnionBuddies/onionHEN-dpiv2-plugin)
+提供。将其安装为 `/data/331HEN/plugins/DPIV00001.elf` 后，331HEN 会自动发现
 并启动；插件动态设置页提供启用、API 端口、WebUI 端口和重启控制。浏览器仍是
 安装操作界面，保留分块上传、队列管理、暂存文件复用和 SSE 实时进度。默认 WebUI
 地址是 `http://<console>:12800`。
@@ -132,9 +132,9 @@ DPI v2 由可选的外部
 ### 远程游玩
 
 远程游玩配对位于 **工具箱 → 网络 → 远程游玩**。
-当前账号必须已经激活；未激活时，OnionHEN 会阻止进入远程游玩页面，并提示前往
-**工具箱 → 账号 → 账号激活**。账号激活后，OnionHEN 会启用远程游玩注册表设置并显示
-配对 PIN。保持页面打开，在官方远程游玩客户端中输入该 PIN；OnionHEN 会调用 PS5
+当前账号必须已经激活；未激活时，331HEN 会阻止进入远程游玩页面，并提示前往
+**工具箱 → 账号 → 账号激活**。账号激活后，331HEN 会启用远程游玩注册表设置并显示
+配对 PIN。保持页面打开，在官方远程游玩客户端中输入该 PIN；331HEN 会调用 PS5
 原生远程游玩服务确认已注册的设备。
 
 此功能只负责配对和设备注册。视频串流与客户端传输仍由 Sony 的原生远程游玩服务处理。
@@ -144,25 +144,25 @@ DPI v2 由可选的外部
 把独立 payload 放到：
 
 ```text
-/data/OnionHEN/payloads/
+/data/331HEN/payloads/
 ```
 
-只支持普通 `.elf`。可在工具箱里打开自动启动；OnionHEN 会在 ELF 旁边写一个
+只支持普通 `.elf`。可在工具箱里打开自动启动；331HEN 会在 ELF 旁边写一个
 同名的 `.auto_start` 文件记住这个选择。
 
 所有 `.elf` 文件名都使用相同的 Payload 页面、加载器和自动启动流程。已有有效 PID
 记录的用户 Payload 会保持运行，后续启动和自动启动请求直接跳过。
-OnionHEN 插件属于独立类别，应放在 `/data/OnionHEN/plugins/`。
+331HEN 插件属于独立类别，应放在 `/data/331HEN/plugins/`。
 
 ### 金手指
 
 把金手指文件放到同一目录。文件名为 `TITLEID_VERSION`，进程名和 8 位十六进制 `SOURCE_ID` 都可省略：
 
 ```text
-/data/OnionHEN/cheats/<TITLE_ID>_<VERSION>[_<PROCESS>][_<SOURCE_ID>].json
-/data/OnionHEN/cheats/<TITLE_ID>_<VERSION>[_<PROCESS>][_<SOURCE_ID>].shn
-/data/OnionHEN/cheats/<TITLE_ID>_<VERSION>[_<PROCESS>][_<SOURCE_ID>].mc4
-/data/OnionHEN/cheats/<TITLE_ID>_<VERSION>[_<PROCESS>][_<SOURCE_ID>].ShnExt
+/data/331HEN/cheats/<TITLE_ID>_<VERSION>[_<PROCESS>][_<SOURCE_ID>].json
+/data/331HEN/cheats/<TITLE_ID>_<VERSION>[_<PROCESS>][_<SOURCE_ID>].shn
+/data/331HEN/cheats/<TITLE_ID>_<VERSION>[_<PROCESS>][_<SOURCE_ID>].mc4
+/data/331HEN/cheats/<TITLE_ID>_<VERSION>[_<PROCESS>][_<SOURCE_ID>].ShnExt
 ```
 
 `SOURCE_ID` 只用于标识物理来源。没有 `PROCESS` 的文件是通用来源；带进程名的文件只匹配对应进程。相同游戏、版本和进程的多个 JSON、SHN、MC4、ShnExt 来源会同时加载。
@@ -199,8 +199,8 @@ export PS5_PAYLOAD_SDK=/path/to/ps5-payload-sdk
 使用 Docker 进行可复现构建：
 
 ```shell
-docker compose build onionhen-build
-docker compose run --rm onionhen-build
+docker compose build hen331-build
+docker compose run --rm hen331-build
 ```
 
 ### 常用选项
@@ -220,7 +220,7 @@ docker compose run --rm onionhen-build
 
 | 路径 | 说明 |
 | --- | --- |
-| `build/bin/OnionHEN.elf` | 发送到主机的最终 payload |
+| `build/bin/331HEN.elf` | 发送到主机的最终 payload |
 | `build/bin/bootstrapper.elf` | 未压缩的 bootstrapper |
 | `build/bin/bootstrapper.elf.lzma` | 嵌入最终 payload 的 bootstrapper |
 | `build/bin/daemon.elf` | 关键守护进程 |
@@ -246,15 +246,15 @@ make -C source/util/tests test -j8
 
 # 配置
 
-OnionHEN 在下面两处读写同一份配置：
+331HEN 在下面两处读写同一份配置：
 
 ```text
-/data/OnionHEN/config.ini
-/user/data/OnionHEN/config.ini
+/data/331HEN/config.ini
+/user/data/331HEN/config.ini
 ```
 
 大部分选项都可以在工具箱里改。配置格式是 `schema_version=1`。
-如果还没有配置文件，OnionHEN 会按 [`config.ini.example`](config.ini.example)
+如果还没有配置文件，331HEN 会按 [`config.ini.example`](config.ini.example)
 写出一份带注释的默认文件。
 
 | 配置项 | 默认值 | 可用值 |
@@ -263,7 +263,7 @@ OnionHEN 在下面两处读写同一份配置：
 | `toolbox.language` | `system` | `system`, `zh-Hans`, `zh-Hant`, `en`, `ja`, `ko`, `fr`, `de`, `it`, `es`, `pt-BR`, `pl`, `ru`, `ar`, `th` |
 | `startup.open_after_load` | `none` | `none`, `home_menu` |
 | `home_screen.show_title_ids` | `false` | `true`, `false` |
-| `game_menu.show_onionhen_options` | `true` | `true`, `false` |
+| `game_menu.show_hen331_options` | `true` | `true`, `false` |
 | `rest_mode.resume_reinject_delay_seconds` | `10` | `0` 到 `255` 秒 |
 | `cheats.mirror` | `auto` | `auto`, `github`, `cnb` |
 | `app_jailbreak.debug_notifications` | `false` | `true`, `false` |
@@ -285,14 +285,14 @@ OnionHEN 在下面两处读写同一份配置：
 
 | 路径 | 用途 |
 | --- | --- |
-| `/data/OnionHEN/payloads/` | 用户 payload ELF |
-| `/data/OnionHEN/plugins/` | 带 descriptor 的 OnionHEN 插件 ELF |
-| `/data/OnionHEN/cheats/` | 金手指文件 |
-| `/data/OnionHEN/cheats_tmp/` | HTTPS ZIP 与解压临时文件（同步后清理） |
-| `/data/OnionHEN/kstuff.elf` | 可选的运行时覆盖文件，优先于内嵌 `kstuff` |
-| `/data/OnionHEN/OnionHEN.log` | 主运行日志 |
-| `/data/OnionHEN/OnionHEN_crash.log` | 保留的 daemon 崩溃信号与回溯日志 |
-| `/data/OnionHEN/OnionHEN_util_daemon.log` | Utility daemon 日志 |
+| `/data/331HEN/payloads/` | 用户 payload ELF |
+| `/data/331HEN/plugins/` | 带 descriptor 的 331HEN 插件 ELF |
+| `/data/331HEN/cheats/` | 金手指文件 |
+| `/data/331HEN/cheats_tmp/` | HTTPS ZIP 与解压临时文件（同步后清理） |
+| `/data/331HEN/kstuff.elf` | 可选的运行时覆盖文件，优先于内嵌 `kstuff` |
+| `/data/331HEN/331HEN.log` | 主运行日志 |
+| `/data/331HEN/331HEN_crash.log` | 保留的 daemon 崩溃信号与回溯日志 |
+| `/data/331HEN/331HEN_util_daemon.log` | Utility daemon 日志 |
 
 <br>
 
@@ -301,7 +301,7 @@ OnionHEN 在下面两处读写同一份配置：
 | 工具 | 用途 |
 | --- | --- |
 | [`scripts/daemon_log.py`](scripts/daemon_log.py) | 从主机拉取守护进程日志 |
-| [`scripts/shutdown_onion.py`](scripts/shutdown_onion.py) | 关闭 OnionHEN 用户态进程，但不结束 `kstuff` |
+| [`scripts/shutdown_onion.py`](scripts/shutdown_onion.py) | 关闭 331HEN 用户态进程，但不结束 `kstuff` |
 | [`scripts/ps5_cmake.sh`](scripts/ps5_cmake.sh) | 通过 PS5 Payload SDK 运行 CMake |
 | [`scripts/sync_dependencies.sh`](scripts/sync_dependencies.sh) | 获取或构建外部 payload 输入 |
 
@@ -320,7 +320,7 @@ OnionHEN 在下面两处读写同一份配置：
 │   ├── util/                  工具守护进程、IPC 与金手指
 │   ├── shellui/               工具箱与 ShellUI 挂钩
 │   ├── i18n/                  共享的工具箱 / 通知多语言目录
-│   ├── unpacker/              最终 OnionHEN payload 包装
+│   ├── unpacker/              最终 331HEN payload 包装
 │   ├── libonion_*/            本仓库共享库
 │   ├── common/                共享底层实现
 │   └── platform/ps5/stubs/    PS5 系统库链接 stub
@@ -336,7 +336,7 @@ OnionHEN 在下面两处读写同一份配置：
 
 # 故障排查
 
-1. 加载 OnionHEN 前，确认外部 `elfldr` 能从 **9021** 连上。
+1. 加载 331HEN 前，确认外部 `elfldr` 能从 **9021** 连上。
 2. 确认这份 payload 是用完整的 PS5 Payload SDK、按当前固件构建的。
 3. 工具箱没出现时，等 `util → kstuff → daemon` 启动完，再看日志。
 4. 构建拿不到 `kstuff.elf` 时，再跑一次 `./scripts/sync_dependencies.sh`，或初始化 submodule。
@@ -352,7 +352,7 @@ OnionHEN 在下面两处读写同一份配置：
 
 # 赞助
 
-<a href="https://ko-fi.com/0xp0co"><img src="https://img.shields.io/badge/Ko--fi-Support-FF6433?style=for-the-badge&logo=kofi&logoColor=white" alt="在 Ko-fi 上支持 OnionHEN"/></a>
+<a href="https://ko-fi.com/0xp0co"><img src="https://img.shields.io/badge/Ko--fi-Support-FF6433?style=for-the-badge&logo=kofi&logoColor=white" alt="在 Ko-fi 上支持 331HEN"/></a>
 
 国内用户也可以扫描下方二维码进行捐赠：
 
@@ -360,19 +360,19 @@ OnionHEN 在下面两处读写同一份配置：
 | --- | --- |
 | <img src="assets/donation_alipay_cn.JPG" width="200" alt="支付宝"/> | <img src="assets/donation_wechat_cn.JPG" width="200" alt="微信"/> |
 
-如果 OnionHEN 对你有用，欢迎支持后续开发。谢谢。
+如果 331HEN 对你有用，欢迎支持后续开发。谢谢。
 
 <br>
 
 # 致谢
 
-OnionHEN 离不开 PS5 自制软件与逆向工程社区。
+331HEN 离不开 PS5 自制软件与逆向工程社区。
 
 ### 贡献者
 
 <p align="center">
   <a href="https://github.com/aydencharles/onionHEN/graphs/contributors">
-    <img src="https://contrib.rocks/image?repo=aydencharles/onionHEN" alt="OnionHEN 贡献者"/>
+    <img src="https://contrib.rocks/image?repo=aydencharles/onionHEN" alt="331HEN 贡献者"/>
   </a>
 </p>
 
@@ -393,8 +393,8 @@ OnionHEN 离不开 PS5 自制软件与逆向工程社区。
 - [PS5 Payload SDK](https://github.com/ps5-payload-dev/sdk) — Prospero 工具链与头文件
 - [elfldr](https://github.com/ps5-payload-dev/elfldr) — 端口 9021 的首次引导加载器；不打进 payload
 - [kstuff-lite](https://github.com/EchoStretch/kstuff-lite) — EchoStretch、sleirsgoevy 与贡献者；可选的 `kstuff.elf`
-- [onionHEN-ftpsrv-plugin](https://github.com/OnionBuddies/onionHEN-ftpsrv-plugin) — 基于 drakmor/ftpsrv 的可选外部 FTP 插件
-- [onionHEN-shadowmountplus-plugin](https://github.com/OnionBuddies/onionHEN-shadowmountplus-plugin) — 基于 Drakmor 项目的可选外部 ShadowMount+ 扫描/挂载插件
+- [331HEN-ftpsrv-plugin](https://github.com/OnionBuddies/onionHEN-ftpsrv-plugin) — 基于 drakmor/ftpsrv 的可选外部 FTP 插件
+- [331HEN-shadowmountplus-plugin](https://github.com/OnionBuddies/onionHEN-shadowmountplus-plugin) — 基于 Drakmor 项目的可选外部 ShadowMount+ 扫描/挂载插件
 - [libhijacker](https://github.com/astrelsky/libhijacker) — astrelsky；进程劫持与内核读写
 - [NineS](https://github.com/buzzer-re/NineS) — buzzer-re；注入 ShellUI
 - [cJSON](https://github.com/DaveGamble/cJSON) — JSON 解析
@@ -414,5 +414,5 @@ OnionHEN 离不开 PS5 自制软件与逆向工程社区。
 本项目基于 [GNU General Public License v3.0](LICENSE) 发布。
 第三方组件保留各自的许可证与声明。
 
-> OnionHEN 是非官方自制项目，与 Sony Interactive Entertainment 无关。
+> 331HEN 是非官方自制项目，与 Sony Interactive Entertainment 无关。
 > 请只在你自己的主机上使用，风险自负。本项目不提供任何担保。

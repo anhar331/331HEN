@@ -1,6 +1,6 @@
 /* Copyright (C) 2026 OnionHEN / LightningMods
  *
- * Shared /system_tmp namespace for OnionHEN runtime state.
+ * Shared /system_tmp namespace for 331HEN runtime state.
  */
 #pragma once
 
@@ -9,9 +9,9 @@
 #include <stdio.h>
 
 #if defined(ONION_HOST_TEST)
-#define ONION_SYSTEM_TMP_ROOT "/tmp/onionhen"
+#define ONION_SYSTEM_TMP_ROOT "/tmp/331HEN"
 #else
-#define ONION_SYSTEM_TMP_ROOT "/system_tmp/onionhen"
+#define ONION_SYSTEM_TMP_ROOT "/system_tmp/331HEN"
 #endif
 
 #define ONION_SYSTEM_TMP_IPC_ROOT ONION_SYSTEM_TMP_ROOT "/ipc"

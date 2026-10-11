@@ -15,6 +15,7 @@ namespace onion::cheats {
  */
 class CheatApplier {
 public:
+  ~CheatApplier();
   /**
    * Toggle cheat at index. Returns 0 on success; status holds human message.
    */

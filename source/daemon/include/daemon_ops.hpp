@@ -57,7 +57,7 @@ void *vsync_fps_sampler_thread(void *args) noexcept;
 void *system_language_poll_thread(void *args) noexcept;
 
 /**
- * Tear down OnionHEN userland (does not return). Caller should reply to IPC first.
+ * Tear down 331HEN userland (does not return). Caller should reply to IPC first.
  *
  * Sets g_stack_shutting_down, then: stop util → restart SceShellUI → exit.
  * The private loader is left available as the runtime recovery endpoint.

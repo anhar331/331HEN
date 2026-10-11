@@ -38,7 +38,7 @@ static void begin(const char *tag) {
 
 static void end(void) {
   onion_log_configure_crash(NULL);
-  onion_log_configure("OnionHEN", NULL);
+  onion_log_configure("331HEN", NULL);
   cleanup_log_files();
   onion_log_set_level(ONION_LOG_INFO);
   onion_log_set_max_bytes(0);
@@ -103,7 +103,7 @@ static int test_configure_appends_existing_log(void) {
 static int test_log_configure_tag_only(void) {
   onion_log_configure("TagOnly", NULL);
   LOG_INFO("no file sink configured"); /* must not crash */
-  onion_log_configure("OnionHEN", NULL);
+  onion_log_configure("331HEN", NULL);
   return 0;
 }
 

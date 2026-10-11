@@ -3,6 +3,7 @@
 #include <onion/proc_query.h>
 
 #include "cheats/cheat_service.hpp"
+#include "patches/coordination.hpp"
 #include "onion_cjson.hpp"
 
 #include <cstdarg>
@@ -106,6 +107,7 @@ CheatService &CheatService::instance() {
 CheatService::CheatService() = default;
 
 CheatService::~CheatService() {
+  std::lock_guard<std::recursive_mutex> memory_lock(hen331::memorycoord::mutex());
   std::lock_guard<std::mutex> lock(mu_);
   clearRuntimeLocked();
 }
@@ -319,6 +321,7 @@ int CheatService::writeListJson(
 
 int CheatService::exportList(const CheatRequest &request,
                              const std::string &out_path) {
+  std::lock_guard<std::recursive_mutex> memory_lock(hen331::memorycoord::mutex());
   std::lock_guard<std::mutex> lock(mu_);
   if (runtime_ && !onion_proc_is_alive(runtime_->process.pid)) {
     LOG_INFO("[service] runtime process pid=%d is gone; clearing session=%s",
@@ -352,6 +355,7 @@ int CheatService::exportList(const CheatRequest &request,
 int CheatService::toggle(const std::string &session_id,
                          const std::string &serialized_key, bool enabled,
                          std::string &status) {
+  std::lock_guard<std::recursive_mutex> memory_lock(hen331::memorycoord::mutex());
   std::lock_guard<std::mutex> lock(mu_);
   status.clear();
   if (!runtime_ || session_id.empty() || runtime_->session_id != session_id) {

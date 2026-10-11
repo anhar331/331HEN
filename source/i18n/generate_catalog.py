@@ -35,7 +35,7 @@ REQUIRED_TOKENS = {
         "notify.kstuff.load_elfldr_failed": ("Kstuff",),
         "notify.kstuff.deleted": ("Kstuff",),
         "notify.crash.main": (
-            "OnionHEN_crash.log",
+            "331HEN_crash.log",
             "https://github.com/aydencharles/onionHEN/issues",
         ),
     },

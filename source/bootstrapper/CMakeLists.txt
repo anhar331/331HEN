@@ -25,6 +25,21 @@ if(NOT RSVG_CONVERT_EXECUTABLE AND NOT IMAGEMAGICK_EXECUTABLE)
 endif()
 
 set(_generated_icon_files)
+set(_brand_sicon "${_icon_output_dir}/331HEN_sicon.png")
+set(_brand_source "${HEN331_ROOT}/assets/331HEN.svg")
+if(RSVG_CONVERT_EXECUTABLE)
+	add_custom_command(OUTPUT "${_brand_sicon}"
+		COMMAND ${CMAKE_COMMAND} -E make_directory "${_icon_output_dir}"
+		COMMAND "${RSVG_CONVERT_EXECUTABLE}" --width 128 --height 128
+			--output "${_brand_sicon}" "${_brand_source}"
+		DEPENDS "${_brand_source}" VERBATIM)
+else()
+	add_custom_command(OUTPUT "${_brand_sicon}"
+		COMMAND ${CMAKE_COMMAND} -E make_directory "${_icon_output_dir}"
+		COMMAND "${IMAGEMAGICK_EXECUTABLE}" -background none "${_brand_source}"
+			-resize 128x128 "${_brand_sicon}"
+		DEPENDS "${_brand_source}" VERBATIM)
+endif()
 foreach(_svg_file IN LISTS _icon_svg_files)
 	get_filename_component(_icon_name "${_svg_file}" NAME_WE)
 	set(_png_file "${_icon_output_dir}/${_icon_name}.png")
@@ -89,7 +104,7 @@ foreach(_icon_file IN LISTS _generated_icon_files)
 		"\".type   ${_icon_name}_start, @object\\n\"\n"
 		"\".align  16\\n\"\n"
 		"\"${_icon_name}_start:\\n\"\n"
-		"\".incbin \\\"\" ONIONHEN_ICON_ASSET_DIR \"/${_icon_name}.png\\\"\\n\"\n"
+		"\".incbin \\\"\" HEN331_ICON_ASSET_DIR \"/${_icon_name}.png\\\"\\n\"\n"
 		"\"${_icon_name}_end:\\n\"\n"
 		"\".global ${_icon_name}_size\\n\"\n"
 		"\".type   ${_icon_name}_size, @object\\n\"\n"
@@ -112,7 +127,7 @@ target_compile_options(${PROJECT_NAME} PUBLIC
 )
 target_link_options(${PROJECT_NAME} PRIVATE "-Wl,--gc-sections" "-Wl,--icf=safe")
 
-# Byepervisor removed from OnionHEN — bootstrapper sources only.
+# Byepervisor removed from 331HEN — bootstrapper sources only.
 # pt.c / elfldr.c live in libonion_elfldr (raise_privileges + inject primitives).
 file(GLOB SrcFiles CONFIGURE_DEPENDS ${D_SRC}/*.c ${D_SRC}/*.cpp ${D_SRC}/../include/*.h ${D_SRC}/../include/*.hpp ${D_SRC}/*.s)
 list(FILTER SrcFiles EXCLUDE REGEX ".*/(pt|elfldr)\\.c$")
@@ -126,26 +141,27 @@ set(CMAKE_CXX_FLAGS_RELEASE "-Os -DNDEBUG")
 target_sources(${PROJECT_NAME} PRIVATE ${SrcFiles})
 # .incbin in daemon.c is invisible to the compiler dependency scanner.
 # Without OBJECT_DEPENDS, embedded payload rebuilds do not re-embed into bootstrapper.
-if(DEFINED ONIONHEN_OUT_BIN)
-	set(_onion_daemon_elf "${ONIONHEN_OUT_BIN}/daemon.elf")
-	set(_onion_util_elf "${ONIONHEN_OUT_BIN}/util.elf")
-	set(_onion_elfldr_elf "${ONIONHEN_OUT_BIN}/onion_elfldr.elf")
+if(DEFINED HEN331_OUT_BIN)
+	set(_onion_daemon_elf "${HEN331_OUT_BIN}/daemon.elf")
+	set(_onion_util_elf "${HEN331_OUT_BIN}/util.elf")
+	set(_onion_elfldr_elf "${HEN331_OUT_BIN}/331HEN_ldr.elf")
 else()
 	set(_onion_daemon_elf "${PROJECT_ROOT}/bin/daemon.elf")
 	set(_onion_util_elf "${PROJECT_ROOT}/bin/util.elf")
-	set(_onion_elfldr_elf "${PROJECT_ROOT}/bin/onion_elfldr.elf")
+	set(_onion_elfldr_elf "${PROJECT_ROOT}/bin/331HEN_ldr.elf")
 endif()
 set_source_files_properties(
 	${D_SRC}/daemon.c
 	PROPERTIES OBJECT_DEPENDS
-		"${_onion_daemon_elf};${_onion_util_elf};${_onion_elfldr_elf};${ONIONHEN_KSTUFF_ELF};${D_CWD}/assets/onionhen_sicon.png;${_generated_icon_files}"
+		"${_onion_daemon_elf};${_onion_util_elf};${_onion_elfldr_elf};${HEN331_KSTUFF_ELF};${_brand_sicon};${_generated_icon_files}"
 )
 target_compile_definitions(${PROJECT_NAME} PRIVATE
-	ONIONHEN_DAEMON_ELF="${_onion_daemon_elf}"
-	ONIONHEN_UTIL_ELF="${_onion_util_elf}"
-	ONIONHEN_ELFLDR_ELF="${_onion_elfldr_elf}"
-	ONIONHEN_KSTUFF_ELF="${ONIONHEN_KSTUFF_ELF}"
-	ONIONHEN_ICON_ASSET_DIR="${_icon_output_dir}"
+	HEN331_SICON_PNG="${_brand_sicon}"
+	HEN331_DAEMON_ELF="${_onion_daemon_elf}"
+	HEN331_UTIL_ELF="${_onion_util_elf}"
+	HEN331_ELFLDR_ELF="${_onion_elfldr_elf}"
+	HEN331_KSTUFF_ELF="${HEN331_KSTUFF_ELF}"
+	HEN331_ICON_ASSET_DIR="${_icon_output_dir}"
 )
 # elfldr_raise_privileges from libonion_elfldr; launches go via elfldr_remote.c.
 onion_target_debug_define(${PROJECT_NAME})
@@ -161,11 +177,11 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 	"${PROJECT_ROOT}/libonion_elfldr/include"
 	"${PROJECT_ROOT}/include"
 )
-target_link_directories	(${PROJECT_NAME} PUBLIC "${ONIONHEN_PS5_STUB_DIR}")
-target_sources(${PROJECT_NAME} PRIVATE "${ONIONHEN_COMMON_DIR}/elfldr_remote.c")
+target_link_directories	(${PROJECT_NAME} PUBLIC "${HEN331_PS5_STUB_DIR}")
+target_sources(${PROJECT_NAME} PRIVATE "${HEN331_COMMON_DIR}/elfldr_remote.c")
 target_link_libraries	(${PROJECT_NAME} PUBLIC onion_proc onion_platform onion_settings onion_payload onion_conflict onion_ready onion_elfldr kernel_sys SceNotification SceSystemService)
 add_custom_target(${PROJECT_NAME}_assets
-	DEPENDS ${_generated_icon_files} "${_icon_asm}" "${_icon_manifest}")
+	DEPENDS "${_brand_sicon}" ${_generated_icon_files} "${_icon_asm}" "${_icon_manifest}")
 add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_assets)
 add_dependencies(${PROJECT_NAME} daemon util shellui onion_elfldr_server onion_proc onion_platform onion_settings onion_payload onion_conflict onion_ready onion_elfldr)
 

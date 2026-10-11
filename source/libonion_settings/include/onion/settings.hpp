@@ -20,8 +20,8 @@ along with this program; see the file COPYING. If not, see
 // Single product config schema for daemon / util / shellui.
 //
 // Paths:
-//   primary  /data/OnionHEN/config.ini          (elevated daemons)
-//   shellui  /user/data/OnionHEN/config.ini     (SceShellUI sandbox view)
+//   primary  /data/331HEN/config.ini          (elevated daemons)
+//   shellui  /user/data/331HEN/config.ini     (SceShellUI sandbox view)
 // Load tries both; save writes all writable targets so the files stay twins.
 //
 // Process-local store: use SettingsStore for multi-threaded daemons (snapshot
@@ -45,8 +45,8 @@ extern "C++" {
 namespace onion {
 
 // Canonical filesystem paths.
-inline constexpr const char *kConfigPathPrimary = "/data/OnionHEN/config.ini";
-inline constexpr const char *kConfigPathShellui = "/user/data/OnionHEN/config.ini";
+inline constexpr const char *kConfigPathPrimary = "/data/331HEN/config.ini";
+inline constexpr const char *kConfigPathShellui = "/user/data/331HEN/config.ini";
 
 // Semantic config schema. This schema starts at version 1.
 inline constexpr int kSettingsSchemaVersion = 1;
@@ -225,7 +225,7 @@ struct AppJailbreakAllowlist {
 
 struct Settings {
   // [startup]
-  // Page to open after OnionHEN finishes loading.
+  // Page to open after 331HEN finishes loading.
   int startup_open_after_load = kStartupOpenNone;
 
   // [rest_mode]
@@ -240,7 +240,7 @@ struct Settings {
 
   // [home_screen], [game_menu]
   bool display_tids = false;
-  bool onionhen_game_opts = true;
+  bool hen331_game_opts = true;
 
   // [cooling]
   bool enable_fan_speed = false;
@@ -273,7 +273,7 @@ struct Settings {
   int toolbox_shortcut_opt = 0;
 
   // [kstuff]
-  // Load the embedded/override kstuff payload when OnionHEN starts.
+  // Load the embedded/override kstuff payload when 331HEN starts.
   bool kstuff_autoload = true;
 
   // [toolbox]

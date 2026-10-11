@@ -1,4 +1,4 @@
-# OnionHEN shared CMake helpers.
+# 331HEN shared CMake helpers.
 #
 # Every module under source/ used to repeat the same prologue: language
 # standards, the PS5 SDK header paths, a clang check, the cross-compile target
@@ -75,14 +75,14 @@ endmacro()
 # Artifact layout: ELFs to bin/, static libs to lib/. Falls back to a
 # module-local directory for standalone (non-superbuild) configures.
 macro(onion_output_dirs)
-	if(DEFINED ONIONHEN_OUT_BIN)
-		set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${ONIONHEN_OUT_BIN}")
+	if(DEFINED HEN331_OUT_BIN)
+		set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${HEN331_OUT_BIN}")
 	else()
 		set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/../bin")
 	endif()
-	if(DEFINED ONIONHEN_OUT_LIB)
-		set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${ONIONHEN_OUT_LIB}")
-		set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${ONIONHEN_OUT_LIB}")
+	if(DEFINED HEN331_OUT_LIB)
+		set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${HEN331_OUT_LIB}")
+		set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${HEN331_OUT_LIB}")
 	else()
 		set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
 		set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")

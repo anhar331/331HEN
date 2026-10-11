@@ -1,11 +1,11 @@
 /* Copyright (C) 2025 OnionHEN / LightningMods
 
-Cross-process readiness protocol for OnionHEN services.
+Cross-process readiness protocol for 331HEN services.
 
-Services publish a named marker under /system_tmp/onionhen/ready/<name>.
+Services publish a named marker under /system_tmp/331HEN/ready/<name>.
 Consumers wait with timeout instead of fixed sleep() races.
 
-All runtime markers live under the shared OnionHEN system_tmp namespace.
+All runtime markers live under the shared 331HEN system_tmp namespace.
 */
 
 #pragma once

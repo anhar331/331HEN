@@ -27,7 +27,7 @@ enum DaemonCommands : unsigned int {
   BREW_RETURN_VALUE = 0x9000002u,
   BREW_REMOUNT_FOLDER,
   // Original 0x9000004. Keep the slot so released Itemzflow clients retain
-  // the numeric ABI even though OnionHEN does not bundle the legacy dumper.
+  // the numeric ABI even though 331HEN does not bundle the legacy dumper.
   BREW_UNUSED_ACTIVATE_DUMPER,
   BREW_STAT_CMD,
   BREW_CALC_DIR_SIZE,
@@ -75,6 +75,11 @@ enum DaemonCommands : unsigned int {
   // Daemon pushes a live console system language so util re-applies it without
   // needing a SystemService query (util is under PTRACE_AUTHID after launch).
   BREW_UTIL_SET_SYSTEM_LANG = 0x8000019u,
+
+  BREW_UTIL_PATCH_LIST = 0x8000200u,
+  BREW_UTIL_PATCH_TOGGLE = 0x8000201u,
+  BREW_UTIL_PATCH_DOWNLOAD = 0x8000202u,
+  BREW_UTIL_PATCH_LAUNCH = 0x8000203u,
 
   // Crit daemon plugin management. Payloads contain only validated plugin IDs;
   // filesystem paths never cross the IPC boundary.

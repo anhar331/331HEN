@@ -9,7 +9,7 @@ set(D_CWD "${CMAKE_CURRENT_SOURCE_DIR}")
 onion_output_dirs()
 set(D_SRC ${D_CWD}/source)
 
-set(PROJECT_NAME OnionHEN)
+set(PROJECT_NAME 331HEN)
 add_executable(${PROJECT_NAME})
 set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "${PROJECT_NAME}.elf")
 
@@ -20,7 +20,7 @@ target_compile_options(${PROJECT_NAME} PUBLIC
 	$<$<COMPILE_LANGUAGE:ASM>:${ASM_FLAGS}>
 )
 
-set(LZMA_ROOT "${ONIONHEN_THIRD_PARTY_DIR}/7zip_sdk/C")
+set(LZMA_ROOT "${HEN331_THIRD_PARTY_DIR}/7zip_sdk/C")
 set(LZMA_LIB ${LZMA_ROOT}/LzmaLib.c ${LZMA_ROOT}/Alloc.c
 				${LZMA_ROOT}/LzmaEnc.c
 				${LZMA_ROOT}/LzFind.c
@@ -36,7 +36,7 @@ set(SrcFiles
 	${D_SRC}/bootstrap_payload.c
 	${D_SRC}/bootstrap_cache.c
 	${D_SRC}/sha1.c
-	${ONIONHEN_COMMON_DIR}/elfldr_remote.c
+	${HEN331_COMMON_DIR}/elfldr_remote.c
 	${LZMA_LIB})
 
 set(CMAKE_C_FLAGS "${ONION_PS5_TARGET_FLAGS} ")
@@ -47,7 +47,7 @@ target_sources(${PROJECT_NAME} PRIVATE ${SrcFiles})
 set_source_files_properties(
 	${D_SRC}/bootstrap_payload.c
 	PROPERTIES OBJECT_DEPENDS
-		"${ONIONHEN_OUT_BIN}/bootstrapper.elf.lzma;${ONIONHEN_OUT_BIN}/bootstrapper.elf.lzma.size;${ONIONHEN_OUT_BIN}/bootstrapper.elf.sha1"
+		"${HEN331_OUT_BIN}/bootstrapper.elf.lzma;${HEN331_OUT_BIN}/bootstrapper.elf.lzma.size;${HEN331_OUT_BIN}/bootstrapper.elf.sha1"
 )
 onion_target_debug_define(${PROJECT_NAME})
 target_include_directories(${PROJECT_NAME} PRIVATE
@@ -59,9 +59,9 @@ target_link_libraries(${PROJECT_NAME} PRIVATE onion_platform onion_conflict)
 add_dependencies(${PROJECT_NAME} onion_platform onion_conflict)
 set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
 target_compile_definitions(${PROJECT_NAME} PRIVATE
-	ONIONHEN_BOOTSTRAPPER_LZMA="${ONIONHEN_OUT_BIN}/bootstrapper.elf.lzma"
-	ONIONHEN_BOOTSTRAPPER_SIZE="${ONIONHEN_OUT_BIN}/bootstrapper.elf.lzma.size"
-	ONIONHEN_BOOTSTRAPPER_SHA1="${ONIONHEN_OUT_BIN}/bootstrapper.elf.sha1"
+	HEN331_BOOTSTRAPPER_LZMA="${HEN331_OUT_BIN}/bootstrapper.elf.lzma"
+	HEN331_BOOTSTRAPPER_SIZE="${HEN331_OUT_BIN}/bootstrapper.elf.lzma.size"
+	HEN331_BOOTSTRAPPER_SHA1="${HEN331_OUT_BIN}/bootstrapper.elf.sha1"
 )
 add_dependencies(${PROJECT_NAME} bootstrapper_packed)
 
