@@ -1,5 +1,5 @@
 """Publish a verified bundle using Actions credentials, without overwriting assets."""
-import hashlib,json,re,subprocess,sys,datetime
+import hashlib,json,re,subprocess,sys,datetime,urllib.request
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 REPO='anhar331/331HEN'
@@ -23,12 +23,19 @@ except subprocess.CalledProcessError as exc:
     if 'release not found' not in exc.stderr.lower() and 'not found' not in exc.stderr.lower(): raise
     gh('release','create',tag,'--draft','--prerelease','--title',m['title'],'--notes-file',str(bundle/'assets'/'BUILD-REPORT.md'))
     release=json.loads(gh('release','view',tag,'--json','isDraft,assets'))
-if not release['isDraft']: raise ValueError('Refusing to modify a published release')
+published=not release['isDraft']
 existing={a['name']:a for a in release['assets']}
 for p in assets:
-    if p.name in existing: raise ValueError('Refusing to overwrite an existing release asset')
+    if p.name in existing:
+        if not published: raise ValueError('Refusing to overwrite existing draft assets')
+        url=f'https://github.com/{REPO}/releases/download/{tag}/{p.name}'
+        with urllib.request.urlopen(urllib.request.Request(url,headers={'Accept-Encoding':'gzip'}),timeout=60) as response:
+            data=response.read(32*1024*1024+1)
+        if hashlib.sha256(data).hexdigest()!=m['assets'][p.name]: raise ValueError('Published asset differs')
+        continue
+    if published: raise ValueError('Refusing to add to a published release')
     gh('release','upload',tag,str(p))
-gh('release','edit',tag,'--draft=false','--prerelease','--latest=false')
+if not published: gh('release','edit',tag,'--draft=false','--prerelease','--latest=false')
 url=f'https://github.com/{REPO}/releases/download/{tag}/{expected}'
 record={'name':'331HEN Autoloader Installer','filename':expected,'url':url,'source':f'https://github.com/{REPO}/releases/tag/{tag}','source_direct':url,'description':'INSTALLER ONLY: run once to install the homescreen shortcut. PS5 12.70 supported upstream; NOT PS5-tested. Updates existing WebKit Autoloader.','last_update':datetime.date.today().isoformat(),'version':tag,'category':'Installers','checksum':m['assets'][expected]}
 p=ROOT/'distribution/installers.json'

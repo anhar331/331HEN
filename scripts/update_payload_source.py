@@ -192,7 +192,7 @@ def atomic_json(path, value):
     temporary.replace(path)
 
 
-def refresh(approvals, output, experiments=()):
+def refresh(approvals, output, experiments=(), installers=()):
     records = approvals["approvals"]
     if not records or len({r["tag"] for r in records}) != len(records):
         raise ValueError("Approvals must be nonempty with unique tags")
@@ -215,11 +215,7 @@ def refresh(approvals, output, experiments=()):
         experimental_release = get_release(experiment["tag"])
         experimental_url = verify_asset(experimental_release, experiment, experimental=True)
         document["payloads"].append(experimental_item(experimental_release, experiment, experimental_url))
-    try:
-        from scripts.installer_source import entries
-    except ModuleNotFoundError:
-        from installer_source import entries
-    document["payloads"].extend(entries())
+    document["payloads"].extend(installers)
     validate_catalog(document)
     atomic_json(output, document)  # Never change a working source before verification.
     return document
@@ -248,7 +244,11 @@ def main():
                   "approved_by": actor, "approved_at": datetime.datetime.now(datetime.timezone.utc).isoformat()}
         verify_approval(record)
         approvals["approvals"].append(record)
-    document = refresh(approvals, ROOT / "payloads.json", experiments)
+    try:
+        from scripts.installer_source import entries
+    except ModuleNotFoundError:
+        from installer_source import entries
+    document = refresh(approvals, ROOT / "payloads.json", experiments, installers=entries())
     if args.approve_tag:
         atomic_json(approval_path, approvals)
     message = f"Verified approved source: {SOURCE_URL} ({document['payloads'][0]['version']})"
