@@ -1,0 +1,35 @@
+{
+  "path": "Release/331HEN-GhostYotei-SkipPatch-Installer-TEST.elf",
+  "size": 135672,
+  "sha256": "934b704cb284ff070562904499d9b6ec5a3f39fba3ba231862962066612630ff",
+  "architecture": "x86-64 ELF64 little-endian PIE",
+  "entry": 5440,
+  "load_segments": [
+    {
+      "offset": 16384,
+      "address": 0,
+      "file_bytes": 43078,
+      "memory_bytes": 43078,
+      "flags": 7,
+      "alignment": 16384
+    },
+    {
+      "offset": 65536,
+      "address": 49152,
+      "file_bytes": 33104,
+      "memory_bytes": 33104,
+      "flags": 6,
+      "alignment": 16384
+    },
+    {
+      "offset": 114688,
+      "address": 98304,
+      "file_bytes": 28,
+      "memory_bytes": 2400,
+      "flags": 6,
+      "alignment": 16384
+    }
+  ],
+  "static_structure_valid": true,
+  "runtime_tested": false
+}

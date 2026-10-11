@@ -1,0 +1,7 @@
+{
+  "cases": 420,
+  "eligibility_changed_cases": 42,
+  "passed": true,
+  "oracle": "original code with permission=true versus patched code with permission=false",
+  "ps5_runtime_tested": false
+}

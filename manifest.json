@@ -1,0 +1,17 @@
+{
+  "tag": "gamepatch-PPSA26344-v1.0-331.1",
+  "title": "Ghost of Yotei Skip Permission TEST \u2014 PPSA26344 / 01.008.000",
+  "elf": "331HEN-GhostYotei-SkipPatch-Installer_v1.0-331.1-TEST.elf",
+  "firmware": "12.70",
+  "runtime_tested": false,
+  "assets": {
+    "SHA256SUMS.txt": "481f813d0006647691d4d8f39c0b06275cb8825c3d276de1d375427865fd89d1",
+    "PPSA26344_01.008.000-AllowSkip-TEST.xml": "312c185691c975425df40c0007dc273ab6062a204e768a6cfeeeae5718f8fe24",
+    "ELF-VALIDATION.json": "3a0172ce14553e1a862a412b082d3652220cf99501fe3c0391cb7342c2e9c815",
+    "BUILD-REPORT.md": "7a7c60d4d8bf3c45c55a3c487dd4921d157388b53bdb389e86701acb870717b4",
+    "331HEN-GhostYotei-SkipPatch-Source_v1.0-331.1-TEST.tar.gz": "825c9fe023c696ad5c191f5e856279295fb4c567a5893067facbb3b7b00f6eba",
+    "EMULATION-RESULTS.json": "8ee737a3b809c4d0b754ac113a6ff6245898a743a0a02bc748c8564007143e92",
+    "INSTALL-AR.md": "107931029f904e96c102412a42a946bb6db28e3f70e80b3fa8bc238ca0355211",
+    "331HEN-GhostYotei-SkipPatch-Installer_v1.0-331.1-TEST.elf": "934b704cb284ff070562904499d9b6ec5a3f39fba3ba231862962066612630ff"
+  }
+}
