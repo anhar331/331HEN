@@ -24,6 +24,18 @@
       "version": "autoloader-v0.6.1-331.1",
       "category": "Installers",
       "checksum": "0e6e34bdf6dc583db09639689655f1fb88a68fe1d20e4dd950d5bd5c277d5cd0"
+    },
+    {
+      "name": "331HEN Ghost Yotei SkipPatch Installer TEST",
+      "filename": "331HEN-GhostYotei-SkipPatch-Installer_v1.0-331.1-TEST.elf",
+      "url": "https://github.com/anhar331/331HEN/releases/download/gamepatch-PPSA26344-v1.0-331.1/331HEN-GhostYotei-SkipPatch-Installer_v1.0-331.1-TEST.elf",
+      "source": "https://github.com/anhar331/331HEN/releases/tag/gamepatch-PPSA26344-v1.0-331.1",
+      "source_direct": "https://github.com/anhar331/331HEN/releases/download/gamepatch-PPSA26344-v1.0-331.1/331HEN-GhostYotei-SkipPatch-Installer_v1.0-331.1-TEST.elf",
+      "description": "EXPERIMENTAL XML INSTALLER ONLY. Ghost of Yotei PPSA26344 / 01.008.000 skip permission; NOT PS5-tested. Keep existing HEN. Reboot and enable in Game Patches before launch. No x2/x4 or R1 hotkeys.",
+      "last_update": "2026-10-11",
+      "version": "gamepatch-PPSA26344-v1.0-331.1",
+      "category": "Installers",
+      "checksum": "934b704cb284ff070562904499d9b6ec5a3f39fba3ba231862962066612630ff"
     }
   ]
 }
