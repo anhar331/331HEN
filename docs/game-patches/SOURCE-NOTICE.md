@@ -2,7 +2,7 @@
 
 331HEN retains the original OnionHEN GPL-3.0 LICENSE and developer credits. New integration files are marked as modifications. The welcome attribution and About/Settings corrections of the working fork remain unchanged; original credits stay inside Credits and Projects.
 
-Complete source archive: 331HEN-GamePatches-TEST-source.tar.gz. It includes build scripts, all first-party and vendored source, pinned kstuff sources and the exact cached working kstuff payload. SDK and target-library binary distributions remain external pinned dependencies, with URLs/checksums in scripts/build-container.sh.
+GitHub Releases include complete corresponding source as 331HEN-source.tar.gz. The earlier Cloud artifact used the name 331HEN-GamePatches-TEST-source.tar.gz. It includes build scripts, all first-party and vendored source, pinned kstuff sources and pinned recursive kstuff source; the working payload is fetched with a verified pinned hash. SDK and target-library binary distributions remain external pinned dependencies, with URLs/checksums in scripts/build-container.sh.
 
 ps-patch-system by illusionyy and contributors was the execution/format reference (Apache-2.0). Its license is retained under assets/gamepatches/PS-PATCH-SYSTEM-LICENSE. No separate upstream patch-server, web launcher, ShellCore injection payload or second kstuff instance is bundled/launched.
 

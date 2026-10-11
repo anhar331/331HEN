@@ -8,4 +8,4 @@
 - Added host core/production-service/live HTTPS tests and native route/navigation coverage.
 - Did not change stable Release contents, cheat storage paths, kernel offsets/patches, kstuff, loader source, existing branding/credits or unrelated platform/FTP code.
 
-SOURCE-CHANGES.patch is the exact delta from the backed-up working source, not a diff against unbranded OnionHEN. SOURCE-FILES.json lists the 39 added/modified source/resource files. The full corresponding modified source is also supplied.
+The original Cloud test package contains SOURCE-CHANGES.patch and SOURCE-FILES.json for the 39 integration files changed from the working fork. GitHub Releases include the full corresponding source, and GitHub commit history records integration and publishing changes while preserving OnionHEN history and the existing distribution README.
