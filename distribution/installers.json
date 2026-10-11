@@ -1,0 +1,16 @@
+{
+  "installers": [
+    {
+      "name": "331HEN Autoloader Installer",
+      "filename": "331HEN-Autoloader-Installer_v0.6.1-331.1.elf",
+      "url": "https://github.com/anhar331/331HEN/releases/download/autoloader-v0.6.1-331.1/331HEN-Autoloader-Installer_v0.6.1-331.1.elf",
+      "source": "https://github.com/anhar331/331HEN/releases/tag/autoloader-v0.6.1-331.1",
+      "source_direct": "https://github.com/anhar331/331HEN/releases/download/autoloader-v0.6.1-331.1/331HEN-Autoloader-Installer_v0.6.1-331.1.elf",
+      "description": "INSTALLER ONLY: run once to install the homescreen shortcut. PS5 12.70 supported upstream; NOT PS5-tested. Updates existing WebKit Autoloader.",
+      "last_update": "2026-10-11",
+      "version": "autoloader-v0.6.1-331.1",
+      "category": "Installers",
+      "checksum": "0e6e34bdf6dc583db09639689655f1fb88a68fe1d20e4dd950d5bd5c277d5cd0"
+    }
+  ]
+}
