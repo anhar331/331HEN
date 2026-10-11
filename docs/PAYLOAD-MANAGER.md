@@ -17,6 +17,18 @@ The mirror uses an array. Custom sources are documented as an object with `name`
 
 Our source uses the documented custom wrapper. Both catalog and payload are named `331HEN`. The current C parser scans from each opening brace to the first closing brace, so it reads the wrapper's first `name` for the first item; matching the names avoids a wrong display name. Metadata has no nested objects or brace/escape characters. The actual pinned official C function and JSON helpers are compiled and exercised by `scripts/test_payload_manager_parser.py`, including ASan/UBSan, field comparisons, mirror-array input, empty and missing-URL cases.
 
+## Installed-file filtering and saved filename
+
+The official StorageHub hides an item when its `filename` exactly matches an installed filename. It does **not** compare the JSON version or checksum when deciding to hide it. A nonempty catalog can therefore show **ALL PAYLOADS INSTALLED**. This happened with our original fixed `filename: 331HEN.elf`; the initial parser-only validation did not cover frontend filtering.
+
+The catalog now uses `331HEN_v0.0.13-331.2.elf` as the **saved filename**. The immutable downloaded asset is still named `331HEN.elf`, with the same URL and SHA-256. The updater generates a new saved filename for each future approved tag. The manager's real frontend and backend strip the `_v...` suffix to identify the existing `331HEN` family, so an unversioned or older versioned installation displays an Update item. Once that exact saved version is installed, hiding it is expected.
+
+After this catalog change, press the circular refresh icon in the Repository section of Payload Manager and expand 331HEN. There is no need to delete a payload, restart the PS5 or remove the source to refresh its catalog. The current entry downloads the same preserved baseline; its Update label reflects the distribution filename, not new Game Patches functionality.
+
+`scripts/test_payload_manager_display.py` executes the exact pinned official JavaScript filename normalization, enrichment and available-item filter. It reproduces the original empty display, checks the corrected legacy installation, fresh installation, already-installed exact version and future-version cases. The C parser test additionally exercises the actual backend folder-name function for both old and versioned names. Tests run in the approved-source workflow before committing updates.
+
+If you choose Install/Update, Payload Manager itself asks to replace the existing version, updates its autoload filename and removes old files in its managed payload folder. Changing or refreshing this JSON performs none of those console operations; this fix does not access the PS5 or change the existing local Release ELF.
+
 ## Preserved baseline
 
 Initial default: `v0.0.13-331.2`, SHA-256 `72f00d524636f8c96746d551fb495c1af319048a6af3703ffe5ae19e6abc197d`. This is the exact existing local `Release/331HEN.elf`, not the Game Patches experiment (`88a0d3...`). Source is retained separately on `preserved-working-source` and attached in full, with original GPL-3.0 license and developer attribution.

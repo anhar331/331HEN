@@ -62,6 +62,10 @@ class SourceTests(unittest.TestCase):
         url = "https://github.com/anhar331/331HEN/releases/download/" + source.BASELINE_TAG + "/331HEN.elf"
         valid = source.catalog(self.release, self.record, url)
         source.validate_catalog(valid)
+        self.assertEqual(valid["payloads"][0]["filename"], "331HEN_v0.0.13-331.2.elf")
+        self.assertEqual(source.saved_filename("v0.0.13-331.3"), "331HEN_v0.0.13-331.3.elf")
+        bad = copy.deepcopy(valid); bad["payloads"][0]["filename"] = "331HEN.elf"
+        with self.assertRaises(ValueError): source.validate_catalog(bad)
         bad = copy.deepcopy(valid); bad["payloads"][0]["url"] = "https://github.com/anhar331/331HEN"
         with self.assertRaises(ValueError): source.validate_catalog(bad)
         bad = copy.deepcopy(valid); bad["payloads"][0]["description"] = "bad } metadata"

@@ -3,7 +3,7 @@
   "payloads": [
     {
       "name": "331HEN",
-      "filename": "331HEN.elf",
+      "filename": "331HEN_v0.0.13-331.2.elf",
       "url": "https://github.com/anhar331/331HEN/releases/download/v0.0.13-331.2/331HEN.elf",
       "source": "https://github.com/anhar331/331HEN/releases/tag/v0.0.13-331.2",
       "source_direct": "https://github.com/anhar331/331HEN/releases/download/v0.0.13-331.2/331HEN.elf",

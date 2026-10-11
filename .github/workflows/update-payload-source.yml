@@ -60,6 +60,7 @@ jobs:
         run: |
           python3 -m unittest discover -s scripts/tests -v
           python3 scripts/test_payload_manager_parser.py
+          python3 scripts/test_payload_manager_display.py
       - name: Commit the verified source and approval history together
         env:
           GH_TOKEN: ${{ github.token }}

@@ -25,6 +25,13 @@ def release_number(tag):
     return int(tag[len(PREFIX):])
 
 
+def saved_filename(tag):
+    release_number(tag)
+    # Payload Manager compares installed filenames, not the version/checksum.
+    # _v is understood by both its frontend and backend family-name logic.
+    return "331HEN_" + tag + ".elf"
+
+
 def fetch(url, limit):
     if not url.startswith("https://"):
         raise ValueError("HTTPS is required")
@@ -104,7 +111,7 @@ def catalog(release, record, url):
                    if record["kind"] == "preserved-baseline" else
                    "331HEN for PS5 12.70; exact ELF approved after owner-reported PS5 hardware testing.")
     return {"name": "331HEN", "payloads": [{
-        "name": "331HEN", "filename": "331HEN.elf", "url": url,
+        "name": "331HEN", "filename": saved_filename(record["tag"]), "url": url,
         "source": release["html_url"], "source_direct": url,
         "description": description, "last_update": release["published_at"][:10],
         "version": record["tag"], "category": "Homebrew Enablers",
@@ -117,8 +124,8 @@ def validate_catalog(document):
     if len(document["payloads"]) != 1:
         raise ValueError("This approved channel must have one unambiguous payload")
     item = document["payloads"][0]
-    if item.get("name") != document["name"] or item.get("filename") != "331HEN.elf":
-        raise ValueError("Payload name/filename must match the upstream scanner")
+    if item.get("name") != document["name"] or item.get("filename") != saved_filename(item["version"]):
+        raise ValueError("Use a versioned saved filename for Payload Manager update detection")
     release_number(item["version"])
     expected = f"https://github.com/{REPO}/releases/download/{item['version']}/331HEN.elf"
     if item.get("url") != expected or item.get("source_direct") != expected:

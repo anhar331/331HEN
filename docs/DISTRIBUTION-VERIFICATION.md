@@ -1,5 +1,7 @@
 # Payload Manager distribution verification — 2026-10-11
 
+Follow-up display correction: the first catalog used a fixed saved filename and did not test StorageHub's installed-file filtering. The user reported **ALL PAYLOADS INSTALLED** after adding the source. Inspection reproduced the exact cause: the manager hides an exact filename match, without checking version or hash. The source now saves as `331HEN_v0.0.13-331.2.elf`; asset URL, release, binary and hash are unchanged. The real official JavaScript logic passed five installed/update-display cases, and the real C folder-name function maps both filename formats to `331HEN`. See [refresh and update behavior](PAYLOAD-MANAGER.md#installed-file-filtering-and-saved-filename). Earlier results below concern parser, HTTP and ELF validation, not hardware UI verification.
+
 Public JSON URL:
 
     https://raw.githubusercontent.com/anhar331/331HEN/main/payloads.json
