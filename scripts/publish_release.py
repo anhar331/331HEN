@@ -240,6 +240,10 @@ def main():
                     "prerelease": True, "public_downloads": public_checks,
                     "stable_local_preserved": True}
     (destination / "PUBLIC-VERIFICATION.json").write_text(json.dumps(verification, indent=2) + "\n")
+    # GITHUB_TOKEN-created releases do not trigger a second release workflow.
+    # Reverify only the recorded approved channel; this new untested release is
+    # absent from approvals and cannot replace the preserved default source.
+    subprocess.run(["python3", str(ROOT / "scripts/update_payload_source.py")], check=True)
     summary = Path(__import__("os").environ.get("GITHUB_STEP_SUMMARY", "/dev/null"))
     with summary.open("a") as stream:
         stream.write(f"Published [{tag}]({release['html_url']}) as an untested PS5 pre-release. "

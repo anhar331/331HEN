@@ -1,0 +1,83 @@
+name: Update approved Payload Manager source
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Existing release tag; leave empty to reverify the current source'
+        required: false
+        type: string
+      sha256:
+        description: 'Exact ELF SHA-256 tested on your PS5'
+        required: false
+        type: string
+      firmware:
+        description: 'PS5 firmware actually tested'
+        default: '12.70'
+        type: string
+      hardware_test:
+        description: 'Actual hardware-test results, games and features checked'
+        required: false
+        type: string
+      ps5_tested:
+        description: 'I actually tested this exact binary on PS5; approve it for the default source'
+        default: false
+        type: boolean
+permissions:
+  contents: read
+concurrency:
+  group: 331hen-release-publishing
+  cancel-in-progress: false
+jobs:
+  verify-and-update:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          ref: main
+          persist-credentials: false
+      - name: Verify approved assets and optionally record a real PS5 test
+        env:
+          INPUT_TAG: ${{ inputs.tag }}
+          INPUT_SHA: ${{ inputs.sha256 }}
+          INPUT_FIRMWARE: ${{ inputs.firmware }}
+          INPUT_EVIDENCE: ${{ inputs.hardware_test }}
+          INPUT_TESTED: ${{ inputs.ps5_tested }}
+        run: |
+          args=()
+          if [ -n "$INPUT_TAG" ]; then
+            if [ "$INPUT_TESTED" != true ]; then
+              echo 'A new approved version requires actual PS5 hardware testing.'
+              exit 1
+            fi
+            args=(--approve-tag "$INPUT_TAG" --sha256 "$INPUT_SHA" --firmware "$INPUT_FIRMWARE" --evidence "$INPUT_EVIDENCE" --confirmed-ps5-test)
+          fi
+          python3 scripts/update_payload_source.py "${args[@]}"
+      - name: Test source policy and the actual official C parser
+        run: |
+          python3 -m unittest discover -s scripts/tests -v
+          python3 scripts/test_payload_manager_parser.py
+      - name: Commit the verified source and approval history together
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git add payloads.json distribution/approved.json
+          if ! git diff --cached --quiet; then
+            git config user.name github-actions[bot]
+            git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+            git commit -m 'Update Payload Manager to the newest explicitly approved ELF'
+            git -c credential.helper='!gh auth git-credential' push origin HEAD:main
+          fi
+      - name: Verify the exact public raw source
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          from scripts.update_payload_source import fetch, SOURCE_URL
+          public = json.loads(fetch(SOURCE_URL, 1048576))
+          assert public == json.loads(Path('payloads.json').read_text())
+          print(SOURCE_URL)
+          PY

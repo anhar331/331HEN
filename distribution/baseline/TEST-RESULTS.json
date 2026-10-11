@@ -1,0 +1,12 @@
+{
+  "elf_sha256": "72f00d524636f8c96746d551fb495c1af319048a6af3703ffe5ae19e6abc197d",
+  "static_elf_checked": true,
+  "embedded_bootstrapper_matches_preserved_build": true,
+  "embedded_kstuff_matches_original": true,
+  "archived_host_regression_cases": 435,
+  "archived_host_failed": 0,
+  "ps5_runtime_tested_by_codex": false,
+  "hardware_evidence": "Owner reports existing project works; exact published checksum not independently confirmed",
+  "payload_changed_for_distribution": false,
+  "source_commit": "c52ce44351e7c28915d920a16223fc8e82bea35f"
+}

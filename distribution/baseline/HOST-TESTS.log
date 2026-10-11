@@ -1,0 +1,807 @@
+make: Entering directory '/workspace/source/util/tests'
+c++ -Wall -Wextra -g -O0 -MMD -MP -DONION_HOST_TEST=1 -DCBC=1 -DONION_TEST_DIR=\"/workspace/source/util/tests\" -DONION_DATA_ROOT=\"/workspace/source/util/build/host-tests/runtime\" -I/workspace/source/util/include -I/workspace/source/util/tests -I/workspace/source/include -I/workspace/source/libonion_settings/include -I/workspace/source/libonion_platform/include -I/workspace/source/libonion_payload/include -I/workspace/source/libonion_conflict/include -I/workspace/source/libonion_proc/include -I/workspace/source/libonion_ipc/include -I/workspace/source/libonion_detour/include -I/workspace/source/libonion_ready -I/workspace/source/libonion_fps/include -I/workspace/source/libonion_lifecycle/include -I/workspace/source/libonion_sprx/include -I/workspace/source/libonion_plugin_ui/include -I/workspace/source/libonion_plugin_bridge/include -I/workspace/source/libonion_plugin_session/include -I/workspace/source/libonion_plugin_manager/include -I/workspace/source/daemon/include -I/workspace/third_party/cjson -I/workspace/third_party/cheat_support -I/workspace/source/shellui/include -I/workspace/source/util/build/host-tests/generated -I/workspace/third_party/keystone/include -I/workspace/source/include -std=c++20 -D_DEFAULT_SOURCE -c -o /workspace/source/util/build/host-tests/tests/test_debug_settings_route_policy.o test_debug_settings_route_policy.cpp
+c++ -o /workspace/source/util/build/host-tests/onion-host-tests /workspace/source/util/build/host-tests/prod/source/util_language.o /workspace/source/util/build/host-tests/prod/source/cheats/cheat_engine_utils.o /workspace/source/util/build/host-tests/prod/source/cheats/cheat_engine_parser_shnext.o /workspace/source/util/build/host-tests/prod/source/cheats/cheat_flatten.o /workspace/source/util/build/host-tests/prod/libonion_platform/fs.o /workspace/source/util/build/host-tests/prod/libonion_platform/log.o /workspace/source/util/build/host-tests/prod/libonion_platform/net.o /workspace/source/util/build/host-tests/prod/libonion_platform/notify.o /workspace/source/util/build/host-tests/prod/libonion_platform/notify_i18n.o /workspace/source/util/build/host-tests/prod/libonion_ready/ready.o /workspace/source/util/build/host-tests/prod/libonion_payload/payload.o /workspace/source/util/build/host-tests/prod/libonion_payload/payload_config.o /workspace/source/util/build/host-tests/prod/libonion_conflict/conflict.o /workspace/source/util/build/host-tests/prod/libonion_detour/hde64.o /workspace/source/util/build/host-tests/prod/third_party/cheat_support/aes.o /workspace/source/util/build/host-tests/prod/third_party/cheat_support/base64.o /workspace/source/util/build/host-tests/prod/third_party/cheat_support/miniz.o /workspace/source/util/build/host-tests/prod/third_party/cheat_support/sha256.o /workspace/source/util/build/host-tests/prod/source/cheats/json_cheat_parser.o /workspace/source/util/build/host-tests/prod/source/cheats/xml_cheat_parser.o /workspace/source/util/build/host-tests/prod/source/cheats/mc4_cheat_parser.o /workspace/source/util/build/host-tests/prod/source/cheats/shn_ext_cheat_parser.o /workspace/source/util/build/host-tests/prod/source/cheats/cheat_parser_factory.o /workspace/source/util/build/host-tests/prod/source/cheats/cheat_repository.o /workspace/source/util/build/host-tests/prod/source/cheats/sync/catalog_hen_collection.o /workspace/source/util/build/host-tests/prod/source/cheats/sync/catalog_registry.o /workspace/source/util/build/host-tests/prod/source/cheats/sync/mirror_github.o /workspace/source/util/build/host-tests/prod/source/cheats/sync/mirror_cnb.o /workspace/source/util/build/host-tests/prod/source/cheats/sync/mirror_factory.o /workspace/source/util/build/host-tests/prod/source/cheats/sync/cheat_sync_engine.o /workspace/source/util/build/host-tests/prod/source/cheats/sync/cheat_sync_service.o /workspace/source/util/build/host-tests/prod/source/cheats/sync/http_transport_ps5.o /workspace/source/util/build/host-tests/prod/source/cheats/sync/zip_archive.o /workspace/source/util/build/host-tests/prod/third_party/cjson.o /workspace/source/util/build/host-tests/prod/libonion_settings/settings.o /workspace/source/util/build/host-tests/prod/libonion_ipc/ipc_server.o /workspace/source/util/build/host-tests/prod/libonion_plugin_manager/plugin_descriptor.o /workspace/source/util/build/host-tests/prod/libonion_plugin_manager/plugin_manager.o /workspace/source/util/build/host-tests/prod/libonion_detour/hotpatch.o /workspace/source/util/build/host-tests/prod/libonion_detour/trampoline_arena.o /workspace/source/util/build/host-tests/prod/libonion_detour/x64_relocator.o /workspace/source/util/build/host-tests/prod/shellui/hook_lifecycle.o /workspace/source/util/build/host-tests/prod/shellui/ps5_settings_ui.o /workspace/source/util/build/host-tests/prod/shellui/settings_page_update.o /workspace/source/util/build/host-tests/prod/shellui/toolbox_route.o /workspace/source/util/build/host-tests/prod/shellui/toolbox_i18n.o /workspace/source/util/build/host-tests/prod/shellui/plugin_sprx_pages.o /workspace/source/util/build/host-tests/prod/libonion_fps/fps_formula.o /workspace/source/util/build/host-tests/prod/libonion_lifecycle/app_lifecycle.o /workspace/source/util/build/host-tests/prod/libonion_sprx/sprx_loader.o /workspace/source/util/build/host-tests/prod/libonion_sprx/sprx_catalog.o /workspace/source/util/build/host-tests/prod/libonion_sprx/sprx_plugin_manager.o /workspace/source/util/build/host-tests/prod/libonion_plugin_ui/plugin_ui.o /workspace/source/util/build/host-tests/prod/libonion_plugin_bridge/plugin_ui_bridge.o /workspace/source/util/build/host-tests/prod/libonion_plugin_session/plugin_session.o /workspace/source/util/build/host-tests/prod/daemon/plugin_ipc_server.o /workspace/source/util/build/host-tests/prod/daemon/plugin_ui_bridge_server.o /workspace/source/util/build/host-tests/prod/daemon/plugin_host_services.o /workspace/source/util/build/host-tests/prod/shellui/dynamic_ui_xml.o /workspace/source/util/build/host-tests/prod/shellui/dynamic_ui_runtime.o /workspace/source/util/build/host-tests/prod/shellui/progress_auto_return.o /workspace/source/util/build/host-tests/tests/test_harness.o /workspace/source/util/build/host-tests/tests/test_support.o /workspace/source/util/build/host-tests/tests/test_cheat_utils.o /workspace/source/util/build/host-tests/tests/test_cheat_flatten.o /workspace/source/util/build/host-tests/tests/test_payload.o /workspace/source/util/build/host-tests/tests/test_payload_config.o /workspace/source/util/build/host-tests/tests/test_payload_autostart.o /workspace/source/util/build/host-tests/tests/test_conflict.o /workspace/source/util/build/host-tests/tests/test_base64.o /workspace/source/util/build/host-tests/tests/test_aes_cbc.o /workspace/source/util/build/host-tests/tests/test_hde64.o /workspace/source/util/build/host-tests/tests/test_reg_entity.o /workspace/source/util/build/host-tests/tests/test_ready.o /workspace/source/util/build/host-tests/tests/test_platform_fs.o /workspace/source/util/build/host-tests/tests/test_platform_log.o /workspace/source/util/build/host-tests/tests/test_platform_net.o /workspace/source/util/build/host-tests/tests/test_platform_notify.o /workspace/source/util/build/host-tests/tests/test_util_language.o /workspace/source/util/build/host-tests/tests/test_hijack_retry.o /workspace/source/util/build/host-tests/tests/stubs/host_stubs.o /workspace/source/util/build/host-tests/tests/test_cheat_parsers.o /workspace/source/util/build/host-tests/tests/test_cheat_repository.o /workspace/source/util/build/host-tests/tests/test_git_mirror_factory.o /workspace/source/util/build/host-tests/tests/test_cheat_catalog.o /workspace/source/util/build/host-tests/tests/test_cheat_sync.o /workspace/source/util/build/host-tests/tests/test_settings.o /workspace/source/util/build/host-tests/tests/test_msg_protocol.o /workspace/source/util/build/host-tests/tests/test_app_jailbreak_policy.o /workspace/source/util/build/host-tests/tests/test_big_app_collect_policy.o /workspace/source/util/build/host-tests/tests/test_debug_settings_route_policy.o /workspace/source/util/build/host-tests/tests/test_ipc_harden.o /workspace/source/util/build/host-tests/tests/test_ps5_settings_ui.o /workspace/source/util/build/host-tests/tests/test_toolbox_route.o /workspace/source/util/build/host-tests/tests/test_onpress_policy.o /workspace/source/util/build/host-tests/tests/test_toolbox_helpers.o /workspace/source/util/build/host-tests/tests/test_toolbox_i18n.o /workspace/source/util/build/host-tests/tests/test_toolbox_injection.o /workspace/source/util/build/host-tests/tests/test_overlay_text_metrics.o /workspace/source/util/build/host-tests/tests/test_overlay_layout.o /workspace/source/util/build/host-tests/tests/test_fps_formula.o /workspace/source/util/build/host-tests/tests/test_app_lifecycle.o /workspace/source/util/build/host-tests/tests/test_sprx_loader.o /workspace/source/util/build/host-tests/tests/test_sprx_catalog.o /workspace/source/util/build/host-tests/tests/test_sprx_plugin_manager.o /workspace/source/util/build/host-tests/tests/test_plugin_ui.o /workspace/source/util/build/host-tests/tests/test_plugin_sprx_pages.o /workspace/source/util/build/host-tests/tests/test_plugin_progress.o /workspace/source/util/build/host-tests/tests/test_progress_auto_return.o /workspace/source/util/build/host-tests/tests/test_settings_page_update.o /workspace/source/util/build/host-tests/tests/test_plugin_manager.o /workspace/source/util/build/host-tests/tests/test_trampoline_arena.o /workspace/source/util/build/host-tests/tests/test_hook_lifecycle.o /workspace/source/util/build/host-tests/tests/test_hotpatch.o /workspace/source/util/build/host-tests/tests/test_x64_relocator.o /workspace/source/util/build/host-tests/tests/test_main.o -L/hostdeps/lib -lkeystone -pthread
+cd /workspace/source/util/tests && ONION_TEST_ROOT=/workspace/source/util/tests /workspace/source/util/build/host-tests/onion-host-tests
+[PASS] cheat utils hex decode
+[PASS] cheat utils replace all
+[PASS] cheat utils xml unescape
+[PASS] cheat utils load file buffer
+[PASS] cheat utils reject empty file
+[PASS] module section layout
+[4034.906] [331HEN] error: [engine] load_file_buffer failed path=/tmp/onion-test-qRGUOW.json
+[PASS] cheat json parse success
+[PASS] cheat json authors alias and dedup
+[PASS] cheat json decodes escaped strings
+[PASS] cheat json rejects trailing garbage
+[PASS] cheat json rejects invalid hex
+[PASS] cheat json ignores out-of-range section
+[PASS] cheat xml parse success
+[PASS] cheat xml unescapes ampersand
+[PASS] cheat xml ignores out-of-range section
+[PASS] cheat mc4 load success
+[PASS] fixture json file loads
+[PASS] fixture shn file loads
+[PASS] fixture mc4 file loads
+[PASS] fixture shnext file loads
+[PASS] parser factory extension routing
+[PASS] repository.battlefield_browse_and_running
+[PASS] repository.standard_empty_source_id
+[PASS] repository.compatibility_alias
+[PASS] repository.standard_priority
+[PASS] repository.process_priority
+[PASS] repository.source_id_generic_process
+[PASS] repository.multiple_source_ids_lexicographic
+[PASS] repository.multiple_source_ids_all_resolve
+[PASS] repository.resolve_paths_all_formats
+[PASS] repository.resolve_paths_process_filter
+[PASS] repository.deleted_cache_rescan
+[PASS] repository.thousands_standard_name
+[PASS] repository.thousands_compatibility_alias
+[PASS] repository.unknown_version
+[PASS] repository.json_outranks_shn_alias
+[PASS] repository.worker_bin_not_eboot_alias
+[PASS] repository.eboot_without_bin
+[PASS] repository.file_signature
+[PASS] repository.process_beats_generic_source_id
+[PASS] repository.process_beats_generic
+[PASS] repository.generic_fallback_process
+[PASS] repository.underscored_process_source_id
+[PASS] repository.game_name_prefix
+[PASS] flatten.match_ext_known
+[PASS] flatten.match_ext_reject
+[PASS] flatten.progress
+[PASS] flatten.cancel_between_files
+[PASS] flatten.keeps_original_names
+[PASS] flatten.ignores_nested_and_root
+[PASS] flatten.parse_filename
+[PASS] flatten.legacy_eboot_alias
+[PASS] flatten.filename_compatible_compare
+[PASS] flatten.normalize_version
+[PASS] payload.is_elf
+[PASS] payload.pid_path
+[PASS] payload.elf_name_stem
+[PASS] payload.elf_key_from_name
+[PASS] payload.path_identity
+[4034.989] [331HEN] error: Failed to open file /tmp/onion-missing-payload-xyz (No such file or directory)
+[4034.989] [331HEN] warn: Empty payload file /tmp/onion-test-MgwCPw.bin
+[4034.989] [331HEN] info: loading payload via elfldr key=strict-test path=/data/331HEN/payloads/strict-test.elf
+[4034.989] [331HEN] error: Private elfldr :9020 unavailable; launch failed for strict-test
+[4034.989] [331HEN] info: loading payload via elfldr key=strict-test path=/data/331HEN/payloads/strict-test.elf
+[4034.989] [331HEN] info: Launched via 9020 (pid=4242)
+[4034.989] [331HEN] info: loading payload via elfldr key=strict-test path=/data/331HEN/payloads/strict-test.elf
+[4034.989] [331HEN] error: Private elfldr :9020 returned no valid PID for strict-test (pid=0)
+[4034.989] [331HEN] info: loading payload via elfldr key=strict-test path=/data/331HEN/payloads/strict-test.elf
+[4034.989] [331HEN] error: Private elfldr :9020 returned no valid PID for strict-test (pid=-1)
+[4034.989] [331HEN] info: loading payload via elfldr key=onion-test-zDgwF0 path=/tmp/onion-test-zDgwF0.elf
+[4034.989] [331HEN] info: Launched via 9020 (pid=5151)
+[4034.989] [331HEN] warn: Stale payload PID file for onion-test-zDgwF0 (pid=5151 dead), removing
+[4034.989] [331HEN] info: loading payload via elfldr key=onion-test-zDgwF0 path=/tmp/onion-test-zDgwF0.elf
+[4034.989] [331HEN] error: Private elfldr :9020 returned no valid PID for onion-test-zDgwF0 (pid=0)
+[4034.989] [331HEN] info: Payload onion-test-R0pXQL is already running; keeping the recorded instance
+[4034.989] [331HEN] info: loading payload via elfldr key=p0123456789abcdef path=/tmp/onion-test-6DS7pF.elf
+[4034.989] [331HEN] info: Launched via 9020 (pid=8181)
+[4034.989] [331HEN] info: loading payload via elfldr key=ftpsrv path=/tmp/onion-test-somuFW.elf
+[4034.989] [331HEN] info: Launched via 9020 (pid=5151)
+[4034.989] [331HEN] info: loading payload via elfldr key=ftpsrv path=/tmp/onion-test-somuFW.elf
+[4034.989] [331HEN] info: Launched via 9020 (pid=5151)
+[4034.989] [331HEN] info: loading payload via elfldr key=ftpsrv-ps5 path=/tmp/onion-test-somuFW.elf
+[4034.989] [331HEN] info: Launched via 9020 (pid=5151)
+[4034.989] [331HEN] info: loading payload via elfldr key=kstuff path=/tmp/onion-test-somuFW.elf
+[4034.989] [331HEN] info: Launched via 9020 (pid=5151)
+[PASS] payload.pid_file_roundtrip
+[PASS] payload.read_file
+[PASS] payload.strict_private_loader_policy
+[PASS] payload.load_requires_real_pid
+[PASS] payload.running_without_live_pid
+[PASS] payload.load_preserves_running_instance
+[PASS] payload.load_with_explicit_key
+[PASS] payload.builtin_identity_payloads_allowed
+[PASS] payload.config_roundtrip
+[PASS] payload.config_invalid
+[PASS] payload.order_and_aliases
+[4035.018] [331HEN] warn: Skipping user payload autostart: private elfldr :9020 unavailable
+[4035.018] [331HEN] warn: skipping auto start for payload: /user/data/331HEN/payloads/disabled.elf
+[4035.018] [331HEN] warn: skipping duplicate payload path: /user/data/331HEN/payloads/running.elf
+[4035.018] [331HEN] warn: skipping duplicate payload path: /user/data/331HEN/payloads/c.elf
+[4035.018] [331HEN] warn: skipping duplicate payload path: /user/data/331HEN/payloads/elfldr.elf
+[4035.018] [331HEN] warn: skipping duplicate payload path: /user/data/331HEN/payloads/b.elf
+[4035.018] [331HEN] warn: skipping duplicate payload path: /user/data/331HEN/payloads/a.elf
+[4035.018] [331HEN] warn: skipping auto start for payload: /user/data/331HEN/payloads/disabled.elf
+[4035.018] [331HEN] warn: skipping duplicate payload path: /data/331HEN/payloads/running.elf
+[4035.018] [331HEN] warn: skipping duplicate payload path: /data/331HEN/payloads/c.elf
+[4035.018] [331HEN] warn: skipping duplicate payload path: /data/331HEN/payloads/elfldr.elf
+[4035.018] [331HEN] warn: skipping duplicate payload path: /data/331HEN/payloads/b.elf
+[4035.018] [331HEN] warn: skipping duplicate payload path: /data/331HEN/payloads/a.elf
+[4035.018] [331HEN] warn: skipping auto start for payload: /data/331HEN/payloads/disabled.elf
+[4035.018] [331HEN] warn: skipping duplicate payload path: /data/331HEN/payloads/running.elf
+[4035.018] [331HEN] warn: skipping duplicate payload path: /data/331HEN/payloads/c.elf
+[4035.018] [331HEN] warn: skipping duplicate payload path: /data/331HEN/payloads/elfldr.elf
+[4035.018] [331HEN] warn: skipping duplicate payload path: /data/331HEN/payloads/b.elf
+[4035.018] [331HEN] warn: skipping duplicate payload path: /data/331HEN/payloads/a.elf
+[4035.018] [331HEN] warn: skipping auto start for payload: /data/331HEN/payloads/disabled.elf
+[4035.018] [331HEN] info: Auto-start payload: /data/331HEN/payloads/a.elf priority=100 delay=5s
+[4035.018] [331HEN] error: FAILED!
+[4035.018] [331HEN] info: Auto-start payload: /data/331HEN/payloads/b.elf priority=100 delay=2s
+[4035.018] [331HEN] info: Auto-start payload: /data/331HEN/payloads/c.elf priority=0 delay=0s
+[PASS] payload.autostart_schedule
+[PASS] conflict_builtin_hits
+[PASS] conflict_no_live_processes
+[PASS] conflict_elf_suffix_ignored
+[PASS] conflict_truncation_lengths
+[PASS] conflict_scan_first_family_wins
+[PASS] conflict_builtin_table
+[PASS] base64.encode_known
+[PASS] base64.decode_known
+[PASS] base64.roundtrip
+[PASS] base64.empty
+[PASS] aes_cbc.roundtrip
+[PASS] aes_cbc.plaintext_diff
+[PASS] hde64.nop
+[PASS] hde64.ret
+[PASS] hde64.mov_rax_imm64
+[PASS] hde64.jmp_rel32
+[PASS] hde64.multi_lengths
+[PASS] hotpatch.build
+[PASS] hotpatch.alignment
+[PASS] hotpatch.arguments
+[PASS] x64reloc.plain
+[PASS] x64reloc.rip_memory
+[PASS] x64reloc.rip_indirect_call
+[PASS] x64reloc.call_rel32
+[PASS] x64reloc.jmp_rel8
+[PASS] x64reloc.jmp_rel32
+[PASS] x64reloc.jcc_internal
+[PASS] x64reloc.jcc_near
+[PASS] x64reloc.rip_range
+[PASS] x64reloc.loop_reject
+[PASS] mirror.auto_zh_hans
+[4035.019] [331HEN] warn: cheat archive mirror=cnb failed status=network; trying github
+[4035.019] [331HEN] warn: cheat archive mirror=cnb failed status=tls; trying github
+[PASS] mirror.auto_en
+[PASS] mirror.auto_zh_hant
+[PASS] mirror.explicit
+[PASS] mirror.parse
+[PASS] catalog.layout
+[PASS] catalog.slug
+[PASS] catalog.find
+[PASS] sync.archive_install
+[PASS] sync.fallback
+[PASS] sync.no_fallback
+[PASS] sync.install_no_switch
+[PASS] sync.reject_http
+[PASS] sync.tls_fallback
+[PASS] sync.clock_error
+[PASS] sync.cancel_download
+[PASS] sync.cancel_extract
+[PASS] sync.cancel_install
+[4035.020] [331HEN] info: cheat sync started catalog=hen-cheats-collection mirror=github
+[4035.020] [331HEN] info: cheat sync cancellation requested task_id=1
+[4035.020] [331HEN] info: cheat sync cancelled catalog=hen-cheats-collection
+[4035.022] [331HEN] info: cheat sync started catalog=hen-cheats-collection mirror=github
+[4035.022] [331HEN] info: cheat sync cancellation requested task_id=2
+[4035.023] [331HEN] info: cheat sync cancelled catalog=hen-cheats-collection
+[PASS] sync.service_cancel_lifecycle
+[PASS] reg_entity.slot1
+[PASS] reg_entity.slot_n
+[PASS] reg_entity.oor
+[PASS] settings_defaults_serialize
+[PASS] settings_roundtrip_file
+[PASS] settings_missing_file_defaults
+[PASS] settings_full_schema_roundtrip
+[PASS] settings_partial_ini_defaults
+[PASS] settings_startup_open_after_load
+[PASS] settings_rest_mode_delay
+[PASS] settings_serialize_overlay_keys
+[PASS] settings_overlay_edge_and_align
+[PASS] settings_overlay_font_and_order
+[PASS] settings_empty_file_defaults
+[PASS] settings_app_jailbreak_allowlist
+[PASS] settings_store_snapshot_update
+[PASS] settings_config_mtime_helpers
+[PASS] settings_log_level_invalid
+[PASS] settings_language_ar
+[PASS] settings_language_new_locales
+[PASS] settings_v0_0_10_kstuff_autoload
+[PASS] settings_clamp_fan_threshold
+[PASS] ready_signal_wait_clear
+[PASS] ready_reject_slash
+[PASS] ready_timeout
+[PASS] ready_path_builder
+[PASS] flag_fps_overlay
+[PASS] flag_util_booted
+[PASS] toolbox_marker_runtime_root
+[PASS] ready_process_instance
+[PASS] ready_process_plain_marker_value
+[PASS] fs_if_exists_null_missing
+[PASS] fs_touch_and_exists
+[PASS] fs_write_file_atomic
+[PASS] fs_mkdir_tree
+[4035.241] [331HEN] error: Error opening directory /tmp/onion-fs-missing-tree-xyz
+[PASS] fs_rmtree_nested
+[PASS] fs_rmtree_progress
+[4035.241] [HostTest] info: hello 42
+[PASS] log.file_sink
+[4035.241] [Append] info: current-run
+[PASS] log.configure_appends
+[4035.241] [TagOnly] info: no file sink configured
+[PASS] log.configure_tag_only
+[4035.241] [Lvl] error: keep-error
+[4035.241] [Lvl] warn: keep-warn
+[PASS] log.runtime_level_filters
+[PASS] log.level_off
+[4035.241] [Rot] error: record-00-padding-padding-padding
+[4035.241] [Rot] error: record-01-padding-padding-padding
+[4035.241] [Rot] error: record-02-padding-padding-padding
+[4035.241] [Rot] error: record-03-padding-padding-padding
+[4035.241] [Rot] error: record-04-padding-padding-padding
+[4035.241] [Rot] error: record-05-padding-padding-padding
+[4035.241] [Rot] error: record-06-padding-padding-padding
+[4035.242] [Rot] error: record-07-padding-padding-padding
+[4035.242] [Rot] error: record-08-padding-padding-padding
+[4035.242] [Rot] error: record-09-padding-padding-padding
+[4035.242] [Rot] error: record-10-padding-padding-padding
+[4035.242] [Rot] error: record-11-padding-padding-padding
+[4035.242] [Rot] error: record-12-padding-padding-padding
+[4035.242] [Rot] error: record-13-padding-padding-padding
+[4035.242] [Rot] error: record-14-padding-padding-padding
+[4035.242] [Rot] error: record-15-padding-padding-padding
+[4035.242] [Rot] error: record-16-padding-padding-padding
+[4035.242] [Rot] error: record-17-padding-padding-padding
+[4035.242] [Rot] error: record-18-padding-padding-padding
+[4035.242] [Rot] error: record-19-padding-padding-padding
+[4035.242] [Rot] error: record-20-padding-padding-padding
+[4035.242] [Rot] error: record-21-padding-padding-padding
+[4035.242] [Rot] error: record-22-padding-padding-padding
+[4035.242] [Rot] error: record-23-padding-padding-padding
+[4035.242] [Rot] error: record-24-padding-padding-padding
+[4035.242] [Rot] error: record-25-padding-padding-padding
+[4035.242] [Rot] error: record-26-padding-padding-padding
+[4035.242] [Rot] error: record-27-padding-padding-padding
+[4035.242] [Rot] error: record-28-padding-padding-padding
+[4035.242] [Rot] error: record-29-padding-padding-padding
+[4035.242] [Rot] error: record-30-padding-padding-padding
+[4035.242] [Rot] error: record-31-padding-padding-padding
+[4035.242] [Rot] error: record-32-padding-padding-padding
+[4035.242] [Rot] error: record-33-padding-padding-padding
+[4035.242] [Rot] error: record-34-padding-padding-padding
+[4035.242] [Rot] error: record-35-padding-padding-padding
+[4035.242] [Rot] error: record-36-padding-padding-padding
+[4035.242] [Rot] error: record-37-padding-padding-padding
+[4035.242] [Rot] error: record-38-padding-padding-padding
+[4035.242] [Rot] error: record-39-padding-padding-padding
+[4035.242] [Rot] error: record-40-padding-padding-padding
+[4035.242] [Rot] error: record-41-padding-padding-padding
+[4035.242] [Rot] error: record-42-padding-padding-padding
+[4035.242] [Rot] error: record-43-padding-padding-padding
+[4035.242] [Rot] error: record-44-padding-padding-padding
+[4035.242] [Rot] error: record-45-padding-padding-padding
+[4035.242] [Rot] error: record-46-padding-padding-padding
+[4035.242] [Rot] error: record-47-padding-padding-padding
+[4035.242] [Rot] error: record-48-padding-padding-padding
+[4035.242] [Rot] error: record-49-padding-padding-padding
+[4035.242] [Rot] error: record-50-padding-padding-padding
+[4035.242] [Rot] error: record-51-padding-padding-padding
+[4035.242] [Rot] error: record-52-padding-padding-padding
+[4035.242] [Rot] error: record-53-padding-padding-padding
+[4035.242] [Rot] error: record-54-padding-padding-padding
+[4035.242] [Rot] error: record-55-padding-padding-padding
+[4035.242] [Rot] error: record-56-padding-padding-padding
+[4035.242] [Rot] error: record-57-padding-padding-padding
+[4035.242] [Rot] error: record-58-padding-padding-padding
+[PASS] log.rotation_caps_size
+[4035.242] [Rot] error: record-59-padding-padding-padding
+[4035.243] [Rot2] error: spam-000-aaaaaaaaaaaaaaaaaaaa
+[4035.243] [Rot2] error: spam-001-aaaaaaaaaaaaaaaaaaaa
+[4035.243] [Rot2] error: spam-002-aaaaaaaaaaaaaaaaaaaa
+[4035.243] [Rot2] error: spam-003-aaaaaaaaaaaaaaaaaaaa
+[4035.243] [Rot2] error: spam-004-aaaaaaaaaaaaaaaaaaaa
+[4035.243] [Rot2] error: spam-005-aaaaaaaaaaaaaaaaaaaa
+[4035.243] [Rot2] error: spam-006-aaaaaaaaaaaaaaaaaaaa
+[4035.244] [Rot2] error: spam-007-aaaaaaaaaaaaaaaaaaaa
+[4035.244] [Rot2] error: spam-008-aaaaaaaaaaaaaaaaaaaa
+[4035.244] [Rot2] error: spam-009-aaaaaaaaaaaaaaaaaaaa
+[4035.244] [Rot2] error: spam-010-aaaaaaaaaaaaaaaaaaaa
+[4035.244] [Rot2] error: spam-011-aaaaaaaaaaaaaaaaaaaa
+[4035.244] [Rot2] error: spam-012-aaaaaaaaaaaaaaaaaaaa
+[4035.244] [Rot2] error: spam-013-aaaaaaaaaaaaaaaaaaaa
+[4035.244] [Rot2] error: spam-014-aaaaaaaaaaaaaaaaaaaa
+[4035.244] [Rot2] error: spam-015-aaaaaaaaaaaaaaaaaaaa
+[4035.244] [Rot2] error: spam-016-aaaaaaaaaaaaaaaaaaaa
+[4035.244] [Rot2] error: spam-017-aaaaaaaaaaaaaaaaaaaa
+[4035.244] [Rot2] error: spam-018-aaaaaaaaaaaaaaaaaaaa
+[4035.244] [Rot2] error: spam-019-aaaaaaaaaaaaaaaaaaaa
+[4035.244] [Rot2] error: spam-020-aaaaaaaaaaaaaaaaaaaa
+[4035.244] [Rot2] error: spam-021-aaaaaaaaaaaaaaaaaaaa
+[4035.244] [Rot2] error: spam-022-aaaaaaaaaaaaaaaaaaaa
+[4035.244] [Rot2] error: spam-023-aaaaaaaaaaaaaaaaaaaa
+[4035.244] [Rot2] error: spam-024-aaaaaaaaaaaaaaaaaaaa
+[4035.244] [Rot2] error: spam-025-aaaaaaaaaaaaaaaaaaaa
+[4035.244] [Rot2] error: spam-026-aaaaaaaaaaaaaaaaaaaa
+[4035.244] [Rot2] error: spam-027-aaaaaaaaaaaaaaaaaaaa
+[4035.244] [Rot2] error: spam-028-aaaaaaaaaaaaaaaaaaaa
+[4035.244] [Rot2] error: spam-029-aaaaaaaaaaaaaaaaaaaa
+[4035.244] [Rot2] error: spam-030-aaaaaaaaaaaaaaaaaaaa
+[4035.244] [Rot2] error: spam-031-aaaaaaaaaaaaaaaaaaaa
+[4035.244] [Rot2] error: spam-032-aaaaaaaaaaaaaaaaaaaa
+[4035.244] [Rot2] error: spam-033-aaaaaaaaaaaaaaaaaaaa
+[4035.244] [Rot2] error: spam-034-aaaaaaaaaaaaaaaaaaaa
+[4035.244] [Rot2] error: spam-035-aaaaaaaaaaaaaaaaaaaa
+[4035.244] [Rot2] error: spam-036-aaaaaaaaaaaaaaaaaaaa
+[4035.244] [Rot2] error: spam-037-aaaaaaaaaaaaaaaaaaaa
+[4035.245] [Rot2] error: spam-038-aaaaaaaaaaaaaaaaaaaa
+[4035.245] [Rot2] error: spam-039-aaaaaaaaaaaaaaaaaaaa
+[4035.245] [Rot2] error: spam-040-aaaaaaaaaaaaaaaaaaaa
+[4035.245] [Rot2] error: spam-041-aaaaaaaaaaaaaaaaaaaa
+[4035.245] [Rot2] error: spam-042-aaaaaaaaaaaaaaaaaaaa
+[4035.245] [Rot2] error: spam-043-aaaaaaaaaaaaaaaaaaaa
+[4035.245] [Rot2] error: spam-044-aaaaaaaaaaaaaaaaaaaa
+[4035.245] [Rot2] error: spam-045-aaaaaaaaaaaaaaaaaaaa
+[4035.245] [Rot2] error: spam-046-aaaaaaaaaaaaaaaaaaaa
+[4035.245] [Rot2] error: spam-047-aaaaaaaaaaaaaaaaaaaa
+[4035.245] [Rot2] error: spam-048-aaaaaaaaaaaaaaaaaaaa
+[4035.245] [Rot2] error: spam-049-aaaaaaaaaaaaaaaaaaaa
+[4035.245] [Rot2] error: spam-050-aaaaaaaaaaaaaaaaaaaa
+[4035.245] [Rot2] error: spam-051-aaaaaaaaaaaaaaaaaaaa
+[4035.245] [Rot2] error: spam-052-aaaaaaaaaaaaaaaaaaaa
+[4035.245] [Rot2] error: spam-053-aaaaaaaaaaaaaaaaaaaa
+[4035.245] [Rot2] error: spam-054-aaaaaaaaaaaaaaaaaaaa
+[4035.245] [Rot2] error: spam-055-aaaaaaaaaaaaaaaaaaaa
+[4035.245] [Rot2] error: spam-056-aaaaaaaaaaaaaaaaaaaa
+[4035.245] [Rot2] error: spam-057-aaaaaaaaaaaaaaaaaaaa
+[4035.245] [Rot2] error: spam-058-aaaaaaaaaaaaaaaaaaaa
+[4035.245] [Rot2] error: spam-059-aaaaaaaaaaaaaaaaaaaa
+[4035.245] [Rot2] error: spam-060-aaaaaaaaaaaaaaaaaaaa
+[4035.245] [Rot2] error: spam-061-aaaaaaaaaaaaaaaaaaaa
+[4035.245] [Rot2] error: spam-062-aaaaaaaaaaaaaaaaaaaa
+[4035.245] [Rot2] error: spam-063-aaaaaaaaaaaaaaaaaaaa
+[4035.245] [Rot2] error: spam-064-aaaaaaaaaaaaaaaaaaaa
+[4035.245] [Rot2] error: spam-065-aaaaaaaaaaaaaaaaaaaa
+[4035.245] [Rot2] error: spam-066-aaaaaaaaaaaaaaaaaaaa
+[4035.245] [Rot2] error: spam-067-aaaaaaaaaaaaaaaaaaaa
+[4035.245] [Rot2] error: spam-068-aaaaaaaaaaaaaaaaaaaa
+[4035.245] [Rot2] error: spam-069-aaaaaaaaaaaaaaaaaaaa
+[4035.245] [Rot2] error: spam-070-aaaaaaaaaaaaaaaaaaaa
+[4035.245] [Rot2] error: spam-071-aaaaaaaaaaaaaaaaaaaa
+[4035.245] [Rot2] error: spam-072-aaaaaaaaaaaaaaaaaaaa
+[4035.246] [Rot2] error: spam-073-aaaaaaaaaaaaaaaaaaaa
+[4035.246] [Rot2] error: spam-074-aaaaaaaaaaaaaaaaaaaa
+[4035.246] [Rot2] error: spam-075-aaaaaaaaaaaaaaaaaaaa
+[4035.246] [Rot2] error: spam-076-aaaaaaaaaaaaaaaaaaaa
+[4035.246] [Rot2] error: spam-077-aaaaaaaaaaaaaaaaaaaa
+[4035.246] [Rot2] error: spam-078-aaaaaaaaaaaaaaaaaaaa
+[4035.246] [Rot2] error: spam-079-aaaaaaaaaaaaaaaaaaaa
+[4035.246] [Rot2] error: spam-080-aaaaaaaaaaaaaaaaaaaa
+[4035.246] [Rot2] error: spam-081-aaaaaaaaaaaaaaaaaaaa
+[4035.246] [Rot2] error: spam-082-aaaaaaaaaaaaaaaaaaaa
+[4035.246] [Rot2] error: spam-083-aaaaaaaaaaaaaaaaaaaa
+[4035.246] [Rot2] error: spam-084-aaaaaaaaaaaaaaaaaaaa
+[4035.246] [Rot2] error: spam-085-aaaaaaaaaaaaaaaaaaaa
+[4035.246] [Rot2] error: spam-086-aaaaaaaaaaaaaaaaaaaa
+[4035.246] [Rot2] error: spam-087-aaaaaaaaaaaaaaaaaaaa
+[4035.246] [Rot2] error: spam-088-aaaaaaaaaaaaaaaaaaaa
+[4035.246] [Rot2] error: spam-089-aaaaaaaaaaaaaaaaaaaa
+[4035.246] [Rot2] error: spam-090-aaaaaaaaaaaaaaaaaaaa
+[4035.246] [Rot2] error: spam-091-aaaaaaaaaaaaaaaaaaaa
+[4035.246] [Rot2] error: spam-092-aaaaaaaaaaaaaaaaaaaa
+[4035.246] [Rot2] error: spam-093-aaaaaaaaaaaaaaaaaaaa
+[4035.247] [Rot2] error: spam-094-aaaaaaaaaaaaaaaaaaaa
+[4035.247] [Rot2] error: spam-095-aaaaaaaaaaaaaaaaaaaa
+[4035.247] [Rot2] error: spam-096-aaaaaaaaaaaaaaaaaaaa
+[4035.247] [Rot2] error: spam-097-aaaaaaaaaaaaaaaaaaaa
+[4035.247] [Rot2] error: spam-098-aaaaaaaaaaaaaaaaaaaa
+[4035.247] [Rot2] error: spam-099-aaaaaaaaaaaaaaaaaaaa
+[4035.247] [Rot2] error: spam-100-aaaaaaaaaaaaaaaaaaaa
+[4035.247] [Rot2] error: spam-101-aaaaaaaaaaaaaaaaaaaa
+[4035.247] [Rot2] error: spam-102-aaaaaaaaaaaaaaaaaaaa
+[4035.247] [Rot2] error: spam-103-aaaaaaaaaaaaaaaaaaaa
+[4035.247] [Rot2] error: spam-104-aaaaaaaaaaaaaaaaaaaa
+[4035.247] [Rot2] error: spam-105-aaaaaaaaaaaaaaaaaaaa
+[4035.247] [Rot2] error: spam-106-aaaaaaaaaaaaaaaaaaaa
+[4035.247] [Rot2] error: spam-107-aaaaaaaaaaaaaaaaaaaa
+[4035.247] [Rot2] error: spam-108-aaaaaaaaaaaaaaaaaaaa
+[4035.247] [Rot2] error: spam-109-aaaaaaaaaaaaaaaaaaaa
+[4035.247] [Rot2] error: spam-110-aaaaaaaaaaaaaaaaaaaa
+[4035.247] [Rot2] error: spam-111-aaaaaaaaaaaaaaaaaaaa
+[4035.247] [Rot2] error: spam-112-aaaaaaaaaaaaaaaaaaaa
+[4035.247] [Rot2] error: spam-113-aaaaaaaaaaaaaaaaaaaa
+[4035.247] [Rot2] error: spam-114-aaaaaaaaaaaaaaaaaaaa
+[4035.247] [Rot2] error: spam-115-aaaaaaaaaaaaaaaaaaaa
+[4035.247] [Rot2] error: spam-116-aaaaaaaaaaaaaaaaaaaa
+[4035.247] [Rot2] error: spam-117-aaaaaaaaaaaaaaaaaaaa
+[4035.247] [Rot2] error: spam-118-aaaaaaaaaaaaaaaaaaaa
+[4035.247] [Rot2] error: spam-119-aaaaaaaaaaaaaaaaaaaa
+[4035.247] [Rot2] error: spam-120-aaaaaaaaaaaaaaaaaaaa
+[4035.247] [Rot2] error: spam-121-aaaaaaaaaaaaaaaaaaaa
+[4035.247] [Rot2] error: spam-122-aaaaaaaaaaaaaaaaaaaa
+[4035.247] [Rot2] error: spam-123-aaaaaaaaaaaaaaaaaaaa
+[4035.247] [Rot2] error: spam-124-aaaaaaaaaaaaaaaaaaaa
+[4035.247] [Rot2] error: spam-125-aaaaaaaaaaaaaaaaaaaa
+[4035.247] [Rot2] error: spam-126-aaaaaaaaaaaaaaaaaaaa
+[4035.247] [Rot2] error: spam-127-aaaaaaaaaaaaaaaaaaaa
+[4035.247] [Rot2] error: spam-128-aaaaaaaaaaaaaaaaaaaa
+[4035.248] [Rot2] error: spam-129-aaaaaaaaaaaaaaaaaaaa
+[4035.248] [Rot2] error: spam-130-aaaaaaaaaaaaaaaaaaaa
+[4035.248] [Rot2] error: spam-131-aaaaaaaaaaaaaaaaaaaa
+[4035.248] [Rot2] error: spam-132-aaaaaaaaaaaaaaaaaaaa
+[4035.248] [Rot2] error: spam-133-aaaaaaaaaaaaaaaaaaaa
+[4035.250] [Rot2] error: spam-134-aaaaaaaaaaaaaaaaaaaa
+[4035.250] [Rot2] error: spam-135-aaaaaaaaaaaaaaaaaaaa
+[4035.250] [Rot2] error: spam-136-aaaaaaaaaaaaaaaaaaaa
+[4035.250] [Rot2] error: spam-137-aaaaaaaaaaaaaaaaaaaa
+[4035.250] [Rot2] error: spam-138-aaaaaaaaaaaaaaaaaaaa
+[4035.250] [Rot2] error: spam-139-aaaaaaaaaaaaaaaaaaaa
+[4035.250] [Rot2] error: spam-140-aaaaaaaaaaaaaaaaaaaa
+[4035.250] [Rot2] error: spam-141-aaaaaaaaaaaaaaaaaaaa
+[4035.250] [Rot2] error: spam-142-aaaaaaaaaaaaaaaaaaaa
+[4035.250] [Rot2] error: spam-143-aaaaaaaaaaaaaaaaaaaa
+[4035.250] [Rot2] error: spam-144-aaaaaaaaaaaaaaaaaaaa
+[4035.250] [Rot2] error: spam-145-aaaaaaaaaaaaaaaaaaaa
+[4035.250] [Rot2] error: spam-146-aaaaaaaaaaaaaaaaaaaa
+[4035.250] [Rot2] error: spam-147-aaaaaaaaaaaaaaaaaaaa
+[4035.250] [Rot2] error: spam-148-aaaaaaaaaaaaaaaaaaaa
+[4035.250] [Rot2] error: spam-149-aaaaaaaaaaaaaaaaaaaa
+[4035.250] [Rot2] error: spam-150-aaaaaaaaaaaaaaaaaaaa
+[4035.250] [Rot2] error: spam-151-aaaaaaaaaaaaaaaaaaaa
+[4035.250] [Rot2] error: spam-152-aaaaaaaaaaaaaaaaaaaa
+[4035.250] [Rot2] error: spam-153-aaaaaaaaaaaaaaaaaaaa
+[4035.250] [Rot2] error: spam-154-aaaaaaaaaaaaaaaaaaaa
+[4035.250] [Rot2] error: spam-155-aaaaaaaaaaaaaaaaaaaa
+[4035.250] [Rot2] error: spam-156-aaaaaaaaaaaaaaaaaaaa
+[4035.250] [Rot2] error: spam-157-aaaaaaaaaaaaaaaaaaaa
+[4035.250] [Rot2] error: spam-158-aaaaaaaaaaaaaaaaaaaa
+[4035.250] [Rot2] error: spam-159-aaaaaaaaaaaaaaaaaaaa
+[4035.250] [Rot2] error: spam-160-aaaaaaaaaaaaaaaaaaaa
+[4035.250] [Rot2] error: spam-161-aaaaaaaaaaaaaaaaaaaa
+[4035.250] [Rot2] error: spam-162-aaaaaaaaaaaaaaaaaaaa
+[4035.250] [Rot2] error: spam-163-aaaaaaaaaaaaaaaaaaaa
+[4035.250] [Rot2] error: spam-164-aaaaaaaaaaaaaaaaaaaa
+[4035.251] [Rot2] error: spam-165-aaaaaaaaaaaaaaaaaaaa
+[4035.251] [Rot2] error: spam-166-aaaaaaaaaaaaaaaaaaaa
+[4035.251] [Rot2] error: spam-167-aaaaaaaaaaaaaaaaaaaa
+[4035.251] [Rot2] error: spam-168-aaaaaaaaaaaaaaaaaaaa
+[4035.251] [Rot2] error: spam-169-aaaaaaaaaaaaaaaaaaaa
+[4035.251] [Rot2] error: spam-170-aaaaaaaaaaaaaaaaaaaa
+[4035.251] [Rot2] error: spam-171-aaaaaaaaaaaaaaaaaaaa
+[4035.251] [Rot2] error: spam-172-aaaaaaaaaaaaaaaaaaaa
+[4035.251] [Rot2] error: spam-173-aaaaaaaaaaaaaaaaaaaa
+[4035.251] [Rot2] error: spam-174-aaaaaaaaaaaaaaaaaaaa
+[4035.251] [Rot2] error: spam-175-aaaaaaaaaaaaaaaaaaaa
+[4035.251] [Rot2] error: spam-176-aaaaaaaaaaaaaaaaaaaa
+[4035.251] [Rot2] error: spam-177-aaaaaaaaaaaaaaaaaaaa
+[4035.251] [Rot2] error: spam-178-aaaaaaaaaaaaaaaaaaaa
+[4035.251] [Rot2] error: spam-179-aaaaaaaaaaaaaaaaaaaa
+[4035.251] [Rot2] error: spam-180-aaaaaaaaaaaaaaaaaaaa
+[4035.251] [Rot2] error: spam-181-aaaaaaaaaaaaaaaaaaaa
+[4035.251] [Rot2] error: spam-182-aaaaaaaaaaaaaaaaaaaa
+[4035.251] [Rot2] error: spam-183-aaaaaaaaaaaaaaaaaaaa
+[4035.251] [Rot2] error: spam-184-aaaaaaaaaaaaaaaaaaaa
+[4035.251] [Rot2] error: spam-185-aaaaaaaaaaaaaaaaaaaa
+[4035.251] [Rot2] error: spam-186-aaaaaaaaaaaaaaaaaaaa
+[4035.251] [Rot2] error: spam-187-aaaaaaaaaaaaaaaaaaaa
+[4035.251] [Rot2] error: spam-188-aaaaaaaaaaaaaaaaaaaa
+[4035.251] [Rot2] error: spam-189-aaaaaaaaaaaaaaaaaaaa
+[4035.251] [Rot2] error: spam-190-aaaaaaaaaaaaaaaaaaaa
+[4035.251] [Rot2] error: spam-191-aaaaaaaaaaaaaaaaaaaa
+[4035.251] [Rot2] error: spam-192-aaaaaaaaaaaaaaaaaaaa
+[4035.251] [Rot2] error: spam-193-aaaaaaaaaaaaaaaaaaaa
+[4035.251] [Rot2] error: spam-194-aaaaaaaaaaaaaaaaaaaa
+[4035.251] [Rot2] error: spam-195-aaaaaaaaaaaaaaaaaaaa
+[4035.251] [Rot2] error: spam-196-aaaaaaaaaaaaaaaaaaaa
+[4035.251] [Rot2] error: spam-197-aaaaaaaaaaaaaaaaaaaa
+[4035.252] [Rot2] error: spam-198-aaaaaaaaaaaaaaaaaaaa
+[4035.252] [Rot2] error: spam-199-aaaaaaaaaaaaaaaaaaaa
+[PASS] log.rotation_three_backups
+[PASS] log.rotation_external_append
+[4035.252] [External] error: after-external-append
+[4035.252] [NL] error: trailing-newline-supplied
+[PASS] log.single_newline
+[4035.252] [Big] error: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+[PASS] log.oversized_truncates
+[PASS] log.level_name_roundtrip
+[PASS] log.set_level_clamps
+[4035.252] [Emerg] error: crash-record 7
+[PASS] log.emergency_bypasses_level
+[4035.252] [CrashSink] error: ordinary-record
+[4035.252] [CrashSink] error: fatal-signal 11
+[PASS] log.emergency_preserves_crash_sink
+[PASS] net.ip_ok
+[PASS] net.disconnected
+[PASS] net.unavailable
+[PASS] net.other_error
+[PASS] net.bad_buffer
+[PASS] net.terminates_field
+[PASS] net.has_ipv4
+[PASS] notify_format_prefix
+[PASS] notify_format_truncates
+[PASS] notify_format_no_watermark
+[PASS] notify_send_noop
+[PASS] notify_debug_localized
+[PASS] notify_language_resolution
+[PASS] notify_format_localized
+[PASS] notify_payload_localized
+[PASS] notify_rich_formats_payload
+[PASS] notify_rich_localizes_both_text_fields
+[4035.252] [331HEN] warn: Rich notify unavailable; using system toast
+[PASS] notify_rich_falls_back_when_send_fails
+[4035.252] [331HEN] warn: Rich notify unavailable; using system toast
+[PASS] notify_rich_falls_back_when_unregistered
+[4035.253] [331HEN] warn: Rich notify unavailable; using system toast
+[4035.253] [331HEN] warn: Rich notify unavailable; using system toast
+[4035.253] [331HEN] warn: system language query failed result=0xFFFFFFFF; keeping 11
+[PASS] notify_rich_skips_send_without_icon
+[PASS] notify_try_rich_falls_back_on_empty_payload
+[PASS] util_language.refresh_preserves_last_valid
+[PASS] util_language.store_reapplies_runtime_language
+[PASS] ipc_paths_magic
+[PASS] crit_cmd_base_order
+[PASS] util_cmd_base
+[PASS] special_cmds_stable
+[PASS] plugin_cmds_stable
+[PASS] ipc_ret_distinct
+[PASS] message_pod_layout
+[PASS] ipc_format_reply_body
+[PASS] app_jailbreak.itemzflow_whitelisted
+[PASS] app_jailbreak.existing_policy
+[PASS] app_jailbreak.configured_policy
+[PASS] big_app_collect.exec_matches_running
+[PASS] big_app_collect.cdlg_reconciles_homebrew
+[PASS] big_app_collect.exec_identity_not_ready
+[PASS] big_app_collect.already_tracked
+[PASS] big_app_collect.exec_before_running_query
+[PASS] big_app_collect.fork_without_identity
+[PASS] big_app_collect.system_exec_without_running
+[PASS] big_app_collect.running_pid_invalid
+[PASS] big_app_collect.retry_delays
+[PASS] debug_route.0403_standard
+[PASS] debug_route.0510_standard
+[PASS] debug_route.0600_standard
+[PASS] debug_route.0740_standard
+[PASS] debug_route.0761_standard
+[PASS] debug_route.0800_standard
+[PASS] debug_route.0840_standard
+[PASS] debug_route.0900_standard
+[PASS] debug_route.1000_standard
+[PASS] debug_route.1001_standard
+[PASS] debug_route.1020_standard
+[PASS] debug_route.1040_standard
+[PASS] debug_route.1060_standard
+[PASS] debug_route.1100_old
+[PASS] debug_route.1120_old
+[PASS] debug_route.1140_old
+[PASS] debug_route.1160_old
+[PASS] debug_route.1202_old
+[PASS] debug_route.1240_old
+[PASS] debug_route.1260_old
+[PASS] debug_route.1270_old
+[PASS] debug_route.1220_old
+[PASS] debug_route.standard_no_rewrite
+[PASS] debug_route.old_rewrite
+[PASS] debug_route.old_query_rewrite
+[PASS] debug_route.old_idempotent
+[PASS] debug_route.bundle_1001
+[PASS] debug_route.bundle_0900
+[PASS] debug_route.bundle_0940
+[PASS] debug_route.bundle_0960
+[PASS] debug_route.bundle_1040
+[PASS] debug_route.bundle_1060
+[PASS] debug_route.bundle_1100
+[PASS] debug_route.bundle_1120
+[PASS] debug_route.bundle_1140
+[PASS] debug_route.bundle_1160
+[PASS] debug_route.bundle_1202
+[PASS] debug_route.bundle_1260
+[PASS] debug_route.bundle_1270
+[PASS] debug_route.bundle_1220
+[PASS] debug_route.bundle_hash_reject
+[PASS] debug_route.bundle_length_reject
+[PASS] daemon.welcome_toast_uri
+[PASS] daemon.welcome_toast_fallback
+[PASS] daemon.welcome_toast_i18n
+[PASS] ipc_frame_complete
+[PASS] ipc_force_nul
+[PASS] ipc_json_escape
+[PASS] ipc_format_reply_escape
+[PASS] ipc_null_path_policy
+[PASS] toolbox_injection.inject
+[PASS] toolbox_injection.same_pid_skip
+[PASS] toolbox_injection.new_pid
+[PASS] toolbox_injection.expected_pid
+[PASS] toolbox_injection.failure_cleanup
+[PASS] toolbox_injection.serialized
+[PASS] trampoline_arena.same_page_unique
+[PASS] trampoline_arena.invalid_requests
+[PASS] hook_lifecycle.barrier
+[PASS] hijack_retry.alive_until_max
+[PASS] hijack_retry.dead_stops
+[PASS] hijack_retry.alive_not_abort
+[PASS] ps5ui.escape
+[PASS] ps5ui.minimal_page
+[PASS] ps5ui.widgets
+[PASS] ps5ui.toggle_off
+[PASS] ps5ui.list
+[PASS] ps5ui.nested_group
+[PASS] ps5ui.link_style
+[PASS] ps5ui.link_confirm
+[PASS] ps5ui.attr_escape
+[PASS] ps5ui.account_activate_confirm
+[PASS] ps5ui.fluent_chain
+[PASS] ps5ui.text_field_confirm
+[PASS] ps5ui.toolbox_skeleton
+[PASS] ps5ui.icons_everywhere
+[PASS] ps5ui.legacy_user_custom
+[PASS] route.unknown
+[PASS] route.payloads
+[PASS] route.debug
+[PASS] route.cheats
+[PASS] route.auto_payloads
+[PASS] route.plugins
+[PASS] route.sprx
+[PASS] route.plugin_config
+[PASS] route.sprx_config
+[PASS] route.payload_config
+[PASS] route.overlay_metrics
+[PASS] route.overlay_metric
+[PASS] overlay.metric_restores_parent
+[PASS] plugins.registry
+[PASS] plugins.config_restores_parent
+[PASS] sprx.config_restores_parent
+[PASS] payload.config_restores_parent
+[PASS] route.account
+[PASS] route.cheat_progress
+[PASS] route.plugin_progress
+[PASS] route.remote_play
+[PASS] route.superuser
+[PASS] route.og_debug
+[PASS] route.shortcut_force
+[PASS] route.shortcut_not_open
+[PASS] route.matrix
+[PASS] session.flags_clear
+[PASS] session.progress_restores_parent
+[PASS] session.progress_restore_reusable
+[PASS] session.remote_play_restores_parent
+[PASS] remote_play.cancel_wins_terminal_race
+[PASS] remote_play.success_wins_terminal_race
+[PASS] cheatmap.dynamic
+[PASS] onpress.stock_pkg_passthrough
+[PASS] onpress.ignore_unrelated_resource
+[PASS] onpress.page_domain_matrix
+[PASS] toolbox.display_strip_user
+[PASS] toolbox.display_map_usb
+[PASS] toolbox.display_passthrough
+[PASS] toolbox.payload_name_accept
+[PASS] toolbox.payload_name_reject
+[PASS] toolbox.payload_legacy_staging_name
+[PASS] toolbox.elf_key_from_name
+[PASS] i18n.default_zh
+[PASS] i18n.en
+[PASS] i18n.ar
+[PASS] i18n.zh_hant
+[PASS] i18n.ja
+[PASS] i18n.fr
+[PASS] i18n.de
+[PASS] i18n.ko
+[PASS] i18n.es
+[PASS] i18n.pt_br
+[PASS] i18n.it
+[PASS] i18n.ru
+[PASS] i18n.pl
+[PASS] i18n.th
+[PASS] i18n.apply_ui_lang
+[PASS] i18n.system_lang_follows_query
+[PASS] i18n.system_lang_query_failure_keeps_current
+[PASS] i18n.missing_key
+[PASS] i18n.format
+[PASS] overlay_text_metrics.space_width
+[PASS] overlay_text_metrics.minimum_width
+[PASS] overlay_text_metrics.per_core_padding
+[PASS] overlay_text_metrics.font_scale
+[PASS] overlay_layout.invalid_screen
+[PASS] overlay_layout.disabled
+[PASS] overlay_layout.top_left
+[PASS] overlay_layout.top_center
+[4035.356] [331HEN] warn: system language query failed; keeping 0
+[4035.356] [331HEN] warn: system language query failed; keeping 1
+[PASS] overlay_layout.top_right
+[PASS] overlay_layout.bottom_left
+[PASS] overlay_layout.bottom_center
+[PASS] overlay_layout.bottom_right
+[PASS] overlay_layout.order
+[PASS] overlay_layout.right_keeps_ltr
+[PASS] overlay_layout.per_core_width
+[PASS] overlay_layout.hidden_gap
+[PASS] overlay_layout.fan_after_ip
+[PASS] overlay_layout.fan_hidden
+[PASS] overlay_layout.pack_origin
+[PASS] overlay_layout.edge_align_mapping
+[PASS] overlay_layout.custom_order
+[PASS] overlay_layout.large_font
+[PASS] fps_hz_from_delta
+[PASS] fps_rolling_mean
+[PASS] fps_compose_hybrid_multipass
+[PASS] fps_compose_dead_ticks
+[PASS] fps_title_prefixes
+[PASS] fps_sample_size
+[PASS] app_lifecycle.fake_runtime_handshake
+[PASS] app_lifecycle.fake_runtime_timeout_cleanup
+[PASS] app_lifecycle.runtime_startup_gate
+[PASS] app_lifecycle.fake_syscore_owner_exit
+[PASS] app_lifecycle.serial_priority
+[PASS] app_lifecycle.failure_stops_chain
+[4035.414] [331HEN] info: sprx: load attempt=1/3 pid=123 tid=CUSA12345 path=/tmp/onion-test-1XWPES.sprx
+[4035.415] [331HEN] info: sprx: load attempt=1 status=loaded pid=123 module=42 remote=0 cleanup=1
+[4035.415] [331HEN] warn: sprx: request rejected pid=123 tid=CUSA12345 path=/tmp/onion-test-YVWLOR.sprx status=policy-denied
+[4035.415] [331HEN] info: sprx: load attempt=1/3 pid=123 tid=CUSA12345 path=/tmp/onion-test-UBayAc.sprx
+[4035.415] [331HEN] info: sprx: load attempt=1 status=timeout pid=123 module=0 remote=-1 cleanup=1
+[4035.415] [331HEN] info: sprx: load attempt=2/3 pid=123 tid=CUSA12345 path=/tmp/onion-test-UBayAc.sprx
+[4035.415] [331HEN] info: sprx: load attempt=2 status=attach-failed pid=123 module=0 remote=-1 cleanup=1
+[4035.415] [331HEN] info: sprx: load attempt=3/3 pid=123 tid=CUSA12345 path=/tmp/onion-test-UBayAc.sprx
+[4035.415] [331HEN] info: sprx: load attempt=3 status=loaded pid=123 module=42 remote=0 cleanup=1
+[4035.415] [331HEN] info: sprx: load attempt=1/2 pid=123 tid=CUSA12345 path=/tmp/onion-test-SvLsuK.sprx
+[4035.415] [331HEN] info: sprx: load attempt=1 status=timeout pid=123 module=0 remote=-1 cleanup=1
+[4035.415] [331HEN] info: sprx: load attempt=2/2 pid=123 tid=CUSA12345 path=/tmp/onion-test-SvLsuK.sprx
+[4035.415] [331HEN] info: sprx: load attempt=2 status=timeout pid=123 module=0 remote=-1 cleanup=1
+[4035.415] [331HEN] error: sprx: retry exhausted pid=123 tid=CUSA12345 cause=timeout attempts=2
+[4035.415] [331HEN] info: sprx: load attempt=1/2 pid=123 tid=CUSA12345 path=/tmp/onion-test-6O2ydk.sprx
+[4035.415] [331HEN] info: sprx: load attempt=1 status=timeout pid=123 module=0 remote=-1 cleanup=0
+[4035.415] [331HEN] error: sprx: stopping retries because cleanup is unresolved pid=123
+[4035.416] [331HEN] info: sprx: load attempt=1/3 pid=123 tid=CUSA12345 path=/tmp/onion-test-AcnsJk.sprx
+[4035.416] [331HEN] warn: sprx: target access denied pid=123 tid=CUSA12345 status=policy-denied
+[PASS] sprx_allowlist_canonicalize
+[PASS] sprx_title_allowlist_denies
+[PASS] sprx_retry_state
+[PASS] sprx_retry_exhausted
+[PASS] sprx_unresolved_cleanup
+[PASS] sprx_access_prepare_failure
+[PASS] sprx_catalog_parse_order
+[PASS] sprx_catalog_invalid_keys
+[PASS] sprx_catalog_missing_dependency
+[PASS] sprx_catalog_dependency_cycle
+[PASS] sprx_catalog_enabled_persists
+[PASS] sprx_catalog_remove_persists
+[4035.423] [331HEN] info: sprx: load attempt=1/3 pid=123 tid=CUSA12345 path=/tmp/onion-test-IRz5h9.sprx
+[4035.423] [331HEN] info: sprx: load attempt=1 status=timeout pid=123 module=0 remote=-1 cleanup=1
+[4035.523] [331HEN] info: sprx: load attempt=2/3 pid=123 tid=CUSA12345 path=/tmp/onion-test-IRz5h9.sprx
+[4035.523] [331HEN] info: sprx: load attempt=2 status=timeout pid=123 module=0 remote=-1 cleanup=1
+[PASS] sprx_manager_dependency_failure_isolated
+[4035.623] [331HEN] info: sprx: load attempt=3/3 pid=123 tid=CUSA12345 path=/tmp/onion-test-IRz5h9.sprx
+[4035.623] [331HEN] info: sprx: load attempt=3 status=timeout pid=123 module=0 remote=-1 cleanup=1
+[4035.623] [331HEN] error: sprx: retry exhausted pid=123 tid=CUSA12345 cause=timeout attempts=3
+[4035.623] [331HEN] info: sprx: load attempt=1/3 pid=123 tid=CUSA12345 path=/tmp/onion-test-BY6UrP.sprx
+[4035.623] [331HEN] info: sprx: load attempt=1 status=loaded pid=123 module=0 remote=0 cleanup=1
+[PASS] sprx_manager_inventory_enable_remove
+[PASS] plugin_ui_registry_renderer
+[PASS] plugin_ui_owner_encoding
+[PASS] plugin_ui_bridge_protocol
+[PASS] plugin_ui_unknown_firmware
+[PASS] plugin_ui_registration_transaction
+[PASS] plugin_ui_protocol_broker
+[PASS] plugin_ui_connection_session
+[PASS] plugin_ui_connection_frame_protocol
+[PASS] plugin_ui_socket_connection
+[PASS] plugin_ui_host_services
+[PASS] plugin_pages.flat_list
+[PASS] plugin_pages.config_order
+[PASS] sprx_pages.flat_list
+[PASS] sprx_pages.config_status
+[PASS] plugin_progress.xml_generation
+[PASS] plugin_progress.route
+[PASS] progress_auto_return.ongoing
+[PASS] progress_auto_return.success_dwell
+[PASS] progress_auto_return.error_dwell
+[PASS] progress_auto_return.transition_deferral
+[PASS] progress_auto_return.page_affinity
+[PASS] progress_auto_return.reset_and_cheat
+[PASS] settings.status_reuses_elements
+[PASS] settings.structure_order
+[PASS] settings.retry
+[PASS] settings.permutations
+[PASS] settings.interactive_value
+[PASS] settings.invalid_model
+[PASS] settings.title_description
+[PASS] settings.nested_return
+[PASS] plugin_manager.fingerprint
+[PASS] plugin_manager.lifecycle
+[PASS] plugin_manager.auto_start_boot_only
+[PASS] plugin_manager.flags
+All util host tests passed.
+make: Leaving directory '/workspace/source/util/tests'

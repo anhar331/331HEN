@@ -1,0 +1,28 @@
+{
+  "backup": "/workspace/331HEN-backup/ui-working-snapshot",
+  "previous_elf_sha256": "309186b63813255c68cdac5b1a9f4806899a0f19ae721c6d137c632cf6c8afcd",
+  "changed_source_files": [
+    "source/util/tests/test_debug_settings_route_policy.cpp",
+    "source/daemon/include/welcome_toast.hpp",
+    "source/shellui/src/onpress_misc.cpp",
+    "source/shellui/src/settings_bundle_patch.cpp",
+    "source/shellui/src/toolbox_xml.cpp"
+  ],
+  "all_other_source_vendor_assets_unchanged": true,
+  "credits_and_projects_content_unchanged": true,
+  "about_navigation_groups": [
+    "id_hen331_credits",
+    "id_inc_project"
+  ],
+  "host_tests_passed": 435,
+  "host_tests_failed": 0,
+  "updated_ps5_runtime_tested": false,
+  "identical_binary_components": {
+    "build/bin/331HEN_ldr.elf": "b9882100f3eb504d6df427fd335cbad0e9a67845cb8a31ffa41b8af032455276",
+    "build/bin/util.elf": "fa2839e6222ac7f4e7f7944e36fe991956e1de3d82f8dbc4358bcd94ee626b1b",
+    ".cache/dependencies/kstuff.elf": "82cbb1e70f8a562317d6b65269cf6aa0d7d94e22df4f1ac89a260ca0ec261252",
+    "build/bootstrapper/generated/assets/331HEN_sicon.png": "d3ffa894b3466a90da6e7c630663fcd0d706ee2cc727411b2614219d03bbff85",
+    "build/bootstrapper/generated/assets/icon_xml_331HEN.png": "808c4390c0aad08a2577910d838dcbc282bbf16d1528676da44b3f16926f4770",
+    "LICENSE": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+  }
+}

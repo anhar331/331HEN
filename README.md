@@ -10,10 +10,7 @@ Download verified ELF builds from [Releases](https://github.com/anhar331/331HEN/
 - **Pre-release** builds: experimental; keep a known-working ELF available for rollback.
 - Each release should attach `331HEN.elf`, `SHA256SUMS.txt`, and notes on firmware support and changes.
 
-When a stable release exists, its asset can be accessed via:
-`https://github.com/anhar331/331HEN/releases/latest/download/331HEN.elf`
-
-This URL will not work until a stable GitHub Release with that asset has been published. GitHub's `latest` endpoint skips pre-releases.
+Use the versioned release asset linked by the approved Payload Manager source below. It selects the preserved existing ELF rather than the experimental Game Patches build. GitHub's `latest` endpoint skips pre-releases and is not used for this source.
 
 ## Publishing checklist
 
@@ -27,7 +24,13 @@ This URL will not work until a stable GitHub Release with that asset has been pu
 
 ## Payload Manager
 
-Payload Manager source formats vary. A GitHub repository or Releases URL may not be a valid **Manage Sources** entry. Verify the manager's expected source manifest format before adding a feed; do not assume this repository is directly compatible.
+In **Manage Sources → Add a New Source**, paste:
+
+    https://raw.githubusercontent.com/anhar331/331HEN/main/payloads.json
+
+This is the actual JSON catalog for the official [itsPLK PS5 Payload Manager](https://github.com/itsPLK/ps5-payload-manager). The catalog includes a direct, versioned `331HEN.elf` release URL and its SHA-256 checksum. The manager downloads the ELF and validates the hash. A GitHub repository homepage is not a source JSON URL.
+
+The default entry preserves the existing 331HEN build. Untested Game Patches pre-releases do not automatically replace it. A future source update requires an explicit hardware-test approval for the exact published ELF checksum. See [source format and approval workflow](docs/PAYLOAD-MANAGER.md).
 
 ## Credits
 

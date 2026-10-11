@@ -1,0 +1,20 @@
+[
+  {
+    "name": "331HEN_sicon.png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "embedded_exactly": true,
+    "sha256": "d3ffa894b3466a90da6e7c630663fcd0d706ee2cc727411b2614219d03bbff85"
+  },
+  {
+    "name": "icon_xml_331HEN.png",
+    "dimensions": [
+      64,
+      64
+    ],
+    "embedded_exactly": true,
+    "sha256": "808c4390c0aad08a2577910d838dcbc282bbf16d1528676da44b3f16926f4770"
+  }
+]

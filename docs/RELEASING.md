@@ -15,6 +15,8 @@ Origin is this repository; upstream remains aydencharles/onionHEN. Source and or
 4. It publishes 331HEN.elf, SHA256SUMS.txt, full recursive source, GPL LICENSE, firmware compatibility, changelog, test results, logs, limitations and one-session hardware instructions.
 5. It anonymously downloads the public ELF and checksum asset, verifies their hashes and returns the release URL in the Actions summary. No manual file transfer is required for distribution.
 
+Payload Manager uses the public raw [payloads.json](https://raw.githubusercontent.com/anhar331/331HEN/main/payloads.json), not this repository homepage. Publishing an experimental release does not replace the approved source. After a real PS5 test of the exact published checksum, use **Update approved Payload Manager source** to record approval and automatically update the JSON. See [the source policy and official parser verification](PAYLOAD-MANAGER.md).
+
 The GitHub Actions GITHUB_TOKEN is used only for publishing. It is not passed to the Docker build, source archive or console payload. For local Codex publishing, use the existing gh authentication; never store tokens in source. The source exporter includes only tracked files/initialized pinned recursive submodules and rejects credential/private-key patterns and private paths.
 
 ## Existing Cloud build

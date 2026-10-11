@@ -1,0 +1,10 @@
+{
+  "onionhen_revision": "b23ffe674b2de9f62fe634944c9230ff149d593a",
+  "kstuff_revision": "3b2ab4a16ba43c8ab38daf7ec83cc297014e0e47",
+  "kstuff_version": "v1.10",
+  "kstuff_size": 1572832,
+  "kstuff_sha256": "82cbb1e70f8a562317d6b65269cf6aa0d7d94e22df4f1ac89a260ca0ec261252",
+  "original_bootstrapper_offset": 23598608,
+  "exact_original_embedded_match": true,
+  "ps5_runtime_tested": false
+}

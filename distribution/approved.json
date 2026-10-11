@@ -1,0 +1,13 @@
+{
+  "approvals": [
+    {
+      "tag": "v0.0.13-331.2",
+      "sha256": "72f00d524636f8c96746d551fb495c1af319048a6af3703ffe5ae19e6abc197d",
+      "firmware": "12.70",
+      "kind": "preserved-baseline",
+      "approved_by": "anhar331",
+      "evidence": "Owner requested distribution of the preserved existing working 331HEN without substituting the untested Game Patches binary. Owner reports the existing project works on PS5; Codex did not perform hardware testing or independently confirm the exact hash on hardware.",
+      "ps5_runtime_tested_by_codex": false
+    }
+  ]
+}
