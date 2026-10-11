@@ -82,6 +82,12 @@ def verify_asset(release, record):
     entries = [line.split() for line in fetch(sums_url, 1024 * 1024).decode().splitlines()]
     if entries.count([record["sha256"], "331HEN.elf"]) != 1:
         raise ValueError("SHA256SUMS.txt does not identify the approved ELF exactly once")
+    tests = json.loads(fetch(assets["TEST-RESULTS.json"]["browser_download_url"], 1024 * 1024))
+    if tests.get("elf_sha256") != record["sha256"]:
+        raise ValueError("Published test report does not identify this exact ELF")
+    if not (tests.get("passed") is True or (record["kind"] == "preserved-baseline"
+                                           and tests.get("static_elf_checked") is True)):
+        raise ValueError("Published checks did not pass")
     with tempfile.TemporaryDirectory() as directory:
         elf = Path(directory) / "331HEN.elf"
         elf.write_bytes(data)
@@ -122,6 +128,11 @@ def validate_catalog(document):
     for value in item.values():
         if not isinstance(value, str) or any(c in value for c in '{}"\\'):
             raise ValueError("Metadata must be compatible with upstream's flat C scanner")
+    limits = {"name": 128, "filename": 256, "url": 1024, "source": 1024,
+              "source_direct": 1024, "description": 1024, "last_update": 64,
+              "version": 64, "checksum": 65, "category": 128}
+    if any(len(item.get(key, "").encode()) >= size for key, size in limits.items()):
+        raise ValueError("Metadata exceeds an official RepoPayload field size")
 
 
 def atomic_json(path, value):

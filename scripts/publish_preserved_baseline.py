@@ -36,7 +36,13 @@ def main():
     publisher.source_archive(destination / "331HEN-source.tar.gz")
     (destination / "SHA256SUMS.txt").write_text("".join(
         publisher.checksum(p) + "  " + p.name + "\n" for p in sorted(destination.iterdir()) if p.is_file()))
-    release = json.loads(publisher.gh("api", f"repos/{REPO}/releases/tags/{BASELINE_TAG}"))
+    # GitHub's public by-tag endpoint hides drafts. Authenticated listing can
+    # find the existing pending draft without inventing a second release.
+    pages = json.loads(publisher.gh("api", f"repos/{REPO}/releases", "--paginate", "--slurp"))
+    matches = [release for page in pages for release in page if release["tag_name"] == BASELINE_TAG]
+    if len(matches) != 1:
+        raise ValueError("Exactly one existing baseline draft is required")
+    release = matches[0]
     if not release["draft"]:
         raise ValueError("Cannot alter an already-published release")
     if not release["prerelease"]:

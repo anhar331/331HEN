@@ -1,4 +1,5 @@
 import copy
+import hashlib
 import importlib.util
 import json
 import tempfile
@@ -69,6 +70,28 @@ class SourceTests(unittest.TestCase):
     def test_missing_or_draft_asset_refused(self):
         for release in [self.release, {**self.release, "draft": True}]:
             with self.assertRaises(ValueError): source.verify_asset(release, self.record)
+
+    def test_public_asset_checksums_reports_and_elf_verification(self):
+        data = b"ELF fixture inspected by mocked static validator"
+        sha = hashlib.sha256(data).hexdigest()
+        record = {**self.record, "tag": "v0.0.13-331.3", "kind": "hardware-tested",
+                  "sha256": sha, "ps5_runtime_tested": True}
+        base = "https://github.com/anhar331/331HEN/releases/download/" + record["tag"] + "/"
+        names = ["331HEN.elf", "SHA256SUMS.txt", "LICENSE", "331HEN-source.tar.gz",
+                 "FIRMWARE-COMPATIBILITY.md", "CHANGES.md", "TEST-RESULTS.json"]
+        release = {**self.release, "tag_name": record["tag"], "assets": [
+            {"name": n, "state": "uploaded", "browser_download_url": base + n} for n in names]}
+        contents = {base + "331HEN.elf": data, base + "SHA256SUMS.txt": (sha + "  331HEN.elf\n").encode(),
+                    base + "TEST-RESULTS.json": json.dumps({"passed": True, "elf_sha256": sha}).encode()}
+        with patch.object(source, "fetch", side_effect=lambda url, limit: contents[url]), patch.object(source.subprocess, "run") as validate:
+            self.assertEqual(source.verify_asset(release, record), base + "331HEN.elf")
+            self.assertEqual(validate.call_count, 1)
+            for change in [{base + "331HEN.elf": b"corrupt"},
+                           {base + "SHA256SUMS.txt": b"wrong checksum\n"},
+                           {base + "TEST-RESULTS.json": b'{"passed":true,"elf_sha256":"wrong"}'}]:
+                old = contents.copy(); contents.update(change)
+                with self.subTest(change=change), self.assertRaises(ValueError): source.verify_asset(release, record)
+                contents.clear(); contents.update(old)
 
 
 if __name__ == "__main__": unittest.main()
