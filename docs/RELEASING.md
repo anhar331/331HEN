@@ -42,3 +42,5 @@ This workflow **always creates pre-releases**, even after host tests pass. It ca
 ## Compatibility boundary
 
 Target firmware: retail PS5 12.70. Existing kstuff is preserved. New native patches are hardware-untested. Guaranteed pre-entry timing, mask/cave operations and sprx patching are not implemented; see the integration/limitations reports. Successful compilation and memory mocks do not prove game effect or PS5 runtime stability.
+
+Current refinement releases use a separate 331HEN Preview catalog/storage family. The publishing workflow advances only that untested pre-release listing after anonymously downloading the exact uploaded ELF/checksum and verifying its reports. It runs the official Payload Manager parser and display tests before committing the catalog. The owner-approved default and its files remain unchanged; older release assets/tags are never deleted. A real PS5 test is still mandatory before approving a new default.

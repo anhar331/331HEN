@@ -23,5 +23,12 @@ with zipfile.ZipFile(root/'symlink.zip','w') as z:
  i=zipfile.ZipInfo('repo/patches/xml/Bad.xml');i.create_system=3;i.external_attr=0o120777<<16;z.writestr(i,'/outside')
 PYZIP
 "$TASK_TEST_BUILD/core_test" assets/gamepatches/Bloodborne-Orbis.xml "$TASK_PATCH_ARCHIVE" "$TASK_TEST_BUILD/traversal.zip" "$TASK_TEST_BUILD/absolute.zip" "$TASK_TEST_BUILD/corruptxml.zip" "$TASK_TEST_BUILD/invalidvalue.zip" "$TASK_TEST_BUILD/symlink.zip"
-c++ -std=c++20 -Wall -Wextra -Werror -Wno-range-loop-construct -Wno-unused-function -g -O1 -pthread "${TASK_CHECK_FLAGS[@]}" "${TASK_INC[@]}" -DONION_HOST_TEST=1 -DGP_DATA_ROOT='"/tmp/hen331-service-test/patches"' -DGP_BLOODBORNE_XML="\"$PWD/assets/gamepatches/Bloodborne-Orbis.xml\"" "${TASK_CORE[@]}" source/util/source/patches/service.cpp source/util/source/cheats/cheat_applier.cpp third_party/cjson/cJSON.cpp source/util/tests/gamepatches/service_test.cpp -o "$TASK_TEST_BUILD/service_test"
+c++ -std=c++20 -Wall -Wextra -Werror -Wno-range-loop-construct -Wno-unused-function -g -O1 -pthread "${TASK_CHECK_FLAGS[@]}" "${TASK_INC[@]}" -DONION_HOST_TEST=1 -DGP_GAME_ROOT='"/tmp/hen331-service-test"' -DGP_DATA_ROOT='"/tmp/hen331-service-test/patches"' -DGP_BLOODBORNE_XML="\"$PWD/assets/gamepatches/Bloodborne-Orbis.xml\"" "${TASK_CORE[@]}" source/util/source/patches/service.cpp source/util/source/patches/games.cpp source/util/source/cheats/cheat_applier.cpp third_party/cjson/cJSON.cpp source/util/tests/gamepatches/service_test.cpp -o "$TASK_TEST_BUILD/service_test"
 "$TASK_TEST_BUILD/service_test" "$TASK_PATCH_ARCHIVE"
+
+c++ -std=c++20 -Wall -Wextra -Werror "${TASK_CHECK_FLAGS[@]}" "${TASK_INC[@]}" source/util/tests/gamepatches/module_abi_test.cpp -o "$TASK_TEST_BUILD/module-abi-test"
+"$TASK_TEST_BUILD/module-abi-test"
+GP_TEST_BUILD="$TASK_TEST_BUILD" bash source/util/tests/gamepatches/run-games.sh
+
+c++ -std=c++20 -g -O1 -Wall -Wextra -Wno-misleading-indentation "${TASK_CHECK_FLAGS[@]}" -Isource/shellui/include -Isource/include -Isource/util/include -Isource/libonion_ipc/include -Isource/libonion_proc/include -Isource/libonion_platform/include -Isource/libonion_settings/include -Isource/libonion_payload/include -Ithird_party/cjson source/shellui/src/game_patches.cpp source/shellui/src/ps5_settings_ui.cpp third_party/cjson/cJSON.cpp source/util/tests/gamepatches/ui_test.cpp -o "$TASK_TEST_BUILD/ui-test"
+"$TASK_TEST_BUILD/ui-test"

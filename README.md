@@ -32,7 +32,7 @@ This is the actual JSON catalog for the official [itsPLK PS5 Payload Manager](ht
 
 The default entry preserves the existing 331HEN build. Untested Game Patches pre-releases do not automatically replace it. A future source update requires an explicit hardware-test approval for the exact published ELF checksum. See [source format and approval workflow](docs/PAYLOAD-MANAGER.md).
 
-The same catalog also lists **331HEN Game Patches TEST** as a separately requested experimental download. Its saved filename and Payload Manager folder differ from the default, so it does not replace the working payload file. This version is not PS5-tested; use it alone in a separate test session and follow the [hardware-test instructions](docs/game-patches/HARDWARE-TEST.md). Both builds retain the existing 331HEN runtime/configuration paths; separate download folders do not isolate console services or settings.
+The same catalog also lists **331HEN Preview** as a separately requested experimental download. Its saved filename and Payload Manager folder differ from the default, so it does not replace the working payload file. The old TEST catalog entry is retired; historical releases remain archived. This new version is not PS5-tested; use it alone in a separate test session and follow the [hardware-test instructions](docs/game-patches/HARDWARE-TEST.md). Both builds retain the existing 331HEN runtime/configuration paths; separate download folders do not isolate console services or settings.
 
 ## Credits
 

@@ -127,6 +127,7 @@ TEST_C_SRCS := \
 	test_platform_notify.c \
 	test_util_language.c \
 	test_hijack_retry.c \
+	test_service_stop.c \
 	stubs/host_stubs.c
 
 TEST_CXX_SRCS := \

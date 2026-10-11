@@ -1,3 +1,7 @@
+# Current refinement
+
+The old TEST catalog entry will be replaced by a distinct 331HEN Preview pre-release after public asset verification. The preserved default and all earlier releases stay unchanged. The historical verification below records the earlier implementation and is not a stability claim for this update.
+
 # Payload Manager distribution verification — 2026-10-11
 
 Optional experimental listing added at the owner's request: the catalog now retains the approved `331HEN` entry unchanged and lists **331HEN Game Patches TEST** independently. The test saves as `331HEN-GamePatches-TEST_v0.0.13-331.1.elf`; the official manager maps it to its own `331HEN-GamePatches-TEST` folder, distinct from the working `331HEN` folder. The existing uploaded experimental ELF is verified by SHA-256 `88a0d3d64cf5ba35fd1e67de51f57599844390c7668b7b08027edc313b46433c`. No release, asset, payload binary or default hardware-approval record was replaced. Both actual parser entries/backend folders and nine frontend installed/update cases passed; 15 Python policy/publishing tests passed. PS5 runtime testing has not been performed. See [experimental listing and session instructions](PAYLOAD-MANAGER.md#optional-separate-game-patches-test).

@@ -4,6 +4,7 @@
 #include "onion_cjson.hpp"
 #include "patches/coordination.hpp"
 #include "patches/core.hpp"
+#include "patches/games.hpp"
 #if !defined(ONION_HOST_TEST)
 #include "pt.h"
 #else
@@ -19,19 +20,14 @@ extern "C" int pt_detach_proc(int, int);
 #include <onion/log.h>
 #include <onion/notify.h>
 #include <onion/proc_query.h>
-
 #include <set>
-#include <signal.h>
 #include <sys/stat.h>
+#include <sys/time.h>
 #include <thread>
 #include <unistd.h>
-extern "C" int sceShellCoreUtilGetAppLaunchedParamString(uint32_t, const char *,
-                                                         char *, size_t);
+extern "C" int sceShellCoreUtilGetAppLaunchedParamString(uint32_t, const char *, char *, size_t);
 extern "C" {
-__asm__(
-    ".pushsection .rodata\n.global "
-    "gp_bloodborne_start\ngp_bloodborne_start:\n.incbin \"" GP_BLOODBORNE_XML
-    "\"\n.global gp_bloodborne_end\ngp_bloodborne_end:\n.popsection\n");
+__asm__(".pushsection .rodata\n.global gp_bloodborne_start\ngp_bloodborne_start:\n.incbin \"" GP_BLOODBORNE_XML "\"\n.global gp_bloodborne_end\ngp_bloodborne_end:\n.popsection\n");
 extern const unsigned char gp_bloodborne_start[], gp_bloodborne_end[];
 }
 namespace hen331::patches {
@@ -39,20 +35,21 @@ namespace {
 #ifndef GP_DATA_ROOT
 #define GP_DATA_ROOT "/data/331HEN/patches"
 #endif
+#ifndef GP_GAME_ROOT
+#define GP_GAME_ROOT ""
+#endif
 const std::string root = GP_DATA_ROOT;
 std::mutex mu;
 Engine engine;
-Target current;
-std::vector<Patch> catalog;
+Target current, pending;
+InstalledGame selected;
+std::vector<Patch> selected_catalog, runtime_catalog;
 std::map<std::string, std::string> states;
-std::string catalog_error;
+std::string selected_error, runtime_status = "Launch a selected game to apply saved patches";
 std::string update_status = "Collection not downloaded";
 bool downloading = false, initialized = false;
-int pending_pid = 0, attempts = 0;
-int inherited_pid = 0;
-uint64_t inherited_generation = 0;
-bool inherited_session_blocked = false;
-std::string pending_title;
+int attempts = 0;
+uint64_t initialized_generation = 0;
 std::string read_file(const std::string &p) {
   std::ifstream f(p, std::ios::binary);
   return std::string((std::istreambuf_iterator<char>(f)), {});
@@ -65,173 +62,128 @@ std::string json_status(const std::string &s) {
 void log(const std::string &s) {
   LOG_INFO("[patches] %s", s.c_str());
   FILE *f = fopen((root + "/logs/runtime.log").c_str(), "a");
-  if (f) {
-    fprintf(f, "%s\n", s.c_str());
-    fclose(f);
-  }
+  if (f) { fprintf(f, "%s\n", s.c_str()); fclose(f); }
 }
 bool dirs() {
-  for (const auto &p :
-       {root.substr(0, root.find_last_of('/')), root, root + "/xml",
-        root + "/config", root + "/cache", root + "/logs"}) {
+  for (const auto &p : {root.substr(0, root.find_last_of('/')), root, root + "/xml", root + "/config", root + "/cache", root + "/logs"}) {
     struct stat st{};
-    if (lstat(p.c_str(), &st) == 0) {
-      if (!S_ISDIR(st.st_mode))
-        return false;
-    } else if (mkdir(p.c_str(), 0700))
-      return false;
+    if (lstat(p.c_str(), &st) == 0) { if (!S_ISDIR(st.st_mode)) return false; }
+    else if (mkdir(p.c_str(), 0700)) return false;
   }
   return true;
 }
 bool external_engine() {
-  return onion_find_pid("patch-server.elf") > 0 ||
-         onion_find_pid("patch-server") > 0;
+  return onion_find_pid("patch-server.elf") > 0 || onion_find_pid("patch-server") > 0;
 }
 std::string session(const Target &t) {
-  return std::to_string(t.pid) + ":" + std::to_string(t.appid) + ":" +
-         std::to_string(t.generation) + ":" + t.title + ":" + t.version;
+  return std::to_string(t.pid) + ":" + std::to_string(t.appid) + ":" + std::to_string(t.generation) + ":" + t.title + ":" + t.version;
 }
-bool target(Target &t) {
-  game_context_t game{};
-  onion_bigapp_process_t process{};
-  if (util_get_running_bigapp(&game) != 0 ||
-      onion_resolve_running_bigapp(&process) != 0 || process.pid != game.pid ||
-      process.session_generation == 0 || !title_id(game.title_id))
-    return false;
-  char live_title[16] = {};
-  if (sceShellCoreUtilGetAppLaunchedParamString(
-          static_cast<uint32_t>(game.appid), "TITLE_ID", live_title,
-          sizeof(live_title)) < 0 ||
-      strcmp(live_title, game.title_id) != 0)
-    return false;
-  t.pid = game.pid;
-  t.appid = game.appid;
-  t.generation = process.session_generation;
-  t.title = game.title_id;
-  t.elf = "eboot.bin";
-  // Query launched update metadata; never guess from a filename or user input.
-  char version[32] = {};
-  if (sceShellCoreUtilGetAppLaunchedParamString(static_cast<uint32_t>(t.appid),
-                                                "APP_VER", version,
-                                                sizeof(version)) < 0 ||
-      !version[0]) {
-    if (sceShellCoreUtilGetAppLaunchedParamString(
-            static_cast<uint32_t>(t.appid), "CONTENT_VERSION", version,
-            sizeof(version)) < 0 ||
-        !version[0])
-      return false;
+std::string selection_token() {
+  std::string identity = selected.title + "\n" + selected.version;
+  for (const auto &p : selected_catalog) identity += "\n" + p.key;
+  return selected.title + ":" + selected.version + ":" + digest(identity);
+}
+bool enabled(const Patch &p, const std::string &title) {
+  return read_file(root + "/config/" + title + "-" + p.key) == "1\n";
+}
+void load(const std::string &title, const std::string &version, std::vector<Patch> &out, std::string &error) {
+  out.clear(); error.clear();
+  std::string dir = active_dir(root);
+  if (dir.empty()) dir = root + "/xml";
+  DIR *d = opendir(dir.c_str());
+  if (!d) { error = "Patch XML directory unavailable"; return; }
+  std::set<std::string> seen;
+  while (auto *e = readdir(d)) {
+    std::string n = e->d_name;
+    if (!n.ends_with(".xml")) continue;
+    struct stat st{}; std::string file = dir + "/" + n;
+    if (lstat(file.c_str(), &st) || !S_ISREG(st.st_mode) || st.st_size > 2 * 1024 * 1024) continue;
+    std::vector<Patch> parsed; std::string parse_error;
+    if (!parse(read_file(file), parsed, parse_error)) { error = n + ": " + parse_error; continue; }
+    for (auto &patch : parsed)
+      if (matches(patch, title, version) && seen.insert(patch.key).second) out.push_back(std::move(patch));
   }
-  t.version = version;
+  closedir(d);
+}
+bool select(const std::string &title) {
+  InstalledGame actual; std::string error;
+  if (!installed_game(title, actual, error, GP_GAME_ROOT)) {
+    selected = {}; selected_catalog.clear(); selected_error = error; return false;
+  }
+  if (actual.version.empty() || actual.version == "unknown") {
+    selected = actual; selected_catalog.clear(); selected_error = "Installed game version unavailable; patch matching blocked"; return false;
+  }
+  if (selected.title != actual.title || selected.version != actual.version || selected.metadata_path != actual.metadata_path) {
+    selected = std::move(actual);
+    load(selected.title, selected.version, selected_catalog, selected_error);
+  }
+  return true;
+}
+bool target(Target &t, std::string &error) {
+  t = pending;
+  if (util_verify_game_identity(t.pid, t.appid, t.generation, t.title.c_str()) != 0) {
+    error = "Game terminated or launch identity changed"; return false;
+  }
+  InstalledGame installed; std::string metadata_error;
+  if (!installed_game(t.title, installed, metadata_error, GP_GAME_ROOT) || installed.version.empty()) {
+    error = "Verified installed game/version unavailable: " + metadata_error; return false;
+  }
+  // APP_VER / CONTENT_VERSION are launched metadata. SystemService BigApp APIs
+  // are deliberately not called from util: its credentials remain PTRACE.
+  char live_title[16]{};
+  int title_result = sceShellCoreUtilGetAppLaunchedParamString(static_cast<uint32_t>(t.appid), "TITLE_ID", live_title, sizeof(live_title));
+  if (title_result >= 0 && live_title[0] && t.title != live_title) {
+    error = "Launched Title ID mismatch; patching blocked"; return false;
+  }
+  char version[32]{};
+  int version_result = sceShellCoreUtilGetAppLaunchedParamString(static_cast<uint32_t>(t.appid), "APP_VER", version, sizeof(version));
+  if (version_result < 0 || !version[0]) {
+    version[0] = 0;
+    version_result = sceShellCoreUtilGetAppLaunchedParamString(static_cast<uint32_t>(t.appid), "CONTENT_VERSION", version, sizeof(version));
+  }
+  if (version_result >= 0 && version[0]) {
+    if (!t.version.empty() && t.version != version) {
+      error = "Launched version changed; patching blocked"; return false;
+    }
+    t.version = version;
+  }
+  // A new launch resolves its installed metadata only after the independently
+  // verified PID, generation, application ID and Title ID establish identity.
+  if (t.version.empty()) t.version = installed.version;
+  if (t.version != installed.version) {
+    error = "Installed/launched version mismatch; patching blocked"; return false;
+  }
+  t.elf = "eboot.bin";
   util_module_info_t module{};
-  if (util_find_module(t.pid, "eboot.bin", &module) < 0)
-    return false;
-  t.base = module.sections[0].vaddr;
-  if (!t.base)
-    return false;
-  t.regions.clear();
+  if (util_find_module(t.pid, "eboot.bin", &module) < 0 || !module.sections[0].vaddr) {
+    error = "Executable module mappings unavailable; no patches applied"; return false;
+  }
+  t.base = module.sections[0].vaddr; t.regions.clear();
   for (const auto &section : module.sections)
-    if (section.vaddr && section.size)
-      t.regions.push_back({section.vaddr, section.size});
-  return !t.regions.empty();
+    if (section.vaddr && section.size) t.regions.push_back({section.vaddr, section.size});
+  if (t.regions.empty()) {
+    error = "Executable mapping sizes unavailable; no guessed bounds used"; return false;
+  }
+  return true;
 }
 class RuntimeMemory final : public Memory {
   Target t_;
   std::unique_ptr<onion::cheats::IMemoryBackend> backend_;
-
 public:
-  explicit RuntimeMemory(const Target &t)
-      : t_(t), backend_(onion::cheats::MemoryBackendFactory::create(
-                   util_system_fw_major())) {}
+  explicit RuntimeMemory(const Target &t) : t_(t), backend_(onion::cheats::MemoryBackendFactory::create(util_system_fw_major())) {}
   bool same(const Target &t) override {
-    onion_bigapp_process_t p{};
-    return onion_resolve_running_bigapp(&p) == 0 && p.pid == t.pid &&
-           p.appid == t.appid && p.session_generation == t.generation;
+    return util_verify_game_identity(t.pid, t.appid, t.generation, t.title.c_str()) == 0;
   }
   bool freeze(const Target &t) override {
-    if (!same(t))
-      return false;
-    if (pt_attach_proc(t.pid) == 0)
-      return true;
-    // The shared attach helper can fail after PT_ATTACH succeeds. Release our
-    // trace.
-    (void)pt_detach_proc(t.pid, 0);
+    if (!same(t)) return false;
+    if (pt_attach_proc(t.pid) == 0) return true;
     return false;
   }
-  bool resume(const Target &t) override {
-    return pt_detach_proc(t.pid, 0) == 0;
-  }
-  bool read(uint64_t a, void *b, size_t n) override {
-    return backend_->read(t_.pid, a, b, n) == 0;
-  }
-  bool write(uint64_t a, const void *b, size_t n) override {
-    return backend_->write(t_.pid, a, b, n) == 0;
-  }
+  bool resume(const Target &t) override { return pt_detach_proc(t.pid, 0) == 0; }
+  bool read(uint64_t a, void *b, size_t n) override { return backend_ && backend_->read(t_.pid, a, b, n) == 0; }
+  bool write(uint64_t a, const void *b, size_t n) override { return backend_ && backend_->write(t_.pid, a, b, n) == 0; }
 };
-bool enabled(const Patch &p) {
-  return read_file(root + "/config/" + current.title + "-" + p.key) == "1\n";
-}
-void load(const Target &t) {
-  catalog.clear();
-  catalog_error.clear();
-  std::string dir = active_dir(root);
-  if (dir.empty())
-    dir = root + "/xml";
-  DIR *d = opendir(dir.c_str());
-  if (!d) {
-    catalog_error = "Patch XML directory unavailable";
-    return;
-  }
-  std::set<std::string> seen;
-  while (auto *e = readdir(d)) {
-    std::string n = e->d_name;
-    if (!n.ends_with(".xml"))
-      continue;
-    struct stat st{};
-    std::string file = dir + "/" + n;
-    if (lstat(file.c_str(), &st) || !S_ISREG(st.st_mode) ||
-        st.st_size > 2 * 1024 * 1024)
-      continue;
-    std::vector<Patch> parsed;
-    std::string error;
-    if (!parse(read_file(file), parsed, error)) {
-      catalog_error = n + ": " + error;
-      log(n + ": " + error);
-      continue;
-    }
-    for (auto &p : parsed)
-      if (matches(p, t.title, t.version) && seen.insert(p.key).second)
-        catalog.push_back(std::move(p));
-  }
-  closedir(d);
-}
-bool ensure() {
-  std::lock_guard<std::recursive_mutex> memory_lock(
-      hen331::memorycoord::mutex());
-  Target t;
-  inherited_session_blocked = false;
-  if (!initialized)
-    return false;
-  if (!target(t))
-    return false;
-  // A util restart loses the in-memory originals. Never capture already
-  // patched bytes as new originals in a game inherited from an earlier util.
-  if (t.pid == inherited_pid && t.generation == inherited_generation) {
-    inherited_session_blocked = true;
-    return false;
-  }
-  if (session(t) != session(current)) {
-    current = t;
-    engine.reset(t);
-    hen331::memorycoord::patches().clear();
-    states.clear();
-    load(t);
-  }
-  return true;
-}
-void notify_result(const std::string &s) {
-  log(s); /* Notification uses the existing linked notification transport. */
-  onion_notify(true, "%s", s.c_str());
-}
+void notify_result(const std::string &s) { log(s); onion_notify(true, "%s", s.c_str()); }
 using onion::cheats::sync::SyncStatus;
 bool fetch(const std::string &url, const char *host, std::string &data,
            size_t max) {
@@ -284,7 +236,8 @@ void updater_body() {
       if (ok) {
         update_status = "Installed/updated " + std::to_string(count) +
                         " patches; revision " + sha;
-        load(current);
+        selected = {};
+        selected_catalog.clear();
       }
       unlink((root + "/cache/download.zip").c_str());
     }
@@ -312,186 +265,168 @@ void updater() noexcept {
 } // namespace
 void initialize() {
   std::lock_guard<std::mutex> lock(mu);
-  if (initialized)
-    return;
+  if (initialized) return;
+  // Process generation uses ki_start timeval. Do not inherit a process that
+  // predates this service: its original bytes may belong to an older util.
+  timeval now{};
+  if (gettimeofday(&now, nullptr) == 0)
+    initialized_generation = (static_cast<uint64_t>(now.tv_sec) << 32) | static_cast<uint64_t>(now.tv_usec);
   initialized = true;
-  onion_bigapp_process_t inherited{};
-  if (onion_resolve_running_bigapp(&inherited) == 0) {
-    inherited_pid = inherited.pid;
-    inherited_generation = inherited.session_generation;
-  }
-  if (!dirs()) {
-    update_status = "Patch storage unavailable";
-    return;
-  }
-  if (active_dir(root).empty() &&
-      access((root + "/xml/Bloodborne-Orbis.xml").c_str(), F_OK) != 0) {
-    std::string xml(reinterpret_cast<const char *>(gp_bloodborne_start),
-                    gp_bloodborne_end - gp_bloodborne_start);
-    std::vector<Patch> p;
-    std::string error;
-    if (parse(xml, p, error))
-      atomic_write(root + "/xml/Bloodborne-Orbis.xml", xml);
+  if (!dirs()) { update_status = "Patch storage unavailable"; return; }
+  if (active_dir(root).empty() && access((root + "/xml/Bloodborne-Orbis.xml").c_str(), F_OK) != 0) {
+    std::string xml(reinterpret_cast<const char *>(gp_bloodborne_start), gp_bloodborne_end - gp_bloodborne_start);
+    std::vector<Patch> patches; std::string error;
+    if (parse(xml, patches, error)) atomic_write(root + "/xml/Bloodborne-Orbis.xml", xml);
   }
   update_status = "Bundled Bloodborne collection; download for all games";
 }
-std::string list(size_t offset) {
+std::string games(size_t offset) {
   std::lock_guard<std::mutex> lock(mu);
+  auto catalog = installed_games(GP_GAME_ROOT);
   cJSON *j = cJSON_CreateObject();
   cJSON_AddStringToObject(j, "collection", update_status.c_str());
-  bool ready = ensure();
-  std::string status =
-      ready ? (external_engine()
-                   ? "Conflicting patch-server detected; patching blocked"
-               : catalog.empty()
-                   ? (catalog_error.empty()
-                          ? "No compatible patches found."
-                          : "Patch collection error: " + catalog_error)
-                   : "Selections persist; writes use exact game "
-                     "version and executable")
-      : inherited_session_blocked
-          ? "Restart game required: patch service inherited this "
-            "running process"
-          : "No running game with verified version/module mappings";
-  cJSON_AddStringToObject(j, "status", status.c_str());
-  cJSON_AddStringToObject(j, "session", session(current).c_str());
-  cJSON_AddStringToObject(j, "title", ready ? current.title.c_str() : "");
-  cJSON_AddStringToObject(j, "version", ready ? current.version.c_str() : "");
-  cJSON *items = cJSON_AddArrayToObject(j, "patches");
-  if (ready) {
-    size_t end = std::min(catalog.size(), offset + 2);
-    for (size_t i = offset; i < end; ++i) {
-      const auto &p = catalog[i];
-      cJSON *e = cJSON_CreateObject();
-      cJSON_AddStringToObject(e, "key", p.key.c_str());
-      cJSON_AddStringToObject(e, "name", p.name.substr(0, 128).c_str());
-      cJSON_AddStringToObject(e, "author", p.author.substr(0, 128).c_str());
-      cJSON_AddStringToObject(e, "note", p.note.substr(0, 160).c_str());
-      cJSON_AddBoolToObject(e, "enabled", enabled(p));
-      cJSON_AddBoolToObject(e, "supported", p.unsupported.empty());
-      std::string state =
-          p.unsupported.empty()
-              ? (engine.applied(p.key) ? "Applied (memory verified)"
-                 : enabled(p)          ? "Selected; restart game required"
-                                       : "Off")
-              : p.unsupported;
-      if (states.count(p.key))
-        state = states[p.key];
-      cJSON_AddStringToObject(e, "status", state.substr(0, 160).c_str());
-      cJSON_AddItemToArray(items, e);
-    }
-    cJSON_AddNumberToObject(j, "next",
-                            end < catalog.size() ? static_cast<int>(end) : -1);
-  } else
-    cJSON_AddNumberToObject(j, "next", -1);
+  cJSON_AddStringToObject(j, "status", catalog.games.empty() ? "No installed games with verified metadata found" : "Choose a game and save patches before launching it");
+  if (!catalog.warnings.empty()) cJSON_AddStringToObject(j, "warning", catalog.warnings.front().substr(0, 180).c_str());
+  cJSON *items = cJSON_AddArrayToObject(j, "games");
+  size_t end = std::min(catalog.games.size(), offset + 4);
+  for (size_t i = offset; i < end; ++i) {
+    const auto &game = catalog.games[i]; cJSON *e = cJSON_CreateObject();
+    cJSON_AddStringToObject(e, "title", game.title.c_str());
+    cJSON_AddStringToObject(e, "name", game.name.substr(0, 160).c_str());
+    cJSON_AddStringToObject(e, "version", game.version.c_str());
+    cJSON_AddStringToObject(e, "platform", game.platform.c_str());
+    cJSON_AddItemToArray(items, e);
+  }
+  cJSON_AddNumberToObject(j, "next", end < catalog.games.size() ? static_cast<int>(end) : -1);
   return onion_cjson::print_owned(j);
 }
-std::string toggle(const std::string &key, const std::string &requested,
-                   bool on) {
+std::string list(size_t offset, const std::string &title) {
   std::lock_guard<std::mutex> lock(mu);
-  std::lock_guard<std::recursive_mutex> memory_lock(
-      hen331::memorycoord::mutex());
-  if (!dirs())
-    return json_status("Patch storage unavailable");
-  if (!ensure() || session(current) != requested)
-    return json_status(inherited_session_blocked
-                           ? "Restart game required: clean patch session needed"
-                           : "Game changed or terminated; reopen Game Patches");
-  if (external_engine())
-    return json_status("Conflicting patch-server active; patch not applied");
-  auto it = std::find_if(catalog.begin(), catalog.end(),
-                         [&](const Patch &p) { return p.key == key; });
-  if (it == catalog.end() || !it->unsupported.empty())
-    return json_status("Unsupported patch");
-  // Persist only after verified application. Revert memory if persistence
-  // fails.
-  for (const auto &line : it->lines)
-    if ((on || engine.applied(key)) &&
-        hen331::memorycoord::cheat_conflict(
-            current.pid, current.base + line.address - it->imagebase,
-            line.bytes.size()))
-      return json_status("Conflict with enabled Cheat; disable it first");
-  RuntimeMemory m(current);
-  std::string status;
-  bool previous = engine.applied(key);
-  if (engine.toggle(*it, current, m, on, status)) {
-    if (!atomic_write(root + "/config/" + current.title + "-" + key,
-                      on ? "1\n" : "0\n")) {
-      std::string rollback;
-      engine.toggle(*it, current, m, previous, rollback);
-      status = "Selection save failed; " + rollback;
+  std::string requested = title.empty() ? selected.title : title;
+  bool ready = initialized && select(requested);
+  cJSON *j = cJSON_CreateObject();
+  cJSON_AddStringToObject(j, "collection", update_status.c_str());
+  std::string status = !ready ? selected_error : selected_catalog.empty() ? "No compatible patches found." : "Save selections, then launch or restart the game. Startup effects are not guaranteed.";
+  if (ready && (current.title == selected.title || pending.title == selected.title)) status = runtime_status;
+  cJSON_AddStringToObject(j, "status", status.c_str());
+  cJSON_AddStringToObject(j, "session", ready ? selection_token().c_str() : "");
+  cJSON_AddStringToObject(j, "title", selected.title.c_str());
+  cJSON_AddStringToObject(j, "name", selected.name.substr(0, 160).c_str());
+  cJSON_AddStringToObject(j, "version", selected.version.c_str());
+  cJSON *items = cJSON_AddArrayToObject(j, "patches");
+  size_t end = ready ? std::min(selected_catalog.size(), offset + 2) : offset;
+  if (ready) for (size_t i = offset; i < end; ++i) {
+    const auto &p = selected_catalog[i]; cJSON *e = cJSON_CreateObject();
+    bool on = enabled(p, selected.title);
+    cJSON_AddStringToObject(e, "key", p.key.c_str());
+    cJSON_AddStringToObject(e, "name", p.name.substr(0, 128).c_str());
+    cJSON_AddStringToObject(e, "author", p.author.substr(0, 128).c_str());
+    cJSON_AddStringToObject(e, "note", p.note.substr(0, 160).c_str());
+    cJSON_AddBoolToObject(e, "enabled", on);
+    cJSON_AddBoolToObject(e, "supported", p.unsupported.empty());
+    bool live = current.title == selected.title && current.version == selected.version;
+    std::string state = !p.unsupported.empty() ? p.unsupported : on ? "Selected; launch/restart game required" : "Off";
+    if (live && engine.applied(p.key)) state = on ? "Written after launch (memory verified); startup effects unverified" : "Disable saved; restart game required";
+    else if (live && states.count(p.key) && on) state = states[p.key];
+    cJSON_AddStringToObject(e, "status", state.substr(0, 160).c_str());
+    cJSON_AddItemToArray(items, e);
+  }
+  cJSON_AddNumberToObject(j, "next", ready && end < selected_catalog.size() ? static_cast<int>(end) : -1);
+  return onion_cjson::print_owned(j);
+}
+std::string toggle(const std::string &key, const std::string &requested, bool on) {
+  std::lock_guard<std::mutex> lock(mu);
+  if (!initialized || !dirs()) return json_status("Patch storage unavailable");
+  // Re-read installed metadata before accepting a stale page's selection.
+  if (selected.title.empty() || !select(selected.title) || selection_token() != requested)
+    return json_status("Installed game/version or collection changed; reopen Game Patches");
+  auto it = std::find_if(selected_catalog.begin(), selected_catalog.end(), [&](const Patch &p) { return p.key == key; });
+  if (it == selected_catalog.end() || !it->unsupported.empty()) return json_status("Unsupported patch");
+  if (on) {
+    // Detect address conflicts among independently selected patches before launch.
+    for (const auto &other : selected_catalog) {
+      if (other.key == key || !enabled(other, selected.title)) continue;
+      for (const auto &a : it->lines) for (const auto &b : other.lines) {
+        uint64_t aa = a.address - it->imagebase, bb = b.address - other.imagebase;
+        if (aa < bb + b.bytes.size() && bb < aa + a.bytes.size())
+          return json_status("Conflict with another selected patch; disable it first");
+      }
     }
   }
-  hen331::memorycoord::patches().clear();
-  for (auto r : engine.ranges())
-    hen331::memorycoord::patches().push_back({current.pid, r.start, r.size});
-  states[key] = status;
-  log(it->name + ": " + status);
+  if (!atomic_write(root + "/config/" + selected.title + "-" + key, on ? "1\n" : "0\n"))
+    return json_status("Selection save failed (permission or storage); previous setting retained");
+  std::string status = on ? "Saved ON; launch/restart game required" : "Saved OFF; restart game required if already applied";
+  log(selected.title + " / " + selected.version + " / " + it->name + ": " + status);
   return json_status(status);
 }
 std::string download() {
   std::lock_guard<std::mutex> lock(mu);
-  if (downloading)
-    return json_status("Download already running");
-  if (!dirs())
-    return json_status("Patch storage unavailable");
-  downloading = true;
-  update_status = "Downloading verified upstream patch collection";
-  try {
-    std::thread(updater).detach();
-  } catch (...) {
-    downloading = false;
-    update_status = "Cannot start download worker; retry later";
-  }
+  if (downloading) return json_status("Download already running");
+  if (!dirs()) return json_status("Patch storage unavailable");
+  downloading = true; update_status = "Downloading verified upstream patch collection";
+  try { std::thread(updater).detach(); }
+  catch (...) { downloading = false; update_status = "Cannot start download worker; retry later"; }
   return json_status(update_status);
 }
-std::string launch(int pid, const std::string &title) {
+std::string launch(int pid, int appid, uint64_t generation, const std::string &title, const std::string &version) {
   std::lock_guard<std::mutex> lock(mu);
-  if (pid <= 1 || !title_id(title))
-    return json_status("Invalid launch");
-  pending_pid = pid;
-  pending_title = title;
-  attempts = 50;
-  return json_status("Launch scheduled");
+  if (!initialized || pid <= 1 || appid < 0 || !generation || !title_id(title) || version.size() > 31)
+    return json_status("Invalid or unverified launch snapshot");
+  if (util_verify_game_identity(pid, appid, generation, title.c_str()) != 0)
+    return json_status("Launch identity changed; patching blocked");
+  if (!initialized_generation || generation <= initialized_generation) {
+    runtime_status = "Restart game required: process predates patch service";
+    return json_status(runtime_status);
+  }
+  if (current.pid == pid && current.generation == generation) return json_status("Launch already processed; no duplicate writes");
+  if (pending.pid == pid && pending.generation == generation && attempts > 0) return json_status("Launch already scheduled");
+  pending = {}; pending.pid = pid; pending.appid = appid; pending.generation = generation; pending.title = title; pending.version = version;
+  attempts = 50; runtime_status = "Verifying new launch metadata and executable mappings";
+  return json_status("Launch scheduled; application occurs after process launch");
+}
+std::string ended(int pid, uint64_t generation) {
+  std::lock_guard<std::mutex> lock(mu);
+  std::lock_guard<std::recursive_mutex> memory_lock(hen331::memorycoord::mutex());
+  if (pending.pid == pid && (!generation || pending.generation == generation)) { attempts = 0; pending = {}; }
+  if (current.pid == pid && (!generation || current.generation == generation)) {
+    current = {}; engine.reset(current); runtime_catalog.clear(); states.clear(); hen331::memorycoord::patches().clear();
+    runtime_status = "Game closed; saved selections will apply on its next launch";
+  }
+  return json_status("Game exit recorded");
 }
 void tick() try {
   std::lock_guard<std::mutex> lock(mu);
-  std::lock_guard<std::recursive_mutex> memory_lock(
-      hen331::memorycoord::mutex());
-  if (attempts <= 0)
-    return;
+  std::lock_guard<std::recursive_mutex> memory_lock(hen331::memorycoord::mutex());
+  if (!initialized || attempts <= 0) return;
   --attempts;
-  if (!ensure() || current.pid != pending_pid || current.title != pending_title)
-    return;
-  attempts = 0;
-  if (external_engine()) {
-    log("External patch-server active; launch patching blocked");
+  Target t; std::string error;
+  if (!target(t, error)) {
+    runtime_status = error;
+    if (!attempts) log(pending.title + ": " + error + "; launch patches skipped");
     return;
   }
-  for (const auto &p : catalog)
-    if (enabled(p) && p.unsupported.empty()) {
-      bool conflict = false;
-      for (const auto &l : p.lines)
-        if (hen331::memorycoord::cheat_conflict(
-                current.pid, current.base + l.address - p.imagebase,
-                l.bytes.size()))
-          conflict = true;
-      if (conflict) {
-        states[p.key] = "Conflict with enabled Cheat";
-        continue;
-      }
-      RuntimeMemory m(current);
-      std::string status;
-      engine.toggle(p, current, m, true, status);
-      states[p.key] = status;
-      log(p.name + ": " + status);
-    }
-  hen331::memorycoord::patches().clear();
-  for (auto r : engine.ranges())
-    hen331::memorycoord::patches().push_back({current.pid, r.start, r.size});
-} catch (...) {
   attempts = 0;
-  LOG_ERROR(
-      "[patches] launch processing failed; no further automatic attempts");
+  if (external_engine()) { runtime_status = "Conflicting patch-server active; launch patching blocked"; log(runtime_status); return; }
+  if (session(current) != session(t)) {
+    current = t; engine.reset(t); states.clear(); hen331::memorycoord::patches().clear();
+    load(t.title, t.version, runtime_catalog, error);
+  }
+  size_t applied = 0;
+  for (const auto &p : runtime_catalog) if (enabled(p, current.title) && p.unsupported.empty()) {
+    bool conflict = false;
+    for (const auto &line : p.lines)
+      if (hen331::memorycoord::cheat_conflict(current.pid, current.base + line.address - p.imagebase, line.bytes.size())) conflict = true;
+    if (conflict) { states[p.key] = "Conflict with enabled Cheat; not applied"; continue; }
+    RuntimeMemory m(current); std::string status;
+    if (engine.toggle(p, current, m, true, status)) {
+      ++applied; status = "Written after launch (memory verified); startup effects unverified";
+    }
+    states[p.key] = status; log(current.title + ": " + p.name + ": " + status);
+  }
+  hen331::memorycoord::patches().clear();
+  for (auto r : engine.ranges()) hen331::memorycoord::patches().push_back({current.pid, r.start, r.size});
+  runtime_status = "Verified " + std::to_string(applied) + " saved patch writes after launch; pre-entry timing unverified";
+} catch (...) {
+  attempts = 0; LOG_ERROR("[patches] launch processing failed; no further automatic attempts");
 }
 } // namespace hen331::patches

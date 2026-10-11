@@ -49,7 +49,8 @@ Binary: `source/util/build/host-tests/onion-host-tests`
 | `test_settings` | semantic schema serialize/round-trip, partial INI defaults |
 | `test_fps_formula` | broad PS4 BC classification: PPSA/PPSB/CUSA/PCAS/PCJS/PCKS/CUHJ prefix detection |
 | `test_ready` | ready markers, PID-bound process instances, path builder, name rejection, **fps_overlay / util_booted** flags, toolbox runtime-root marker |
-| `test_toolbox_injection` | same-PID skip, new-PID reinject, failure cleanup, concurrent request serialization |
+| `test_toolbox_injection` | same-PID skip, persistent failed/timeout attempt, late readiness, new-PID recovery, concurrent request serialization |
+| `test_service_stop` | wait for owned service exit, kill failure, bounded timeout, stale foreign PID and system PID protection |
 | `test_platform_fs` | `if_exists` / `touch_file` / `rmtree` (libonion_platform) |
 | `test_platform_log` | `onion_log_configure` + file sink |
 | `test_platform_notify` | `onion_notify_format` prefix/truncate + send stub |

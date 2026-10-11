@@ -80,6 +80,7 @@ enum DaemonCommands : unsigned int {
   BREW_UTIL_PATCH_TOGGLE = 0x8000201u,
   BREW_UTIL_PATCH_DOWNLOAD = 0x8000202u,
   BREW_UTIL_PATCH_LAUNCH = 0x8000203u,
+  BREW_UTIL_PATCH_GAMES = 0x8000204u,
 
   // Crit daemon plugin management. Payloads contain only validated plugin IDs;
   // filesystem paths never cross the IPC boundary.

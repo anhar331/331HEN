@@ -94,10 +94,10 @@ static int test_load_file_buffer_rejects_empty_file(void) {
 }
 
 static int test_module_section_layout(void) {
-  TEST_ASSERT_EQ_U64(24, sizeof(util_module_section_t));
+  TEST_ASSERT_EQ_U64(16, sizeof(util_module_section_t));
   TEST_ASSERT_EQ_U64(0, offsetof(util_module_section_t, vaddr));
   TEST_ASSERT_EQ_U64(8, offsetof(util_module_section_t, size));
-  TEST_ASSERT_EQ_U64(16, offsetof(util_module_section_t, prot));
+  TEST_ASSERT_EQ_U64(12, offsetof(util_module_section_t, prot));
   TEST_ASSERT_EQ_INT(4, MODULE_INFO_MAX_SECTIONS);
   return 0;
 }

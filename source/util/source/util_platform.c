@@ -447,6 +447,43 @@ int util_get_running_bigapp(game_context_t *out) {
 
 /* ---- module lookup (NineS + eboot fallback) ----------------------------- */
 
+uint64_t util_process_generation(pid_t pid) {
+  int mib[4] = {CTL_KERN, KERN_PROC, KERN_PROC_PID, pid};
+  size_t size = 0;
+  if (pid <= 1 || sysctl(mib, 4, NULL, &size, NULL, 0) != 0 ||
+      size < sizeof(struct kinfo_proc) || size > 1024 * 1024)
+    return 0;
+  void *buffer = malloc(size);
+  if (!buffer)
+    return 0;
+  const size_t capacity = size;
+  uint64_t generation = 0;
+  if (sysctl(mib, 4, buffer, &size, NULL, 0) == 0 && size <= capacity &&
+      size >= sizeof(struct kinfo_proc)) {
+    const struct kinfo_proc *ki = (const struct kinfo_proc *)buffer;
+    if (ki->ki_pid == pid && ki->ki_structsize >= (int)sizeof(*ki) &&
+        (size_t)ki->ki_structsize <= size && ki->ki_start.tv_sec >= 0 &&
+        ki->ki_start.tv_usec >= 0 && ki->ki_start.tv_usec < 1000000)
+      generation = ((uint64_t)ki->ki_start.tv_sec << 32) |
+                   (uint64_t)ki->ki_start.tv_usec;
+  }
+  free(buffer);
+  return generation;
+}
+
+int util_verify_game_identity(pid_t pid, int appid, uint64_t generation,
+                              const char *title_id) {
+  app_info_t info;
+  if (!title_id || strnlen(title_id, 16) != 9 || generation == 0 ||
+      util_process_generation(pid) != generation)
+    return -1;
+  memset(&info, 0, sizeof(info));
+  if (sceKernelGetAppInfo(pid, &info) != 0 || (int)info.app_id != appid ||
+      memcmp(info.title_id, title_id, 9) != 0 || info.title_id[9] != '\0')
+    return -1;
+  return 0;
+}
+
 static int find_eboot_imagebase(pid_t pid, const char *module_name,
                                 util_module_info_t *out) {
   intptr_t proc = 0;
@@ -528,19 +565,28 @@ static int dynlib_find_module(pid_t pid, const char *module_name,
   size_t i;
 
   memset(out, 0, sizeof(*out));
-  syscall(SYS_dl_get_list, pid, NULL, 0, &num_handles);
-  if (num_handles == 0) {
+  if (syscall(SYS_dl_get_list, pid, NULL, 0, &num_handles) < 0 ||
+      num_handles == 0 || num_handles > 4096) {
     return -1;
   }
   handles = (uintptr_t *)calloc(num_handles, sizeof(uintptr_t));
   if (handles == NULL) {
     return -1;
   }
-  syscall(SYS_dl_get_list, pid, handles, num_handles, &num_handles);
+  const size_t capacity = num_handles;
+  if (syscall(SYS_dl_get_list, pid, handles, capacity, &num_handles) < 0 ||
+      num_handles > capacity) {
+    free(handles);
+    return -1;
+  }
   for (i = 0; i < num_handles; ++i) {
     util_module_info_t tmp;
     memset(&tmp, 0, sizeof(tmp));
-    syscall(SYS_dl_get_info_2, pid, 1, handles[i], &tmp);
+    if (syscall(SYS_dl_get_info_2, pid, 1, handles[i], &tmp) < 0)
+      continue;
+    tmp.filename[sizeof(tmp.filename) - 1] = '\0';
+    tmp.libname[sizeof(tmp.libname) - 1] = '\0';
+    tmp.sandboxed_path[sizeof(tmp.sandboxed_path) - 1] = '\0';
     if (module_name_matches(&tmp, module_name)) {
       *out = tmp;
       free(handles);

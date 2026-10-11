@@ -34,7 +34,7 @@ def main():
         (work / "expected.tsv").write_text("".join(
             "\t".join([item["name"], item["filename"], item["url"], item["checksum"],
                         item["version"], item["category"],
-                        "331HEN" if index == 0 else "331HEN-GamePatches-TEST"]) + "\n"
+                        "331HEN" if index == 0 else "331HEN-Preview"]) + "\n"
             for index, item in enumerate(expected)))
         (work / "main.c").write_text(r'''
 #include <stdio.h>

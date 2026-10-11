@@ -11,13 +11,19 @@
 #include <onion/platform.h>
 #include <onion/proc_query.h>
 #include <onion/ready.h>
+#include <onion/service_stop.h>
 
 #include <errno.h>
 #include <signal.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 #include <unistd.h>
+
+#ifndef HEN331_KSTUFF_SHA256
+#define HEN331_KSTUFF_SHA256 "not recorded"
+#endif
 
 extern uint8_t daemon_start[];
 extern const unsigned int daemon_size;
@@ -35,29 +41,55 @@ typedef struct LaunchContext {
   uint16_t loader_port;
 } LaunchContext;
 
-static void stop_owned_service(const char *ready_name,
-                               const char *expected_process_name) {
+static bool service_alive(pid_t pid, void *context) {
+  (void)context;
+  return onion_proc_is_alive(pid);
+}
+
+static bool service_owned(pid_t pid, const char *expected, void *context) {
+  (void)context;
+  char name[32] = {0};
+  return sceKernelGetProcessName(pid, name) == 0 && strcmp(name, expected) == 0;
+}
+
+static bool service_terminate(pid_t pid, void *context) {
+  (void)context;
+  return kill(pid, SIGKILL) == 0 || errno == ESRCH;
+}
+
+static void service_wait_ms(unsigned milliseconds, void *context) {
+  (void)context;
+  usleep((useconds_t)milliseconds * 1000);
+}
+
+static bool stop_owned_service(const char *ready_name,
+                              const char *expected_process_name) {
   pid_t pid = -1;
   if (!onion_ready_read_pid(ready_name, &pid) || pid <= 1) {
     onion_ready_clear(ready_name);
-    return;
+    return true;
   }
-
-  char process_name[32] = {0};
-  if (!onion_proc_is_alive(pid) ||
-      sceKernelGetProcessName(pid, process_name) != 0 ||
-      strcmp(process_name, expected_process_name) != 0) {
+  const OnionServiceStopOps ops = {
+      service_alive, service_owned, service_terminate, service_wait_ms};
+  const OnionServiceStopResult result = onion_service_stop_owned(
+      pid, expected_process_name, &ops, NULL, 3000, 100);
+  if (result == ONION_SERVICE_STOP_FAILED ||
+      result == ONION_SERVICE_STOP_TIMEOUT) {
+    LOG_ERROR("Refusing overlapping %s startup: old pid=%d did not stop "
+              "(result=%d)", ready_name, (int)pid, (int)result);
+    /* Retain ownership so another retry cannot forget a still-live instance. */
+    return false;
+  }
+  if (result == ONION_SERVICE_STOP_STALE ||
+      result == ONION_SERVICE_STOP_ABSENT) {
     LOG_WARN("Ignoring stale %s ownership marker pid=%d", ready_name,
              (int)pid);
-    onion_ready_clear(ready_name);
-    return;
+  } else {
+    LOG_INFO("Stopped owned %s pid=%d before replacement", ready_name,
+             (int)pid);
   }
-
-  LOG_INFO("Stopping owned %s pid=%d", ready_name, (int)pid);
-  if (kill(pid, SIGKILL) != 0 && errno != ESRCH)
-    LOG_ERROR("Failed to stop owned %s pid=%d: %s", ready_name, (int)pid,
-              strerror(errno));
   onion_ready_clear(ready_name);
+  return true;
 }
 
 static bool loader_available(uint16_t port) {
@@ -130,12 +162,14 @@ static bool launch_blob(LaunchContext *context, const uint8_t *elf, size_t size,
   return true;
 }
 
-static void prepare_service_markers(void) {
-  stop_owned_service(ONION_READY_DAEMON, "onion_daemon.elf");
-  stop_owned_service(ONION_READY_UTIL, "onion_util.elf");
+static bool prepare_service_markers(void) {
+  if (!stop_owned_service(ONION_READY_DAEMON, "onion_daemon.elf") ||
+      !stop_owned_service(ONION_READY_UTIL, "onion_util.elf"))
+    return false;
   onion_ready_clear(ONION_READY_KSTUFF);
   onion_ready_clear(ONION_FLAG_UTIL_BOOTED);
   onion_ready_clear(ONION_FLAG_FPS_OVERLAY);
+  return true;
 }
 
 static bool launch_util(LaunchContext *context) {
@@ -166,7 +200,8 @@ static void launch_kstuff(LaunchContext *context, uint32_t firmware_version,
   }
 
   if (kstuff_already_running()) {
-    LOG_WARN("kstuff already running / mprotect OK -- skip launch");
+    LOG_WARN("kstuff already active / mprotect OK -- preserving active instance; "
+             "its version cannot be identified by this probe");
     onion_ready_signal(ONION_READY_KSTUFF);
     return;
   }
@@ -175,12 +210,26 @@ static void launch_kstuff(LaunchContext *context, uint32_t firmware_version,
             context->loader_port);
   size_t override_size = 0;
   uint8_t *override_elf = NULL;
-  if (if_exists("/data/331HEN/kstuff.elf"))
+  if (if_exists("/data/331HEN/kstuff.elf")) {
+    struct stat override_stat;
+    if (stat("/data/331HEN/kstuff.elf", &override_stat) == 0)
+      LOG_INFO("kstuff custom override found: /data/331HEN/kstuff.elf "
+               "(file size=%lld bytes)", (long long)override_stat.st_size);
     override_elf = onion_payload_read_file("/data/331HEN/kstuff.elf",
                                            &override_size);
+    if (!override_elf)
+      LOG_WARN("kstuff override could not be read; preserving existing fallback "
+               "to embedded payload");
+  }
 
   const uint8_t *elf = override_elf ? override_elf : kstuff_start;
   const size_t size = override_elf ? override_size : (size_t)kstuff_size;
+  if (override_elf)
+    LOG_INFO("kstuff launch source: custom /data/331HEN/kstuff.elf "
+             "(%zu bytes; custom version not verified)", size);
+  else
+    LOG_INFO("kstuff launch source: embedded (%zu bytes), build SHA-256=%s",
+             size, HEN331_KSTUFF_SHA256);
   const bool sent =
       launch_blob(context, elf, size, "kstuff", "kstuff.elf");
   free(override_elf);
@@ -229,7 +278,11 @@ int bootstrap_launch_services(uint32_t firmware_version, bool kstuff_autoload) {
   LOG_DEBUG("launching embedded ELFs (serialized)");
   sleep(3);
 
-  prepare_service_markers();
+  if (!prepare_service_markers()) {
+    bootstrap_notify("%s", "331HEN startup stopped: previous services are "
+                          "still running. Reboot before loading again.");
+    return -2;
+  }
   if (!launch_util(&context))
     return -2;
   launch_kstuff(&context, firmware_version, kstuff_autoload);

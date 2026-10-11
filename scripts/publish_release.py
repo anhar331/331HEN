@@ -142,7 +142,7 @@ def prepare(elf, tests_dir, tag, commit):
         shutil.copyfile(tests_dir / name, destination / name)
     (destination / "FIRMWARE-COMPATIBILITY.md").write_text(
         "# Firmware compatibility\n\nTarget: retail PS5 firmware 12.70.\n\n"
-        "Previous working 331HEN/kstuff was PS5-tested by the user. This new Game Patches "
+        "Previous working 331HEN/kstuff was PS5-tested by the user. This refined "
         "ELF has NOT been PS5-tested; it is a pre-release. No new kernel offsets or "
         "patches were added. Existing embedded kstuff SHA-256: " + KSTUFF_SHA256 + ".\n\n"
         "Strict Title ID/version/eboot.bin matching is required. Guaranteed pre-entry "
@@ -160,10 +160,10 @@ def prepare(elf, tests_dir, tag, commit):
         "Raw test/build logs are included. No PS5 runtime test was performed. "
         "The original stable ELF is retained locally and is not this asset.\n")
     notes = (
-        f"# 331HEN {tag} — Game Patches TEST\n\n"
+        f"# 331HEN {tag} — Stability refinement\n\n"
         "**Experimental pre-release. Target PS5 firmware 12.70; this updated ELF is "
         "NOT tested on PS5 hardware.** Keep your known-working payload.\n\n"
-        "Native Game Patches, independent persisted toggles, exact game/version matching, "
+        "Installed-game selection, persistent pre-launch toggles, exact game/version matching, "
         "real process-memory execution with readback/rollback, cheat overlap protection "
         "and native GitHub collection updates. Bloodborne CUSA00900 / 01.09 definitions "
         "are bundled unchanged.\n\n"
@@ -223,7 +223,7 @@ def main():
     # No --clobber, update, deletion, forced tag or stable promotion exists here.
     subprocess.run(["gh", "release", "create", tag, *assets, "--repo", REPOSITORY,
                     "--target", commit, "--prerelease", "--latest=false",
-                    "--title", f"331HEN {tag} — Game Patches TEST",
+                    "--title", f"331HEN {tag} — Stability refinement",
                     "--notes-file", str(destination / "RELEASE-NOTES.md")], check=True)
     release = json.loads(gh("api", f"repos/{REPOSITORY}/releases/tags/{tag}"))
     if release["draft"] or not release["prerelease"]:
@@ -243,7 +243,27 @@ def main():
     # GITHUB_TOKEN-created releases do not trigger a second release workflow.
     # Reverify only the recorded approved channel; this new untested release is
     # absent from approvals and cannot replace the preserved default source.
+    # The owner requested the current refinement in the native source, with
+    # the obsolete TEST listing removed. Only the separate preview family is
+    # advanced here; distribution/approved.json and stable defaults are untouched.
+    experimental = {"experiments": [{"tag": tag, "sha256": checksum(elf),
+                    "firmware": "12.70", "kind": "experimental",
+                    "ps5_runtime_tested": False, "listed_by": "anhar331",
+                    "purpose": "Owner requested the newly built refinement, replacing the old TEST catalog entry while preserving the existing default."}]}
+    manifest = ROOT / "distribution/experimental.json"
+    manifest.write_text(json.dumps(experimental, indent=2) + "\n")
     subprocess.run(["python3", str(ROOT / "scripts/update_payload_source.py")], check=True)
+    subprocess.run(["python3", str(ROOT / "scripts/test_payload_manager_parser.py")], check=True)
+    subprocess.run(["python3", str(ROOT / "scripts/test_payload_manager_display.py")], check=True)
+    git("fetch", "origin", "main")
+    if git("rev-parse", "HEAD") != git("rev-parse", "origin/main"):
+        raise RuntimeError("Release uploaded, but main changed: refuse overwriting the catalog")
+    git("config", "user.name", "331HEN release workflow")
+    git("config", "user.email", "41898282+github-actions[bot]@users.noreply.github.com")
+    git("add", "distribution/experimental.json", "payloads.json")
+    git("commit", "-m", f"List verified {tag} in separate preview channel")
+    subprocess.run(["git", "-c", "credential.helper=", "-c", "credential.helper=!gh auth git-credential",
+                    "push", "origin", "HEAD:main"], cwd=ROOT, check=True)
     summary = Path(__import__("os").environ.get("GITHUB_STEP_SUMMARY", "/dev/null"))
     with summary.open("a") as stream:
         stream.write(f"Published [{tag}]({release['html_url']}) as an untested PS5 pre-release. "

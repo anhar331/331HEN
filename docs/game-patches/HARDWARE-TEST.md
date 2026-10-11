@@ -1,18 +1,10 @@
-# One PS5 test session
+# One PS5 hardware test session
 
-Use only 331HEN-GamePatches-TEST.elf for this experimental session. Keep the existing 331HEN.elf as the stable backup. No firmware update is required.
+1. Keep the previous 331HEN ELF. Reboot into a fresh normal exploit session on firmware 12.70; load only the new pre-release once, with the game closed. Do not load both HEN builds together.
+2. Check the welcome notification, native 331HEN Tools, FTP and existing Cheats/download collection navigation.
+3. Open Game Tools → Game Patches. Find Bloodborne CUSA00900 / 01.09 in the installed-game picker. Unknown/mismatched versions must not offer applicable patches.
+4. Select 60 FPS (With Deltatime) independently and confirm Saved ON; launch/restart required. Download patch collection once if desired, then reopen the selected game and confirm persistence.
+5. Launch Bloodborne normally. Reopen Game Patches to inspect actual post-launch write status. Memory verified does not establish 60 FPS or startup timing; observe the game itself. Early-startup effects are not guaranteed. Avoid Laurence's optional DLC cinematic, which the upstream patch warns can softlock.
+6. Save OFF, close and relaunch the game; confirm settings and normal game behavior. Keep existing cheat files unchanged.
 
-1. Close any running game. Do not load a separate ps-patch-system/patch-server payload. Load the experimental ELF through the same working payload loader used for stable 331HEN.
-2. Confirm the ordinary 331HEN startup succeeds. Open 331HEN Tools → Game Tools: Cheats, Download cheat collection, Game Patches, Download patch collection should appear in that order. Existing cheat files should still be present.
-3. Optional in the same session: select Download patch collection. Wait for the installed/updated count notification. This downloads inside 331HEN, without a browser or FTP. If it fails, the bundled Bloodborne XML or prior valid collection stays usable; use Refresh patch status to read the result and retry when networking is available.
-4. Launch Bloodborne CUSA00900, installed version 01.09. Open Game Patches. Confirm the displayed Title ID/version. Enable ONLY 60 FPS (With Deltatime) initially. Applied (memory readback verified) means the bytes were written and checked, not that FPS was measured. Any identity/mapping/conflict/write failure should report an error and must not be treated as success.
-5. Return to the game and observe gameplay/frame pacing with any existing FPS display you already use. Reopen the menu and disable the patch: expect original-byte restoration status. Enable it again, then close and relaunch the GAME once. The saved ON selection should apply to the new process. No second experimental build or PS5 restart is required for these steps.
-6. Optional: independently enable Disable Motion Blur or Disable Chromatic Aberration and inspect the visible effect. Avoid combining competing frame-rate patches. Skip Intro requires a game restart for an already-passed intro, and pre-entry timing remains unguaranteed; record its result rather than assuming it works.
-7. Check ordinary Cheats and existing Toolbox navigation/back/controller behavior during the same session. If a cheat overlaps an enabled patch, the conflict error is expected; disable the conflicting selection first. Confirm ordinary game/FTP/features you already use still function.
-8. If a write/rollback/resume error occurs, do not repeatedly toggle patches in that process. Close/restart the game through normal UI. After util/payload recovery while a game is already running, Restart game required is deliberate protection.
-
-The upstream FPS patch notes a possible softlock during Laurence's optional DLC boss cinematic. If affected, disable 60 FPS and restart the game before that progression.
-
-Report the displayed title/version, exact status, actual FPS/effect, persistence after the one game relaunch, download count/error and any existing-feature regression. Do not interpret the build report as prior PS5 verification.
-
-To leave the experimental session, close the patched game and return to the stable payload using your usual safe loader/session procedure. The stable release file and cheat directory were not removed or replaced. Patch selections live only under /data/331HEN/patches.
+If a crash occurs, return to the prior payload in a fresh session. Useful existing logs: /data/331HEN/331HEN_util_daemon.log, /data/331HEN/patches/logs/runtime.log and bootstrapper/daemon logs. Record whether the crash occurred before the welcome notification or during native menu/game use. Codex did not perform this hardware test.

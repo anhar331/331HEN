@@ -170,6 +170,13 @@ void toolbox_notify_outcome(const onion::ToolboxInjectionOutcome &outcome) {
               static_cast<int>(outcome.pid));
     onion_notify(true, "notify.toolbox.shellui_restarted");
     break;
+  case onion::ToolboxInjectionResult::RestartRequired:
+    LOG_ERROR("Toolbox initialization already attempted in SceShellUI pid=%d; "
+              "refusing a second copy until ShellUI restarts",
+              static_cast<int>(outcome.pid));
+    onion_notify(true, "%s", "Toolbox initialization incomplete. Restart "
+                             "ShellUI or reboot before retrying.");
+    break;
   }
 }
 

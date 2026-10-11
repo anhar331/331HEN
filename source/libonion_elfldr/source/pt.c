@@ -85,6 +85,9 @@ pt_attach(pid_t pid) {
   }
 
   if (waitpid(pid, &status, WUNTRACED) == -1) {
+    const int saved_errno = errno;
+    (void)sys_ptrace(PT_DETACH, pid, 0, 0);
+    errno = saved_errno;
     return -1;
   }
 
@@ -92,6 +95,7 @@ pt_attach(pid_t pid) {
    * registers or its address space.  A plain waitpid success is not enough:
    * an exit/continued event must never be treated as the attach stop. */
   if (!WIFSTOPPED(status)) {
+    (void)sys_ptrace(PT_DETACH, pid, 0, 0);
     errno = ESRCH;
     return -1;
   }

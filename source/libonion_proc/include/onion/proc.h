@@ -39,44 +39,7 @@ along with this program; see the file COPYING. If not, see
 #define SYS_dl_get_list 0x217
 #define SYS_dl_get_info_2 0x2cd
 
-#ifndef MODULE_INFO_NAME_LENGTH
-#define MODULE_INFO_NAME_LENGTH 128
-#endif
-#ifndef MODULE_INFO_SANDBOXED_PATH_LENGTH
-#define MODULE_INFO_SANDBOXED_PATH_LENGTH 1024
-#endif
-#ifndef MODULE_INFO_MAX_SECTIONS
-#define MODULE_INFO_MAX_SECTIONS 4
-#endif
-#ifndef FINGERPRINT_LENGTH
-#define FINGERPRINT_LENGTH 20
-#endif
-
-typedef struct {
-	uint64_t vaddr;
-	uint32_t size;
-    uint32_t prot;
-} module_section_t;
-
-typedef struct {
-	char filename[MODULE_INFO_NAME_LENGTH];
-	uint64_t handle;
-	uint8_t unknown0[32]; // NOLINT(readability-magic-numbers)
-	uint64_t init; // init
-	uint64_t fini; // fini
-	uint64_t eh_frame_hdr; // eh_frame_hdr
-	uint64_t eh_frame_hdr_sz; // eh_frame_hdr_sz
-	uint64_t eh_frame; // eh_frame
-	uint64_t eh_frame_sz; // eh_frame_sz
-	module_section_t sections[MODULE_INFO_MAX_SECTIONS];
-	uint8_t unknown7[1176]; // NOLINT(readability-magic-numbers)
-	uint8_t fingerprint[FINGERPRINT_LENGTH];
-	uint32_t unknown8;
-	char libname[MODULE_INFO_NAME_LENGTH];
-	uint32_t unknown9;
-	char sandboxed_path[MODULE_INFO_SANDBOXED_PATH_LENGTH];
-	uint64_t sdk_version;
-} module_info_t;
+#include <onion/module_info.h>
 
 
 

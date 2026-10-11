@@ -106,7 +106,7 @@ class SourceTests(unittest.TestCase):
                                   "https://github.com/anhar331/331HEN/releases/download/" + source.BASELINE_TAG + "/331HEN.elf")
         document["payloads"].append(source.experimental_item(self.release, record, url))
         source.validate_catalog(document)
-        self.assertEqual(document["payloads"][1]["filename"], "331HEN-GamePatches-TEST_v0.0.13-331.1.elf")
+        self.assertEqual(document["payloads"][1]["filename"], "331HEN-Preview_v0.0.13-331.1.elf")
         for change in [{"filename": source.saved_filename(record["tag"])}, {"category": "Homebrew Enablers"},
                        {"description": "Stable build"}, {"name": "331HEN"}]:
             bad = copy.deepcopy(document); bad["payloads"][1].update(change)

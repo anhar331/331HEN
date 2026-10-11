@@ -54,40 +54,22 @@ int util_resolve_game_version(const char *title_id, char *out, size_t out_size);
  */
 int util_get_running_bigapp(game_context_t *out);
 
+/** Process start identity without SystemService (util runs as PTRACE_AUTHID). */
+uint64_t util_process_generation(pid_t pid);
+int util_verify_game_identity(pid_t pid, int appid, uint64_t generation,
+                              const char *title_id);
+
 /*
  * Dynlib module info — layout matches NineS module_info_t / SYS_dl_get_info_2.
  * Kept here so C++ util targets need not pull NineS freebsd-helper headers.
  */
-#define UTIL_MODULE_INFO_NAME_LENGTH 128
-#define UTIL_MODULE_INFO_SANDBOXED_PATH_LENGTH 1024
-#define UTIL_MODULE_INFO_MAX_SECTIONS 4
-#define UTIL_FINGERPRINT_LENGTH 20
-
-typedef struct {
-  uint64_t vaddr;
-  uint64_t size;
-  uint32_t prot;
-} util_module_section_t;
-
-typedef struct {
-  char filename[UTIL_MODULE_INFO_NAME_LENGTH];
-  uint64_t handle;
-  uint8_t unknown0[32];
-  uint64_t init;
-  uint64_t fini;
-  uint64_t eh_frame_hdr;
-  uint64_t eh_frame_hdr_sz;
-  uint64_t eh_frame;
-  uint64_t eh_frame_sz;
-  util_module_section_t sections[UTIL_MODULE_INFO_MAX_SECTIONS];
-  uint8_t unknown7[1176];
-  uint8_t fingerprint[UTIL_FINGERPRINT_LENGTH];
-  uint32_t unknown8;
-  char libname[UTIL_MODULE_INFO_NAME_LENGTH];
-  uint32_t unknown9;
-  char sandboxed_path[UTIL_MODULE_INFO_SANDBOXED_PATH_LENGTH];
-  uint64_t sdk_version;
-} util_module_info_t;
+#include <onion/module_info.h>
+#define UTIL_MODULE_INFO_NAME_LENGTH MODULE_INFO_NAME_LENGTH
+#define UTIL_MODULE_INFO_SANDBOXED_PATH_LENGTH MODULE_INFO_SANDBOXED_PATH_LENGTH
+#define UTIL_MODULE_INFO_MAX_SECTIONS MODULE_INFO_MAX_SECTIONS
+#define UTIL_FINGERPRINT_LENGTH FINGERPRINT_LENGTH
+typedef module_section_t util_module_section_t;
+typedef module_info_t util_module_info_t;
 
 /**
  * Find module in pid via NineS get_module_info, then eboot imagebase fallback

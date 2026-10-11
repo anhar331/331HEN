@@ -671,7 +671,7 @@ void append_toolbox_game_group(ps5ui::Group &g) {
               toolbox_i18n::tr("cheats.repo.download.confirm"),
               toolbox_i18n::tr("cheats.repo.download.confirm_phrase"))
       .link("id_game_patches", "Game Patches", "game_patches.xml",
-            "Enable or disable patches for the currently running game.",
+            "Choose an installed game and save patches before launching it.",
             kIconCheats)
       .button("id_download_patches", "Download patch collection", std::nullopt,
               "Download and update the latest game patches from GitHub.",

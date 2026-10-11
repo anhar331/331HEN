@@ -122,7 +122,9 @@ int inject_elf(struct proc* proc, void* elf)
     }
     else
     {
-        LOG_ERROR("[-] inject: authid backup failed (continuing)");
+        LOG_ERROR("[-] inject: authid backup failed; injection refused");
+        status = false;
+        goto exit;
     }
     set_ucred_to_ptrace();
 
@@ -137,6 +139,11 @@ int inject_elf(struct proc* proc, void* elf)
     attached = true;
 
     init_remote_function_pointers(proc->pid);
+    if (!remote_pthread_create) {
+        LOG_ERROR("[-] remote pthread_create unresolved; injection refused");
+        status = false;
+        goto detach;
+    }
 
     LOG_DEBUG("[+] Loading ELF on %d...[+]", proc->pid);
     /* Crash window: remote mmap/mprotect via pt_syscall while ShellUI is stopped. */
@@ -231,6 +238,7 @@ detach:
     else
     {
         LOG_ERROR("[-] pt_detach failed pid=%d errno=%d", proc->pid, errno);
+        status = false;
     }
 
     LOG_DEBUG("[+] ELF injection finished! [+]");
@@ -245,6 +253,7 @@ exit:
         }
         else
         {
+            status = false;
             LOG_ERROR("[-] inject: authid restore failed authid=0x%lx",
                         (unsigned long)original_authid);
         }

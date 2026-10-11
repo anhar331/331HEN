@@ -19,6 +19,7 @@ enum class ToolboxInjectionResult {
   InjectFailed,
   ReadyTimeout,
   TargetChanged,
+  RestartRequired,
 };
 
 struct ToolboxInjectionOutcome {
@@ -58,14 +59,24 @@ public:
       return {ToolboxInjectionResult::AlreadyReady, pid};
     }
 
+    /* A timed-out/failed ELF can still have installed hooks, or complete later.
+     * Each copy has separate globals, so injecting another copy into this PID
+     * can recursively hook the first. Persist the attempt across daemon restarts
+     * and accept a late ready marker above, but require a fresh ShellUI PID
+     * before a new attempt. */
+    if (onion_ready_matches_pid(ONION_FLAG_TOOLBOX_ATTEMPT, pid)) {
+      return {ToolboxInjectionResult::RestartRequired, pid};
+    }
+
     /* Stale marker is another PID; ready file is not the rest-resume signal. */
     onion_ready_clear(ONION_READY_TOOLBOX);
+    if (!onion_ready_signal_pid(ONION_FLAG_TOOLBOX_ATTEMPT, pid)) {
+      return {ToolboxInjectionResult::InjectFailed, pid};
+    }
     if (!inject_fn(pid)) {
-      onion_ready_clear(ONION_READY_TOOLBOX);
       return {ToolboxInjectionResult::InjectFailed, pid};
     }
     if (!onion_ready_wait_pid(ONION_READY_TOOLBOX, pid, timeout_ms, poll_ms)) {
-      onion_ready_clear(ONION_READY_TOOLBOX);
       return {ToolboxInjectionResult::ReadyTimeout, pid};
     }
 

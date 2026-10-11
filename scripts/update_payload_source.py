@@ -17,8 +17,8 @@ PREFIX = "v0.0.13-331."
 BASELINE_TAG = PREFIX + "2"
 BASELINE_SHA = "72f00d524636f8c96746d551fb495c1af319048a6af3703ffe5ae19e6abc197d"
 SOURCE_URL = "https://raw.githubusercontent.com/anhar331/331HEN/main/payloads.json"
-EXPERIMENTAL_FAMILY = "331HEN-GamePatches-TEST"
-EXPERIMENTAL_NAME = "331HEN Game Patches TEST"
+EXPERIMENTAL_FAMILY = "331HEN-Preview"
+EXPERIMENTAL_NAME = "331HEN Preview"
 
 
 def release_number(tag):
@@ -144,7 +144,7 @@ def catalog(release, record, url):
 def experimental_item(release, record, url):
     return {"name": EXPERIMENTAL_NAME, "filename": experimental_filename(record["tag"]),
             "url": url, "source": release["html_url"], "source_direct": url,
-            "description": "EXPERIMENTAL Game Patches; PS5 12.70; NOT PS5-tested. Separate payload; keep your working version and use a separate session.",
+            "description": "EXPERIMENTAL refined 331HEN; PS5 12.70; NOT PS5-tested. Separate payload; keep your working version and use a separate session.",
             "last_update": release["published_at"][:10], "version": record["tag"],
             "category": "Experimental Payloads", "checksum": record["sha256"]}
 

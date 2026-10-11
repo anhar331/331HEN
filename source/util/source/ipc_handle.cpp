@@ -119,11 +119,16 @@ void handleIPC(clientArgs *client, std::string &inputStr,
   case BREW_UTIL_PATCH_TOGGLE:
   case BREW_UTIL_PATCH_DOWNLOAD:
   case BREW_UTIL_PATCH_LAUNCH:
+  case BREW_UTIL_PATCH_GAMES:
   try {
     std::string response;
-    if (command == BREW_UTIL_PATCH_LIST)
-      response = hen331::patches::list(static_cast<size_t>(
+    if (command == BREW_UTIL_PATCH_GAMES)
+      response = hen331::patches::games(static_cast<size_t>(
           std::max(0, onion_cjson::int_item(my_json.get(), "offset", 0))));
+    else if (command == BREW_UTIL_PATCH_LIST)
+      response = hen331::patches::list(static_cast<size_t>(
+          std::max(0, onion_cjson::int_item(my_json.get(), "offset", 0))),
+          onion_cjson::string_item(my_json.get(), "title", ""));
     else if (command == BREW_UTIL_PATCH_TOGGLE)
       response = hen331::patches::toggle(
           onion_cjson::string_item(my_json.get(), "key", ""),
@@ -131,10 +136,31 @@ void handleIPC(clientArgs *client, std::string &inputStr,
           onion_cjson::bool_item(my_json.get(), "enabled", false));
     else if (command == BREW_UTIL_PATCH_DOWNLOAD)
       response = hen331::patches::download();
-    else
+    else if (std::string(onion_cjson::string_item(my_json.get(), "action", "")) == "exit") {
+      const std::string generation = onion_cjson::string_item(my_json.get(), "generation", "");
+      uint64_t value = 0;
+      if (!generation.empty() && generation.find_first_not_of("0123456789") == std::string::npos) {
+        char *end = nullptr;
+        errno = 0;
+        value = std::strtoull(generation.c_str(), &end, 10);
+        if (errno || !end || *end) value = 0;
+      }
+      response = hen331::patches::ended(onion_cjson::int_item(my_json.get(), "pid", 0), value);
+    } else {
+      const std::string generation = onion_cjson::string_item(my_json.get(), "generation", "");
+      uint64_t value = 0;
+      if (!generation.empty() && generation.find_first_not_of("0123456789") == std::string::npos) {
+        char *end = nullptr;
+        errno = 0;
+        value = std::strtoull(generation.c_str(), &end, 10);
+        if (errno || !end || *end) value = 0;
+      }
       response = hen331::patches::launch(
           onion_cjson::int_item(my_json.get(), "pid", 0),
-          onion_cjson::string_item(my_json.get(), "title", ""));
+          onion_cjson::int_item(my_json.get(), "appid", -1), value,
+          onion_cjson::string_item(my_json.get(), "title", ""),
+          onion_cjson::string_item(my_json.get(), "version", ""));
+    }
     reply(sender_app, false, response);
   } catch (...) {
     reply(sender_app, true,

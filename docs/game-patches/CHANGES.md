@@ -1,11 +1,12 @@
-# Changes from the working 331HEN build
+# Current refinement changes
 
-- Added two built-in Game Tools entries and a native persistent patch toggle/status page.
-- Added strict live game/version/module identity, direct-address execution with verified writes and rollback, process-generation ownership, inherited-process rejection and saved launch reapplication.
-- Added mutual conflict protection between existing Cheats and native patch ranges.
-- Added single-worker GitHub discovery/download, immutable snapshots, validated ZIP/XML staging, atomic collection activation, retry and old-collection/settings preservation.
-- Bundled exact upstream Bloodborne XML and pinned MIT Pugixml sources; retained all patch authors and licenses.
-- Added host core/production-service/live HTTPS tests and native route/navigation coverage.
-- Did not change stable Release contents, cheat storage paths, kernel offsets/patches, kstuff, loader source, existing branding/credits or unrelated platform/FTP code.
+- Native Game Patches now selects an installed game before launch. ON/OFF choices are persistent; selecting a patch does not write into a running process.
+- Strict installed APP_VER/contentVersion metadata and package/executable installation evidence replace the running-game-only selector. Cached metadata alone does not count as installation.
+- Daemon lifecycle sends PID, app ID, Title ID, launched version and exact process-generation strings. Util validates process identity without SystemService BigApp calls under PTRACE_AUTHID.
+- Corrected SYS_dl_get_info_2 section ABI (32-bit size and protection, 16-byte record). Module lookup now checks syscall errors, handle counts and string bounds.
+- Prevented retry injection into the same ShellUI PID after an uncertain/failed attempt; a late ready marker is accepted.
+- Bootstrapper waits for its previously owned services to exit and refuses overlapping replacements. Injector refuses missing pthread_create or unavailable credential backup, propagates detach/restore failures; owned ptrace attach cleanup was tightened.
+- Startup logs distinguish embedded kstuff, custom override and already-active kstuff. Embedded v1.10, kernel patches/offsets, cheat storage and existing branding/credits are preserved.
+- New installed-game, offline selection/runtime, native navigation and module ABI tests accompany existing host regression tests.
 
-The original Cloud test package contains SOURCE-CHANGES.patch and SOURCE-FILES.json for the 39 integration files changed from the working fork. GitHub Releases include the full corresponding source, and GitHub commit history records integration and publishing changes while preserving OnionHEN history and the existing distribution README.
+These fixes address demonstrated source defects and crash risks. They do not establish the actual cause of the owner's hardware crash or prove that the new ELF is stable.

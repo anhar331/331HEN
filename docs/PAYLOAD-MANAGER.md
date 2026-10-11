@@ -60,3 +60,9 @@ On release publication the source-refresh workflow runs automatically, but only 
 `distribution/approved.json` is append-only approval history. Only the exact fixed existing baseline can use the preserved-baseline exception. All future entries require an actual hardware-test declaration tied to hash, firmware, actor and evidence. Older versions, changed hashes, draft/missing assets, failed downloads or checksum mismatches cannot replace the working source. Releases and tags are never overwritten or deleted. The workflow does not relabel a previous pre-release as stable.
 
 Raw GitHub and asset downloads must be reachable from the PS5's network. Cloud validation tests public HTTP, real parser compatibility and ELF integrity; it does not test your PS5's network or installation.
+
+## Current refinement preview
+
+The owner requested the old Game Patches TEST catalog item removed. New refinements use 331HEN Preview, saved into the distinct 331HEN-Preview family. The publisher updates that entry only after the compiled release asset and reports are publicly verified. The 331HEN default stays on the exact preserved baseline until a new ELF is tested and explicitly approved. Historical releases/assets are retained; removing the catalog item does not remove files already installed on the console.
+
+This refinement retains native Game Patches, now with installed-game selection and persistent pre-launch settings. It does not guarantee pre-entry application or eliminate every crash. See the integration/limitations reports and single-session hardware-test instructions.

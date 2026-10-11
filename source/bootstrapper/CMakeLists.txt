@@ -163,6 +163,9 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
 	HEN331_KSTUFF_ELF="${HEN331_KSTUFF_ELF}"
 	HEN331_ICON_ASSET_DIR="${_icon_output_dir}"
 )
+file(SHA256 "${HEN331_KSTUFF_ELF}" _embedded_kstuff_sha256)
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+	HEN331_KSTUFF_SHA256="${_embedded_kstuff_sha256}")
 # elfldr_raise_privileges from libonion_elfldr; launches go via elfldr_remote.c.
 onion_target_debug_define(${PROJECT_NAME})
 target_include_directories(${PROJECT_NAME} PRIVATE

@@ -28,6 +28,9 @@ extern "C" {
 #define ONION_READY_KSTUFF "kstuff"
 #define ONION_READY_DAEMON "daemon"
 #define ONION_READY_TOOLBOX "toolbox"
+/* An injection may already have changed live ShellUI code before it fails.
+ * Keep the attempted PID until ShellUI is replaced; it is never a ready flag. */
+#define ONION_FLAG_TOOLBOX_ATTEMPT "toolbox_attempt"
 
 /*
  * Runtime flags (same storage as ready markers; typed names replace ad-hoc

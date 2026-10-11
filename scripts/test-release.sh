@@ -45,7 +45,7 @@ p=Path(sys.argv[1])
 patch=(p/'PATCH-TESTS.log').read_text()
 reg=(p/'REGRESSION-TESTS.log').read_text()
 live=(p/'LIVE-DOWNLOAD-TESTS.log').read_text()
-assert patch.count('PASS:')==2 and 'runtime error:' not in patch and 'AddressSanitizer:' not in patch
+assert patch.count('PASS:')==4 and 'Installed-game catalog: 273 checks passed' in patch and 'runtime error:' not in patch and 'AddressSanitizer:' not in patch
 assert 'All util host tests passed.' in reg and reg.count('[PASS]')>=436
 assert 'PASS:' in live
 assert hashlib.sha256(Path('.cache/dependencies/kstuff.elf').read_bytes()).hexdigest()=='82cbb1e70f8a562317d6b65269cf6aa0d7d94e22df4f1ac89a260ca0ec261252'
