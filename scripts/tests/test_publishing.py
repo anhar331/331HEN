@@ -44,6 +44,18 @@ class PublishingTests(unittest.TestCase):
             with self.assertRaises(RuntimeError):
                 publisher.verify_public("https://github.com/fixture", "wrong")
 
+    def test_preview_record_uses_the_published_binary_and_is_never_an_approval(self):
+        with tempfile.TemporaryDirectory() as directory:
+            elf = Path(directory) / "331HEN.elf"
+            elf.write_bytes(b"published compiled fixture")
+            record = publisher.preview_record("v0.0.13-331.3", elf)
+            self.assertEqual(record["sha256"], publisher.checksum(elf))
+            self.assertEqual(record["kind"], "experimental")
+            self.assertIs(record["ps5_runtime_tested"], False)
+            self.assertNotIn("approved_by", record)
+            with self.assertRaises(RuntimeError):
+                publisher.preview_record("unrelated-tag", elf)
+
     def test_private_tracked_path_refused(self):
         with tempfile.TemporaryDirectory() as d:
             with (patch.object(publisher, "ROOT", Path(d)),

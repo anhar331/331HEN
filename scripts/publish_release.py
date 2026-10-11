@@ -45,6 +45,15 @@ def require_tests(results, elf):
         raise RuntimeError("This publisher only handles hardware-untested pre-releases")
 
 
+def preview_record(tag, elf):
+    if not re.fullmatch(re.escape(TAG_PREFIX) + r"[1-9][0-9]*", tag):
+        raise RuntimeError("Invalid preview release tag")
+    return {"tag": tag, "sha256": checksum(elf), "firmware": "12.70",
+            "kind": "experimental", "ps5_runtime_tested": False,
+            "listed_by": "anhar331",
+            "purpose": "Owner requested the newly built refinement, replacing the old TEST catalog entry while preserving the existing default."}
+
+
 def tracked_entries(directory):
     raw = subprocess.check_output(["git", "-C", str(directory), "ls-files", "--stage", "-z"])
     for record in raw.split(b"\0"):
@@ -246,10 +255,7 @@ def main():
     # The owner requested the current refinement in the native source, with
     # the obsolete TEST listing removed. Only the separate preview family is
     # advanced here; distribution/approved.json and stable defaults are untouched.
-    experimental = {"experiments": [{"tag": tag, "sha256": checksum(elf),
-                    "firmware": "12.70", "kind": "experimental",
-                    "ps5_runtime_tested": False, "listed_by": "anhar331",
-                    "purpose": "Owner requested the newly built refinement, replacing the old TEST catalog entry while preserving the existing default."}]}
+    experimental = {"experiments": [preview_record(tag, args.elf.resolve())]}
     manifest = ROOT / "distribution/experimental.json"
     manifest.write_text(json.dumps(experimental, indent=2) + "\n")
     subprocess.run(["python3", str(ROOT / "scripts/update_payload_source.py")], check=True)

@@ -14,16 +14,16 @@
       "checksum": "72f00d524636f8c96746d551fb495c1af319048a6af3703ffe5ae19e6abc197d"
     },
     {
-      "name": "331HEN Game Patches TEST",
-      "filename": "331HEN-GamePatches-TEST_v0.0.13-331.1.elf",
-      "url": "https://github.com/anhar331/331HEN/releases/download/v0.0.13-331.1/331HEN.elf",
-      "source": "https://github.com/anhar331/331HEN/releases/tag/v0.0.13-331.1",
-      "source_direct": "https://github.com/anhar331/331HEN/releases/download/v0.0.13-331.1/331HEN.elf",
-      "description": "EXPERIMENTAL Game Patches; PS5 12.70; NOT PS5-tested. Separate payload; keep your working version and use a separate session.",
+      "name": "331HEN Preview",
+      "filename": "331HEN-Preview_v0.0.13-331.3.elf",
+      "url": "https://github.com/anhar331/331HEN/releases/download/v0.0.13-331.3/331HEN.elf",
+      "source": "https://github.com/anhar331/331HEN/releases/tag/v0.0.13-331.3",
+      "source_direct": "https://github.com/anhar331/331HEN/releases/download/v0.0.13-331.3/331HEN.elf",
+      "description": "EXPERIMENTAL refined 331HEN; PS5 12.70; NOT PS5-tested. Separate payload; keep your working version and use a separate session.",
       "last_update": "2026-10-11",
-      "version": "v0.0.13-331.1",
+      "version": "v0.0.13-331.3",
       "category": "Experimental Payloads",
-      "checksum": "88a0d3d64cf5ba35fd1e67de51f57599844390c7668b7b08027edc313b46433c"
+      "checksum": "71b022ecdc5d5330c3c059e0cf1759306126efc548414fe56afb26a701c0a748"
     }
   ]
 }

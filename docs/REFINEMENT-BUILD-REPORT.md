@@ -13,3 +13,9 @@ Preserved local Release/331HEN.elf SHA-256:72f00d524636f8c96746d551fb495c1af3190
 The owner reported an initial crash then a successful launch/download with the previous experiment. This update is hardware-untested: the exact crash cause, crash-free stability, firmware/runtime behavior and Bloodborne FPS effects are not verified. Pre-entry patch timing remains unsupported. Alternate installation layouts may be absent; unknown/conflicting versions fail closed. Follow docs/game-patches/HARDWARE-TEST.md for one fresh-session test.
 
 Backup: /workspace/331HEN-backup/pre-refinement-20261011. New local artifact: Release/331HEN-Refined-PREVIEW.elf. Stable defaults remain unchanged. New public release is a pre-release; the obsolete TEST catalog listing is replaced by a separate Preview family only after the uploaded ELF is verified. Earlier public releases are retained.
+
+## Publishing completion
+
+GitHub Actions run38171752340 completed the independent full build, sanitizers,444 host regression cases, live HTTPS and policy checks, then uploaded all18 assets for v0.0.13-331.3 and verified anonymous ELF/checksum downloads. A NameError in the subsequent catalog-record step stopped that workflow after upload; the publisher now uses a separately tested preview_record helper (16 policy cases pass). The actual published asset was then reverified by the source updater and official Payload Manager C/parser/backend folder and nine frontend display cases. Existing release3 assets were not overwritten or rebuilt. The archived source retains the exact compiled source commitc7fe960; the follow-up publishing-only fix lives in main.
+
+A native SDK object inspection also confirmed identical process metadata ABI between SDK sys/user.h and the existing shared FreeBSD helper: sizeof1088,ki_start336,ki_pid72,ki_structsize0. This is static evidence, not a hardware test.

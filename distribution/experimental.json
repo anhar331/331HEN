@@ -1,13 +1,13 @@
 {
   "experiments": [
     {
-      "tag": "v0.0.13-331.1",
-      "sha256": "88a0d3d64cf5ba35fd1e67de51f57599844390c7668b7b08027edc313b46433c",
+      "tag": "v0.0.13-331.3",
+      "sha256": "71b022ecdc5d5330c3c059e0cf1759306126efc548414fe56afb26a701c0a748",
       "firmware": "12.70",
       "kind": "experimental",
       "ps5_runtime_tested": false,
       "listed_by": "anhar331",
-      "purpose": "Owner requested the existing Game Patches TEST ELF as an optional separate item in the same Payload Manager catalog, preserving the working default."
+      "purpose": "Owner requested the newly built refinement, replacing the old TEST catalog entry while preserving the existing default."
     }
   ]
 }
