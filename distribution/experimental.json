@@ -1,13 +1,3 @@
 {
-  "experiments": [
-    {
-      "tag": "v0.0.13-331.3",
-      "sha256": "71b022ecdc5d5330c3c059e0cf1759306126efc548414fe56afb26a701c0a748",
-      "firmware": "12.70",
-      "kind": "experimental",
-      "ps5_runtime_tested": false,
-      "listed_by": "anhar331",
-      "purpose": "Owner requested the newly built refinement, replacing the old TEST catalog entry while preserving the existing default."
-    }
-  ]
+  "experiments": []
 }

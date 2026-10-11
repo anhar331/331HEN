@@ -24,7 +24,7 @@ def main():
     with tempfile.TemporaryDirectory() as directory:
         work = Path(directory)
         (work / "input.json").write_text(json.dumps({"helpers": helpers, "filtering": filtering, "item": item,
-                                                    "experiment": document["payloads"][1] if len(document["payloads"]) > 1 else None}))
+                                                    "experiment": next((p for p in document["payloads"] if p["name"] == "331HEN Preview"), None)}))
         (work / "test.cjs").write_text(r'''
 const fs = require('node:fs');
 const vm = require('node:vm');
