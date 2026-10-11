@@ -615,9 +615,9 @@ bool apply_parser(IniParser *parser, Settings *out) {
       parse_log_level(ini_get(parser, "logging.level"), out->log_level);
   out->display_tids = parse_bool(
       ini_get(parser, "home_screen.show_title_ids"), out->display_tids);
-  out->onionhen_game_opts =
-      parse_bool(ini_get(parser, "game_menu.show_onionhen_options"),
-                 out->onionhen_game_opts);
+  out->hen331_game_opts =
+      parse_bool(ini_get(parser, "game_menu.show_hen331_options"),
+                 out->hen331_game_opts);
   out->rest_mode_delay_seconds = static_cast<uint64_t>(parse_int_range(
       ini_get(parser, "rest_mode.resume_reinject_delay_seconds"),
       static_cast<int>(out->rest_mode_delay_seconds), kRestModeDelayMinSeconds,
@@ -727,7 +727,7 @@ bool try_load_path(const char *path, Settings *out) {
 std::string settings_serialize(const Settings &in) {
   std::string b;
   b.reserve(4096);
-  b += "# OnionHEN configuration\n";
+  b += "# 331HEN configuration\n";
   b += "#\n";
   b += "# This file uses semantic schema version 1.\n";
   b += "# Boolean fields accept true or false.\n";
@@ -745,14 +745,14 @@ std::string settings_serialize(const Settings &in) {
   b += "language=" + std::string(language_name(in.ui_lang)) + "\n";
   b += "\n";
   b += "[startup]\n";
-  b += "# open_after_load chooses which page opens after OnionHEN finishes loading.\n";
+  b += "# open_after_load chooses which page opens after 331HEN finishes loading.\n";
   b += "# Available values: none, home_menu\n";
   b += "open_after_load=" +
        std::string(startup_open_after_load_name(in.startup_open_after_load)) +
        "\n";
   b += "\n";
   b += "[logging]\n";
-  b += "# level controls how much OnionHEN records to its log files.\n";
+  b += "# level controls how much 331HEN records to its log files.\n";
   b += "# Available values: off, error, warn, info, debug, trace\n";
   b += "# Raise to debug when reproducing an issue for a bug report.\n";
   b += "# Release builds compile out trace, so trace behaves as debug.\n";
@@ -764,9 +764,9 @@ std::string settings_serialize(const Settings &in) {
   b += "show_title_ids=" + bool_text(in.display_tids) + "\n";
   b += "\n";
   b += "[game_menu]\n";
-  b += "# show_onionhen_options adds OnionHEN entries to the game options menu.\n";
+  b += "# show_hen331_options adds 331HEN entries to the game options menu.\n";
   b += "# Available values: true, false\n";
-  b += "show_onionhen_options=" + bool_text(in.onionhen_game_opts) + "\n";
+  b += "show_hen331_options=" + bool_text(in.hen331_game_opts) + "\n";
   b += "\n";
   b += "[rest_mode]\n";
   b += "# resume_reinject_delay_seconds waits after trophy SPRX are ready,\n";
@@ -785,10 +785,10 @@ std::string settings_serialize(const Settings &in) {
   b += "[app_jailbreak]\n";
   b += "# enabled controls the App lifecycle and sandbox event listeners. "
        "When false,\n";
-  b += "# OnionHEN does not register either listener.\n";
+  b += "# 331HEN does not register either listener.\n";
   b += "# Available values: true, false\n";
   b += "enabled=" + bool_text(in.app_jailbreak_enabled) + "\n";
-  b += "# debug_notifications shows a notification when OnionHEN jailbreaks an app.\n";
+  b += "# debug_notifications shows a notification when 331HEN jailbreaks an app.\n";
   b += "# Available values: true, false\n";
   b += "debug_notifications=" + bool_text(in.debug_app_jb_msg) + "\n";
   b += "# exact_title_ids is a comma-separated list of exact 9-character Title IDs.\n";
@@ -862,13 +862,13 @@ std::string settings_serialize(const Settings &in) {
   b += "# Available values: off, r3_l3, l2_triangle, long_options, long_share, share\n";
   b += "cheats_menu=" + std::string(cheats_shortcut_name(in.cheats_shortcut_opt)) +
        "\n";
-  b += "# toolbox controls the shortcut that opens the OnionHEN Toolbox.\n";
+  b += "# toolbox controls the shortcut that opens the 331HEN Toolbox.\n";
   b += "# Available values: off, l2_r3, long_share, share\n";
   b += "toolbox=" + std::string(toolbox_shortcut_name(in.toolbox_shortcut_opt)) +
        "\n";
   b += "\n";
   b += "[kstuff]\n";
-  b += "# autoload loads kstuff when OnionHEN starts.\n";
+  b += "# autoload loads kstuff when 331HEN starts.\n";
   b += "# Available values: true, false\n";
   b += "autoload=" + bool_text(in.kstuff_autoload) + "\n";
   return b;

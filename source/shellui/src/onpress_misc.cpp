@@ -14,12 +14,12 @@ OnPressResult onpress_kstuff_autoload(OnPressContext &ctx) {
 
   g_settings.kstuff_autoload = enabled;
   if (enabled) {
-    unlink("/user/data/OnionHEN/no_kstuff");
-    unlink("/data/OnionHEN/no_kstuff");
+    unlink("/user/data/331HEN/no_kstuff");
+    unlink("/data/331HEN/no_kstuff");
     notify("notify.kstuff.next_boot_on");
   } else {
-    touch_file("/user/data/OnionHEN/no_kstuff");
-    touch_file("/data/OnionHEN/no_kstuff");
+    touch_file("/user/data/331HEN/no_kstuff");
+    touch_file("/data/331HEN/no_kstuff");
     notify("notify.kstuff.next_boot_off");
   }
   return OnPressResult::Handled;
@@ -54,7 +54,7 @@ static OnPressResult id_download_cheats(OnPressContext &ctx) {
 
 OnPressResult onpress_delete_kstuff(OnPressContext &ctx) {
   (void)ctx;
-  unlink("/user/data/OnionHEN/kstuff.elf");
+  unlink("/user/data/331HEN/kstuff.elf");
   notify("notify.kstuff.deleted");
   return OnPressResult::Handled;
 }
@@ -84,25 +84,15 @@ static OnPressResult id_lm_test(OnPressContext &ctx) {
   return OnPressResult::Handled;
 }
 
-static OnPressResult id_onionhen_credits(OnPressContext &ctx) {
+static OnPressResult id_hen331_credits(OnPressContext &ctx) {
   (void)ctx;
   return OnPressResult::EarlyReturn;
-}
-
-static OnPressResult id_presentation_card(OnPressContext &ctx) {
-  // Author and donator cards in the dynamic Toolbox XML are display-only.
-  ctx.dirty = false;
-  return OnPressResult::Consumed;
 }
 
 static const OnPressExactEntry kRootExact[] = {
     {"id_download_cheats", id_download_cheats},
     {"id_lm_test", id_lm_test},
-    {"id_onionhen_credits", id_onionhen_credits},
-    {"id_author_0xp0co", id_presentation_card},
-    {"id_donator_aglx", id_presentation_card},
-    {"id_donator_ljf", id_presentation_card},
-    {"id_donator_szx", id_presentation_card},
+    {"id_hen331_credits", id_hen331_credits},
 };
 
 const OnPressExactEntry *onpress_misc_root_exact(size_t *count) {

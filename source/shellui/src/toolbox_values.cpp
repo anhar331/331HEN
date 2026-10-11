@@ -86,7 +86,7 @@ const ExactValueEntry kExactValues[] = {
        return bool_str(g_settings.app_jailbreak_enabled);
      }},
     {"id_custom_game_opts",
-     +[]() -> std::string { return bool_str(g_settings.onionhen_game_opts); }},
+     +[]() -> std::string { return bool_str(g_settings.hen331_game_opts); }},
     {"id_overlay_change_pos",
      +[]() -> std::string { return int_str(g_settings.overlay_pos); }},
     {"id_overlay_align",

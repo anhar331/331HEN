@@ -25,11 +25,11 @@ inline constexpr uint32_t kKnownFlags = kFlagLongRunning | kFlagStopSupported;
 
 #if defined(ONION_HOST_TEST)
 #ifndef ONION_DATA_ROOT
-#define ONION_DATA_ROOT "/tmp/onionhen"
+#define ONION_DATA_ROOT "/tmp/331HEN"
 #endif
 inline constexpr const char *kInstallRoot = ONION_DATA_ROOT "/plugins";
 #else
-inline constexpr const char *kInstallRoot = "/data/OnionHEN/plugins";
+inline constexpr const char *kInstallRoot = "/data/331HEN/plugins";
 #endif
 
 struct Descriptor {
@@ -139,7 +139,7 @@ public:
   // apply_auto_start launches plugins that have a .auto_start marker.
   // Only daemon startup should pass true. Watcher / mid-session calls
   // must pass false so toggling auto-start does not start the plugin
-  // until the next OnionHEN boot.
+  // until the next 331HEN boot.
   ReconcileReport reconcile(bool apply_auto_start = false);
   OperationResult start(std::string_view plugin_id);
   OperationResult stop(std::string_view plugin_id);

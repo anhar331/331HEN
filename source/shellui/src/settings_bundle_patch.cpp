@@ -79,21 +79,22 @@ static constexpr unsigned char kLegacyOldLabel[] = {
     0xe2, 0x98, 0x85, 'D', 'e', 'b', 'u', 'g', ' ', 'S', 'e', 't', 't', 'i',
     'n', 'g', 's'};
 static constexpr unsigned char kLegacyNewLabel[] = {
-    0xe2, 0x98, 0x85, 'O', 'n', 'i', 'o', 'n', 'H', 'E', 'N', ' ', 'T', 'o',
-    'o', 'l', 's'};
+    0xe2, 0x98, 0x85, '3', '3', '1', 'H', 'E', 'N', ' ', 'T', 'o',
+    'o', 'l', 's', ' ', ' '};
 static constexpr unsigned char kLegacyOldIcon[] = {
     'i', 'c', 'o', 'n', '_', 's', 'e', 't', 't', 'i', 'n', 'g'};
 
-/* Both Hermes labels contain 15 UTF-16LE code units. */
+/* Pad the shorter display label to preserve the firmware string slot size.
+ * Both Hermes labels contain 15 UTF-16LE code units. */
 static constexpr unsigned char kHermesOldLabel[] = {
     0x05, 0x26, 'D', 0x00, 'e', 0x00, 'b', 0x00, 'u', 0x00,
     'g',  0x00, ' ', 0x00, 'S', 0x00, 'e', 0x00, 't', 0x00,
     't',  0x00, 'i', 0x00, 'n', 0x00, 'g', 0x00, 's', 0x00,
 };
 static constexpr unsigned char kHermesNewLabel[] = {
-    0x05, 0x26, 'O', 0x00, 'n', 0x00, 'i', 0x00, 'o', 0x00,
-    'n',  0x00, 'H', 0x00, 'E', 0x00, 'N', 0x00, ' ', 0x00,
-    'T',  0x00, 'o', 0x00, 'o', 0x00, 'l', 0x00, 's', 0x00,
+    0x05, 0x26, '3', 0, '3', 0, '1', 0, 'H', 0,
+    'E', 0, 'N', 0, ' ', 0, 'T', 0, 'o', 0,
+    'o', 0, 'l', 0, 's', 0, ' ', 0, ' ', 0,
 };
 
 static_assert(sizeof(kLegacyOldLabel) == sizeof(kLegacyNewLabel));

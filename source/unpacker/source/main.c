@@ -1,10 +1,10 @@
 /* Copyright (C) 2025 OnionHEN / LightningMods
  *
- * Unpacker composition root. OnionHEN.elf embeds a LZMA-compressed
+ * Unpacker composition root. 331HEN.elf embeds a LZMA-compressed
  * bootstrapper and hands it to the external elfldr on port 9021.
  *
  *   bootstrap_payload — embedded blob, size, SHA-1, LZMA
- *   bootstrap_cache   — /user/data/OnionHEN/onionhen.elf
+ *   bootstrap_cache   — /user/data/331HEN/331HEN.elf
  *   elfldr_remote     — 9021 memory send and file: URI
  *
  * Cache misses and cache-send failures fall back to decompress + memory
@@ -32,7 +32,7 @@ static void cache_decompressed(const uint8_t *elf, size_t elf_size,
              expected_size);
     return;
   }
-  if (!bootstrap_cache_commit(ONIONHEN_CACHED_ELF, elf, elf_size))
+  if (!bootstrap_cache_commit(HEN331_CACHED_ELF, elf, elf_size))
     LOG_WARN("bootstrap cache write failed; next boot will decompress");
 }
 
@@ -52,10 +52,10 @@ int main(void) {
 
   (void)bootstrap_cache_prepare_dir();
   if (have_sha1 && expected_size > 0 &&
-      bootstrap_cache_matches(ONIONHEN_CACHED_ELF, expected_size, expected_sha1,
+      bootstrap_cache_matches(HEN331_CACHED_ELF, expected_size, expected_sha1,
                               SHA1_DIGEST_SIZE)) {
     LOG_DEBUG("bootstrap cache hit, sending file URI");
-    if (elfldr_remote_send_file_to(ELFLDR_REMOTE_PORT, ONIONHEN_CACHED_ELF))
+    if (elfldr_remote_send_file_to(ELFLDR_REMOTE_PORT, HEN331_CACHED_ELF))
       return 0;
     LOG_WARN("bootstrap cache file URI failed; falling back to memory send");
   }
@@ -66,18 +66,18 @@ int main(void) {
   case BOOTSTRAP_PAYLOAD_OK:
     break;
   case BOOTSTRAP_PAYLOAD_NOMEM:
-    onion_notify(0, "Failed to allocate memory for decompressed OnionHEN payload!");
+    onion_notify(0, "Failed to allocate memory for decompressed 331HEN payload!");
     return -1;
   case BOOTSTRAP_PAYLOAD_LZMA:
-    onion_notify(0, "Failed to decompress OnionHEN payload!");
+    onion_notify(0, "Failed to decompress 331HEN payload!");
     return -1;
   case BOOTSTRAP_PAYLOAD_INVALID:
   default:
-    LOG_ERROR("Invalid OnionHEN payload! unable to unpack it!");
+    LOG_ERROR("Invalid 331HEN payload! unable to unpack it!");
     return 0;
   }
 
-  LOG_DEBUG("Bootstrapping OnionHEN.elf...");
+  LOG_DEBUG("Bootstrapping 331HEN.elf...");
   if (!elfldr_remote_send_bytes_to(ELFLDR_REMOTE_PORT, elf, elf_size)) {
     onion_notify(0, "notify.elfldr.need_9021");
     free(elf);

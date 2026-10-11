@@ -926,7 +926,7 @@ static void ReactButtonShadowNode_SetIconSource_Hook(MonoObject *instance,
   g_react_button_set_inverted_icon_source(instance, source);
   --depth;
 #if SHELL_DEBUG == 1
-  LOG_DEBUG("homeui_top_nav_patch: mirrored OnionHEN icon to invertedIcon");
+  LOG_DEBUG("homeui_top_nav_patch: mirrored 331HEN icon to invertedIcon");
 #endif
 }
 
@@ -1055,7 +1055,7 @@ void install_homeui_top_nav_hooks(MonoImage *react_pui) {
       reinterpret_cast<void *>(&ReactButtonShadowNode_SetIconSource_Hook),
       reinterpret_cast<void **>(&g_react_button_set_icon_source_orig));
   LOG_DEBUG(installed ? "homeui_top_nav_patch: SetIconSource hooked "
-                          "(invertedIcon mirror for OnionHEN)"
+                          "(invertedIcon mirror for 331HEN)"
                         : "homeui_top_nav_patch: SetIconSource detour failed");
 #else
   (void)react_pui;
@@ -1161,9 +1161,9 @@ void patch_homeui_top_nav(unsigned char *buffer, int *size_ptr,
    *
    *   top-nav order: [Search, ApplicationErrorEventTrigger, Settings, Profile]
    *   host function: ApplicationErrorEventTrigger (already a 77-byte button)
-   *   body:          full 77-byte useInteractivePress OnionHEN button
+   *   body:          full 77-byte useInteractivePress 331HEN button
    *   Fps:           restore/leave stock showFps implementation
-   *   focus icon:    SetIconSource hook mirrors onionhen.png → invertedIcon
+   *   focus icon:    SetIconSource hook mirrors the 331HEN logo → invertedIcon
    *
    * Object table still retargets:
    *   iconId string → /system_ex/vsh_asset/onionhen.png
@@ -1217,9 +1217,9 @@ void patch_homeui_top_nav(unsigned char *buffer, int *size_ptr,
        bytes.onion_hen_button_body, legacy_button_body,
        nullptr, bytes.old_fps_body_prefix, kButtonBodySize},
       /*
-       * Host OnionHEN on ApplicationErrorEventTrigger (exact 77-byte replace).
+       * Host 331HEN on ApplicationErrorEventTrigger (exact 77-byte replace).
        */
-      {"AppError OnionHEN body", profile->offsets.app_error_body,
+      {"AppError 331HEN body", profile->offsets.app_error_body,
        bytes.stock_app_error_body, bytes.onion_hen_button_body,
        legacy_button_body, onion_hen_button_body,
        kButtonBodySize},
@@ -1272,7 +1272,7 @@ void patch_homeui_top_nav(unsigned char *buffer, int *size_ptr,
   update_hbc_footer_sha1(hbc, hbc_file_length);
 
 #if SHELL_DEBUG == 1
-  LOG_DEBUG("homeui_top_nav_patch: activated OnionHEN top-nav slot "
+  LOG_DEBUG("homeui_top_nav_patch: activated 331HEN top-nav slot "
               "profile='%s' "
               "(hbc_base=0x%llx)",
               profile->name, (unsigned long long)hbc.base_offset);

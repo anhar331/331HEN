@@ -1,4 +1,4 @@
-# Host unit tests for OnionHEN shared libs + util cheats (no PS5 SDK).
+# Host unit tests for 331HEN shared libs + util cheats (no PS5 SDK).
 # Usage (from this directory):
 #   make
 #   make test

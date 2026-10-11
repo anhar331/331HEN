@@ -175,8 +175,8 @@ static void launch_kstuff(LaunchContext *context, uint32_t firmware_version,
             context->loader_port);
   size_t override_size = 0;
   uint8_t *override_elf = NULL;
-  if (if_exists("/data/OnionHEN/kstuff.elf"))
-    override_elf = onion_payload_read_file("/data/OnionHEN/kstuff.elf",
+  if (if_exists("/data/331HEN/kstuff.elf"))
+    override_elf = onion_payload_read_file("/data/331HEN/kstuff.elf",
                                            &override_size);
 
   const uint8_t *elf = override_elf ? override_elf : kstuff_start;

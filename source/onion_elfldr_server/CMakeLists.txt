@@ -9,7 +9,7 @@ onion_output_dirs()
 onion_module_prologue(C_STANDARD 17)
 
 add_executable(${PROJECT_NAME} source/main.c)
-set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "onion_elfldr.elf")
+set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "331HEN_ldr.elf")
 
 set(CMAKE_C_FLAGS "${ONION_PS5_TARGET_FLAGS} ")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D_POSIX_SOURCE -D_POSIX_C_SOURCE=200112 -D__BSD_VISIBLE=1 -D__XSI_VISIBLE=500")
@@ -20,7 +20,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
   "${PROJECT_ROOT}/libonion_elfldr/include"
   "${PROJECT_ROOT}/libonion_platform/include"
 )
-target_link_directories(${PROJECT_NAME} PUBLIC "${ONIONHEN_PS5_STUB_DIR}")
+target_link_directories(${PROJECT_NAME} PUBLIC "${HEN331_PS5_STUB_DIR}")
 add_dependencies(${PROJECT_NAME} onion_elfldr)
 target_link_libraries(${PROJECT_NAME} PUBLIC onion_platform onion_elfldr)
 

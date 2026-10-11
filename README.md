@@ -1,9 +1,9 @@
 <p align="center">
-  <img src="assets/logo.png" alt="OnionHEN" height="128" width="128"/>
+  <img src="assets/logo.png" alt="331HEN" height="128" width="128"/>
 </p>
 
 <p align="center">
-  <b>OnionHEN</b><br/>
+  <b>331HEN</b><br/>
   An all-in-one HEN and Toolbox for PlayStation 5
 </p>
 
@@ -38,47 +38,47 @@
 </p>
 
 <p align="center">
-  OnionHEN is a modular payload stack for the PS5. One entry ELF prepares
+  331HEN is a modular payload stack for the PS5. One entry ELF prepares
   the system, injects a ShellUI Toolbox,<br/>and then runs overlays, cheats,
   payloads, and background services.
 </p>
 
 <p align="center">
-  <img src="assets/screenshot_01.png" alt="OnionHEN home-screen entry"/>
+  <img src="assets/screenshot_01.png" alt="331HEN home-screen entry"/>
 </p>
 
 <p align="center">
-  <img src="assets/screenshot_02.png" alt="OnionHEN in-game monitor bar"/>
+  <img src="assets/screenshot_02.png" alt="331HEN in-game monitor bar"/>
 </p>
 
 <p align="center">
-  <img src="assets/screenshot_03.png" alt="OnionHEN Toolbox"/>
+  <img src="assets/screenshot_03.png" alt="331HEN Toolbox"/>
 </p>
 
 <br>
 
 # Features
 
-OnionHEN is a practical homebrew stack for jailbroken PS5 consoles.
+331HEN is a practical homebrew stack for jailbroken PS5 consoles.
 
 - **ShellUI Toolbox** — a settings page injected into the PS5 ShellUI
 - **System preparation** — raise privileges, remount filesystems, and block the update partition
 - **fSELF / fPKG** — bundled kstuff for homebrew SELF / PKG; loads by default, can be turned off in the Toolbox
 - **Plugin runtime** — discovers, validates, starts, stops, and removes descriptor-bearing plugin ELFs
-- **PS5 FTP server** — available as the optional external `onionHEN-ftpsrv-plugin`
-- **ShadowMount+** — available as the optional external `onionHEN-shadowmountplus-plugin`
+- **PS5 FTP server** — available as the optional external `331HEN-ftpsrv-plugin`
+- **ShadowMount+** — available as the optional external `331HEN-shadowmountplus-plugin`
 - **Remote Play pairing** — enable the native PS5 Remote Play service, generate a pairing PIN, and register a client from the Network section
 - **User payload manager** — start and stop user-provided `.elf` payloads, with optional auto-start
 - **Game overlay** — an in-game bar for FPS, CPU, GPU, RAM, temperatures, and network info
 - **Cheat engine** — local JSON, SHN, MC4, and ShnExt files that can be toggled at runtime
-- **DPI v2** — available as the optional external `onionHEN-dpiv2-plugin`
+- **DPI v2** — available as the optional external `331HEN-dpiv2-plugin`
 - **Console tools** — account activation, external HDD, Title IDs, fan control, shortcuts, and game options
 - **App jailbreak** — allowlisted homebrew can ask the daemon for extra privileges through a sandbox FIFO
 - **Resilient runtime** — the critical daemon and utility daemon run apart; the main daemon can restart the utility
 - **Shared configuration** — the Toolbox and daemons use one versioned `config.ini`
 
-OnionHEN does not include a kernel exploit. The first hop still needs an
-external `elfldr` on **9021**. After that, OnionHEN starts its own private
+331HEN does not include a kernel exploit. The first hop still needs an
+external `elfldr` on **9021**. After that, 331HEN starts its own private
 loader on **9020** for later ELF and user-payload launches.
 
 <br>
@@ -90,18 +90,18 @@ loader on **9020** for later ELF and user-payload launches.
 1. A jailbroken PS5
 2. An external [PS5 `elfldr`](https://github.com/ps5-payload-dev/elfldr) listening on port **9021** for the first hop
 
-### Load OnionHEN
+### Load 331HEN
 
 1. Run the kernel exploit and start the external `elfldr` service.
-2. Send `OnionHEN.elf` through the loader your exploit host provides.
+2. Send `331HEN.elf` through the loader your exploit host provides.
 3. Wait for the utility daemon, `kstuff`, and the main daemon to start, in that order.
-4. Open PS5 Settings and enter the OnionHEN Toolbox.
+4. Open PS5 Settings and enter the 331HEN Toolbox.
 
-Startup is sequential. After the first hop, OnionHEN uses its own
-`onion_elfldr.elf` on port **9020** and keeps **9021** only as a fallback.
+Startup is sequential. After the first hop, 331HEN uses its own
+`331HEN_ldr.elf` on port **9020** and keeps **9021** only as a fallback.
 
 ```text
-OnionHEN.elf → bootstrapper → onion_elfldr.elf (:9020) → util.elf → kstuff.elf → daemon.elf → Toolbox
+331HEN.elf → bootstrapper → 331HEN_ldr.elf (:9020) → util.elf → kstuff.elf → daemon.elf → Toolbox
 ```
 
 External plugins are discovered and started by the daemon after `kstuff` is
@@ -110,8 +110,8 @@ ready.
 ### FTP server
 
 FTP is provided by the separate
-[`onionHEN-ftpsrv-plugin`](https://github.com/OnionBuddies/onionHEN-ftpsrv-plugin).
-Install it as `/data/OnionHEN/plugins/FTPS00001.elf`; OnionHEN discovers and
+[`331HEN-ftpsrv-plugin`](https://github.com/OnionBuddies/onionHEN-ftpsrv-plugin).
+Install it as `/data/331HEN/plugins/FTPS00001.elf`; 331HEN discovers and
 starts the plugin, and its dynamic settings page provides enable, port, and
 restart controls. The plugin retains upstream `ftpsrv` commands such as
 `KILL`, `SELF`, `SCHK`, `MTRW`, and `AUTHID` where supported.
@@ -119,8 +119,8 @@ restart controls. The plugin retains upstream `ftpsrv` commands such as
 ### ShadowMount+
 
 ShadowMount+ is provided by the optional external
-[`onionHEN-shadowmountplus-plugin`](https://github.com/OnionBuddies/onionHEN-shadowmountplus-plugin).
-Install its descriptor-bearing ELF under `/data/OnionHEN/plugins/`; the daemon
+[`331HEN-shadowmountplus-plugin`](https://github.com/OnionBuddies/onionHEN-shadowmountplus-plugin).
+Install its descriptor-bearing ELF under `/data/331HEN/plugins/`; the daemon
 then owns discovery, start, stop, replacement, and removal. Its dynamic
 page provides an immediate scan action. The plugin requires `kstuff` and keeps
 its own options under `/data/shadowmount/config.ini`.
@@ -128,8 +128,8 @@ its own options under `/data/shadowmount/config.ini`.
 ### DPI (network package installer)
 
 DPI v2 is provided by the optional external
-[`onionHEN-dpiv2-plugin`](https://github.com/OnionBuddies/onionHEN-dpiv2-plugin).
-Install it as `/data/OnionHEN/plugins/DPIV00001.elf`; OnionHEN discovers and
+[`331HEN-dpiv2-plugin`](https://github.com/OnionBuddies/onionHEN-dpiv2-plugin).
+Install it as `/data/331HEN/plugins/DPIV00001.elf`; 331HEN discovers and
 starts it, and its dynamic settings page provides enable, API port, WebUI port,
 and restart controls. The browser remains the installer interface, including
 chunked uploads, queue management, staged-file reuse, and SSE progress. The
@@ -138,11 +138,11 @@ default WebUI URL is `http://<console>:12800`.
 ### Remote Play
 
 Remote Play pairing is available from **Toolbox → Network → Remote Play**.
-The current account must already be activated. If it is not, OnionHEN blocks
+The current account must already be activated. If it is not, 331HEN blocks
 the Remote Play page and directs you to **Toolbox → Account → Account
-activation**. Once the account is activated, OnionHEN enables the Remote Play
+activation**. Once the account is activated, 331HEN enables the Remote Play
 registry setting and displays the pairing PIN. Enter that PIN in the official
-Remote Play client while the page is open; OnionHEN uses the native PS5 Remote
+Remote Play client while the page is open; 331HEN uses the native PS5 Remote
 Play service to confirm the registered device.
 
 The feature provides pairing and registration only. Video streaming and client
@@ -153,16 +153,16 @@ transport remain handled by Sony's native Remote Play service.
 Place standalone payloads in:
 
 ```text
-/data/OnionHEN/payloads/
+/data/331HEN/payloads/
 ```
 
 Only plain `.elf` files are supported. Auto-start can be turned on in the Toolbox;
-OnionHEN remembers that choice with a matching `.auto_start` file next to the ELF.
+331HEN remembers that choice with a matching `.auto_start` file next to the ELF.
 
 All `.elf` filenames use the same Payload page, loader, and auto-start flow. A
 recorded running instance is left running by later launch and auto-start
-requests. OnionHEN plugins are a separate category and belong in
-`/data/OnionHEN/plugins/`.
+requests. 331HEN plugins are a separate category and belong in
+`/data/331HEN/plugins/`.
 
 ### Cheats
 
@@ -170,19 +170,19 @@ Put cheat files in one directory. Names are `TITLEID_VERSION`, with an
 optional process and 8-hex source ID:
 
 ```text
-/data/OnionHEN/cheats/<TITLE_ID>_<VERSION>[_<PROCESS>][_<SOURCE_ID>].json
-/data/OnionHEN/cheats/<TITLE_ID>_<VERSION>[_<PROCESS>][_<SOURCE_ID>].shn
-/data/OnionHEN/cheats/<TITLE_ID>_<VERSION>[_<PROCESS>][_<SOURCE_ID>].mc4
-/data/OnionHEN/cheats/<TITLE_ID>_<VERSION>[_<PROCESS>][_<SOURCE_ID>].ShnExt
+/data/331HEN/cheats/<TITLE_ID>_<VERSION>[_<PROCESS>][_<SOURCE_ID>].json
+/data/331HEN/cheats/<TITLE_ID>_<VERSION>[_<PROCESS>][_<SOURCE_ID>].shn
+/data/331HEN/cheats/<TITLE_ID>_<VERSION>[_<PROCESS>][_<SOURCE_ID>].mc4
+/data/331HEN/cheats/<TITLE_ID>_<VERSION>[_<PROCESS>][_<SOURCE_ID>].ShnExt
 ```
 
 `PROCESS` is optional. `SOURCE_ID` is a stable physical-source discriminator.
-OnionHEN loads every compatible source for the title/version/process, so
+331HEN loads every compatible source for the title/version/process, so
 independent JSON, SHN, MC4 and ShnExt files can coexist. A source with an
 explicit process is only used for that process; a source without one is
 generic.
 
-Cheats load from disk. If a file changes, OnionHEN reloads it without restarting the whole stack.
+Cheats load from disk. If a file changes, 331HEN reloads it without restarting the whole stack.
 
 `DOWNLOAD_CHEATS` downloads a cheat catalog ZIP over HTTPS (GitHub or cnb.cool), extracts the `cheats/` tree, and copies `json/`, `shn/`, and `mc4/` files into this directory with their original names. `[cheats] mirror=auto` uses cnb.cool when the UI/system language is Simplified Chinese, otherwise GitHub.
 
@@ -215,8 +215,7 @@ the embed chain in the required order.
 For the reproducible Docker build:
 
 ```shell
-docker compose build onionhen-build
-docker compose run --rm onionhen-build
+./scripts/build-container.sh
 ```
 
 ### Common options
@@ -236,7 +235,7 @@ Run `./scripts/build.sh --help` for the complete option list.
 
 | Path | Description |
 | --- | --- |
-| `build/bin/OnionHEN.elf` | Final payload sent to the console |
+| `build/bin/331HEN.elf` | Final payload sent to the console |
 | `build/bin/bootstrapper.elf` | Uncompressed bootstrapper |
 | `build/bin/bootstrapper.elf.lzma` | Bootstrapper embedded by the final payload |
 | `build/bin/daemon.elf` | Critical daemon |
@@ -264,15 +263,15 @@ Linking the host tests needs Keystone on `KEYSTONE_PREFIX`
 
 # Configuration
 
-OnionHEN reads and writes the same config in two places:
+331HEN reads and writes the same config in two places:
 
 ```text
-/data/OnionHEN/config.ini
-/user/data/OnionHEN/config.ini
+/data/331HEN/config.ini
+/user/data/331HEN/config.ini
 ```
 
 Most options can be changed in the Toolbox. The format is
-`schema_version=1`. If no file exists, OnionHEN writes a commented
+`schema_version=1`. If no file exists, 331HEN writes a commented
 default from [`config.ini.example`](config.ini.example).
 
 | Key | Default | Values |
@@ -281,7 +280,7 @@ default from [`config.ini.example`](config.ini.example).
 | `toolbox.language` | `system` | `system`, `zh-Hans`, `zh-Hant`, `en`, `ja`, `ko`, `fr`, `de`, `it`, `es`, `pt-BR`, `pl`, `ru`, `ar`, `th` |
 | `startup.open_after_load` | `none` | `none`, `home_menu` |
 | `home_screen.show_title_ids` | `false` | `true`, `false` |
-| `game_menu.show_onionhen_options` | `true` | `true`, `false` |
+| `game_menu.show_hen331_options` | `true` | `true`, `false` |
 | `rest_mode.resume_reinject_delay_seconds` | `10` | `0` through `255` seconds |
 | `cheats.mirror` | `auto` | `auto`, `github`, `cnb` |
 | `app_jailbreak.debug_notifications` | `false` | `true`, `false` |
@@ -303,14 +302,14 @@ default from [`config.ini.example`](config.ini.example).
 
 | Path | Purpose |
 | --- | --- |
-| `/data/OnionHEN/payloads/` | User payload ELFs |
-| `/data/OnionHEN/plugins/` | Descriptor-bearing OnionHEN plugin ELFs |
-| `/data/OnionHEN/cheats/` | Cheat files |
-| `/data/OnionHEN/cheats_tmp/` | Temporary HTTPS ZIP and extraction files, cleaned after sync |
-| `/data/OnionHEN/kstuff.elf` | Optional runtime override with priority over the embedded `kstuff` |
-| `/data/OnionHEN/OnionHEN.log` | Main runtime log |
-| `/data/OnionHEN/OnionHEN_crash.log` | Preserved daemon signal and backtrace log |
-| `/data/OnionHEN/OnionHEN_util_daemon.log` | Utility daemon log |
+| `/data/331HEN/payloads/` | User payload ELFs |
+| `/data/331HEN/plugins/` | Descriptor-bearing 331HEN plugin ELFs |
+| `/data/331HEN/cheats/` | Cheat files |
+| `/data/331HEN/cheats_tmp/` | Temporary HTTPS ZIP and extraction files, cleaned after sync |
+| `/data/331HEN/kstuff.elf` | Optional runtime override with priority over the embedded `kstuff` |
+| `/data/331HEN/331HEN.log` | Main runtime log |
+| `/data/331HEN/331HEN_crash.log` | Preserved daemon signal and backtrace log |
+| `/data/331HEN/331HEN_util_daemon.log` | Utility daemon log |
 
 <br>
 
@@ -319,7 +318,7 @@ default from [`config.ini.example`](config.ini.example).
 | Tool | Purpose |
 | --- | --- |
 | [`scripts/daemon_log.py`](scripts/daemon_log.py) | Stream daemon logs from the console |
-| [`scripts/shutdown_onion.py`](scripts/shutdown_onion.py) | Shut down the OnionHEN userland stack without killing `kstuff` |
+| [`scripts/shutdown_onion.py`](scripts/shutdown_onion.py) | Shut down the 331HEN userland stack without killing `kstuff` |
 | [`scripts/ps5_cmake.sh`](scripts/ps5_cmake.sh) | Run CMake through the PS5 payload SDK |
 | [`scripts/sync_dependencies.sh`](scripts/sync_dependencies.sh) | Fetch or build external payload inputs |
 
@@ -338,7 +337,7 @@ default from [`config.ini.example`](config.ini.example).
 │   ├── util/                  Utility daemon, IPC, and cheats
 │   ├── shellui/               Toolbox and ShellUI hooks
 │   ├── i18n/                  Shared Toolbox / notification locale catalogs
-│   ├── unpacker/              Final OnionHEN payload wrapper
+│   ├── unpacker/              Final 331HEN payload wrapper
 │   ├── libonion_*/            Shared in-tree libraries
 │   ├── common/                Shared low-level implementations
 │   └── platform/ps5/stubs/    PS5 system-library link stubs
@@ -354,7 +353,7 @@ See [the architecture document](docs/arch.md) for the complete module and IPC ma
 
 # Troubleshooting
 
-1. Before loading OnionHEN, make sure the external `elfldr` is reachable on port **9021**.
+1. Before loading 331HEN, make sure the external `elfldr` is reachable on port **9021**.
 2. Make sure the payload was built for this firmware with a complete PS5 Payload SDK.
 3. If the Toolbox does not appear, wait for `util → kstuff → daemon` to finish and check the logs.
 4. If the build cannot get `kstuff.elf`, run `./scripts/sync_dependencies.sh` again or initialize the submodule.
@@ -370,7 +369,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 # Support
 
-<a href="https://ko-fi.com/0xp0co"><img src="https://img.shields.io/badge/Ko--fi-Support-FF6433?style=for-the-badge&logo=kofi&logoColor=white" alt="Support OnionHEN on Ko-fi"/></a>
+<a href="https://ko-fi.com/0xp0co"><img src="https://img.shields.io/badge/Ko--fi-Support-FF6433?style=for-the-badge&logo=kofi&logoColor=white" alt="Support 331HEN on Ko-fi"/></a>
 
 For Chinese users, you can also scan the QR codes below to donate:
 
@@ -380,19 +379,19 @@ For Chinese users, you can also scan the QR codes below to donate:
 | --- | --- |
 | <img src="assets/donation_alipay_cn.JPG" width="200" alt="Alipay"/> | <img src="assets/donation_wechat_cn.JPG" width="200" alt="WeChat"/> |
 
-If OnionHEN is useful to you, consider supporting further development. Thank you.
+If 331HEN is useful to you, consider supporting further development. Thank you.
 
 <br>
 
 # Credits
 
-OnionHEN exists because of the PS5 homebrew and reverse-engineering community.
+331HEN exists because of the PS5 homebrew and reverse-engineering community.
 
 ### Contributors
 
 <p align="center">
   <a href="https://github.com/aydencharles/onionHEN/graphs/contributors">
-    <img src="https://contrib.rocks/image?repo=aydencharles/onionHEN" alt="OnionHEN contributors"/>
+    <img src="https://contrib.rocks/image?repo=aydencharles/onionHEN" alt="331HEN contributors"/>
   </a>
 </p>
 
@@ -413,8 +412,8 @@ OnionHEN exists because of the PS5 homebrew and reverse-engineering community.
 - [PS5 Payload SDK](https://github.com/ps5-payload-dev/sdk) — Prospero toolchain and headers
 - [elfldr](https://github.com/ps5-payload-dev/elfldr) — first-hop loader on port 9021; not shipped in the payload
 - [kstuff-lite](https://github.com/EchoStretch/kstuff-lite) — EchoStretch, sleirsgoevy, and contributors; optional `kstuff.elf`
-- [onionHEN-ftpsrv-plugin](https://github.com/OnionBuddies/onionHEN-ftpsrv-plugin) — optional external FTP server plugin based on drakmor/ftpsrv
-- [onionHEN-shadowmountplus-plugin](https://github.com/OnionBuddies/onionHEN-shadowmountplus-plugin) — optional external ShadowMount+ scanner/mounter plugin based on Drakmor's project
+- [331HEN-ftpsrv-plugin](https://github.com/OnionBuddies/onionHEN-ftpsrv-plugin) — optional external FTP server plugin based on drakmor/ftpsrv
+- [331HEN-shadowmountplus-plugin](https://github.com/OnionBuddies/onionHEN-shadowmountplus-plugin) — optional external ShadowMount+ scanner/mounter plugin based on Drakmor's project
 - [libhijacker](https://github.com/astrelsky/libhijacker) — astrelsky; process hijack and kernel R/W
 - [NineS](https://github.com/buzzer-re/NineS) — buzzer-re; ShellUI injection
 - [cJSON](https://github.com/DaveGamble/cJSON) — JSON parsing
@@ -434,5 +433,5 @@ Thanks as well to everyone else who tested, researched, or sent usable feedback.
 This project is licensed under the [GNU General Public License v3.0](LICENSE).
 Third-party components retain their respective licenses and notices.
 
-> OnionHEN is an unofficial homebrew project and is not affiliated with Sony Interactive Entertainment.
+> 331HEN is an unofficial homebrew project and is not affiliated with Sony Interactive Entertainment.
 > Use it only on hardware you own and at your own risk. No warranty is provided.

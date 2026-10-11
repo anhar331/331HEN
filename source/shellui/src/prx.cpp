@@ -373,14 +373,14 @@ void init_resource_names() {
 
 bool init_version_string(const OrbisKernelSwVersion& sw) {
   /* XOR with base64_decode(kXorKeyB64) == "SISTR0_I_SEE_YOU" (not the b64 text). */
-  /* XOR "OnionHEN " with SISTR0_I_SEE_YOU. Regenerate: encryptver.py "OnionHEN " */
-  const char enc_ver[] = "\x1c\x27\x3a\x3b\x3c\x78\x1a\x07\x7f"; /* "OnionHEN " */
+  /* XOR "331HEN " with SISTR0_I_SEE_YOU. Regenerate: encryptver.py "331HEN " */
+  const char enc_ver[] = "\x60\x7a\x62\x1c\x17\x7e\x7f"; /* "331HEN " */
   const std::string key = base64_decode(kXorKeyB64);
   auto dev_ver_bytes =
       encrypt_decrypt(reinterpret_cast<const unsigned char*>(enc_ver),
                       sizeof(enc_ver) - 1, key);
   std::string dec_ver(dev_ver_bytes.begin(), dev_ver_bytes.end());
-  dec_ver += ONIONHEN_VERSION;
+  dec_ver += HEN331_VERSION;
 
   std::string final_ver;
 #if PUBLIC_TEST == 1

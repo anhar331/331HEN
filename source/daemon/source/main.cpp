@@ -242,7 +242,7 @@ void sig_handler(int signo) {
         onion_log_emergency("signal handler disabled, ignoring signal %d", signo);
         return;
     }
-    onion_log_emergency("signal %d received; main OnionHEN has crashed", signo);
+    onion_log_emergency("signal %d received; main 331HEN has crashed", signo);
     onion_print_backtrace(onion_log_emergency);
     onion_notify(true, "notify.crash.main");
     _exit(128 + signo);
@@ -254,8 +254,8 @@ int main() {
   /* Raw elfldr uploads default to "payload.elf"; publish our stable name. */
   (void)syscall(SYS_thr_set_name, -1, "onion_daemon.elf");
 
-  onion_log_configure("OnionHEN", "/data/OnionHEN/OnionHEN.log");
-  onion_log_configure_crash("/data/OnionHEN/OnionHEN_crash.log");
+  onion_log_configure("331HEN", "/data/331HEN/331HEN.log");
+  onion_log_configure_crash("/data/331HEN/331HEN_crash.log");
   /* Real linked kernel export (not a dlsym function-pointer variable). */
   onion_notify_set_send(reinterpret_cast<onion_notify_send_fn>(
       sceKernelSendNotificationRequest));
@@ -285,7 +285,7 @@ int main() {
   payload_args_t* args = payload_get_args();
   kernel_base = args->kdata_base_addr;
 
-  LOG_INFO("=========== starting OnionHEN (0x%X) ... ===========", fw_ver);
+  LOG_INFO("=========== starting 331HEN (0x%X) ... ===========", fw_ver);
   (void)sceKernelMprotect(&buz[0], 100, 0x7); // probe mprotect / kstuff state
   const bool toolbox_only = (fw_ver >= 0x10000);
   is_800 = (fw_ver >= 0x800);
@@ -332,7 +332,7 @@ int main() {
       debug_settings_route.toolbox_uri(
           onion::debug_settings_route::UriKind::Simple));
   onion_notify_try_rich(welcome_toast_json.c_str(), "notify.boot.welcome");
-  LOG_INFO("StartUp thread created!! - welcome to OnionHEN");
+  LOG_INFO("StartUp thread created!! - welcome to 331HEN");
 
   onion::daemon::apply_startup_destination(boot_settings);
 

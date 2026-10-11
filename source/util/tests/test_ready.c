@@ -38,7 +38,7 @@ static int test_ready_path_builder(void) {
   char buf[128];
   TEST_ASSERT_TRUE(onion_ready_path(ONION_FLAG_FPS_OVERLAY, buf, sizeof(buf)));
   TEST_ASSERT_TRUE(strstr(buf, "fps_overlay") != NULL);
-  TEST_ASSERT_TRUE(strstr(buf, "/tmp/onionhen/ready/") != NULL);
+  TEST_ASSERT_TRUE(strstr(buf, "/tmp/331HEN/ready/") != NULL);
   /* buffer too small */
   TEST_ASSERT_TRUE(!onion_ready_path(ONION_FLAG_FPS_OVERLAY, buf, 8));
   TEST_ASSERT_TRUE(!onion_ready_path(ONION_FLAG_FPS_OVERLAY, NULL, 64));
@@ -67,7 +67,7 @@ static int test_toolbox_marker_under_runtime_root(void) {
   char path[128];
   onion_ready_clear(ONION_READY_TOOLBOX);
   TEST_ASSERT_TRUE(onion_ready_path(ONION_READY_TOOLBOX, path, sizeof(path)));
-  TEST_ASSERT_TRUE(strstr(path, "/tmp/onionhen/ready/toolbox") != NULL);
+  TEST_ASSERT_TRUE(strstr(path, "/tmp/331HEN/ready/toolbox") != NULL);
   TEST_ASSERT_TRUE(!onion_ready_is_set(ONION_READY_TOOLBOX));
   TEST_ASSERT_TRUE(onion_ready_signal(ONION_READY_TOOLBOX));
   TEST_ASSERT_TRUE(onion_ready_is_set(ONION_READY_TOOLBOX));

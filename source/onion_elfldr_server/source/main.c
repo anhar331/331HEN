@@ -1,6 +1,6 @@
 /* Copyright (C) 2026 OnionHEN / LightningMods
  *
- * OnionHEN private ELF loader service.
+ * 331HEN private ELF loader service.
  *
  * This intentionally listens on 127.0.0.1:9020, leaving the historical
  * ps5-payload-dev elfldr port 9021 untouched for user-provided loaders.
@@ -531,7 +531,7 @@ static int serve_elfldr(uint16_t port) {
 int main(void) {
   signal(SIGCHLD, SIG_IGN);
   signal(SIGPIPE, SIG_IGN);
-  syscall(SYS_thr_set_name, -1, "onion_elfldr.elf");
+  syscall(SYS_thr_set_name, -1, "331HEN_ldr.elf");
   unlink(ONION_SYSTEM_TMP_ELFLDR_BUSY);
 
   if(chdir("/") != 0) {

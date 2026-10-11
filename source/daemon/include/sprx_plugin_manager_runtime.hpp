@@ -10,7 +10,7 @@
 namespace onion::daemon::sprx_plugins {
 
 inline constexpr const char *kCatalogPath =
-    "/data/OnionHEN/sprx/catalog.ini";
+    "/data/331HEN/sprx/catalog.ini";
 
 void start();
 void reconcile();

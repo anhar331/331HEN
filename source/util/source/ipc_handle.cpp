@@ -199,7 +199,7 @@ void handleIPC(clientArgs *client, std::string &inputStr,
     }
     const std::string request_id = std::to_string(
         static_cast<unsigned long long>(g_cheat_request_id.fetch_add(1)));
-    std::string shm_path = "/user/data/OnionHEN/" + title_id + "_cheats_" +
+    std::string shm_path = "/user/data/331HEN/" + title_id + "_cheats_" +
                            request_id;
 
     onion::cheats::CheatRequest request;

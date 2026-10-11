@@ -60,7 +60,7 @@ bool handle_uri_boot_common(MonoString* uri, int opt, MonoString* titleIdForBoot
     }
     else if (is_home_top_nav_uri(uri_string)) {
 #if SHELL_DEBUG==1
-      LOG_DEBUG("HomeUI top-nav OnionHEN URI detected");
+      LOG_DEBUG("HomeUI top-nav 331HEN URI detected");
 #endif
       return true;
     }

@@ -4,7 +4,7 @@
 
 /* Flat cheat directory only. */
 #ifndef ONION_DATA_ROOT
-#define ONION_DATA_ROOT "/data/OnionHEN"
+#define ONION_DATA_ROOT "/data/331HEN"
 #endif
 #ifndef ONION_CHEATS_DIR
 #define ONION_CHEATS_DIR ONION_DATA_ROOT "/cheats"

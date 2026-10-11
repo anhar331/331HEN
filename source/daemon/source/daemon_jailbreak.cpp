@@ -8,7 +8,7 @@
  *        /mnt/sandbox/<TID>_<000-050>/download0/<name>
  *      Accepted names:
  *        - etahen_jailbreak
- *        - onionhen_jailbreak
+ *        - hen331_jailbreak
  *   3. SceSysCore process events identify app lifetime. NOTE_TRACK does
  *      deliver the game child's NOTE_EXEC, and GetAppInfo is often already
  *      filled from SysCore appParam. sceSystemServiceGetAppIdOfRunningBigApp
@@ -134,7 +134,7 @@ constexpr const char *kMountRoot = "/mnt";
 constexpr const char *kSandboxRoot = "/mnt/sandbox";
 constexpr const char *kJailbreakReqNames[] = {
     "etahen_jailbreak",
-    "onionhen_jailbreak",
+    "hen331_jailbreak",
 };
 constexpr const char *kShellUiTitleId = "NPXS40087";
 constexpr const char *kShellUiProcessName = "SceShellUI";

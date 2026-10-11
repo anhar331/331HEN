@@ -75,14 +75,14 @@ static OnPressResult id_app_jailbreak_enabled(OnPressContext &ctx) {
 }
 
 static OnPressResult id_custom_game_opts(OnPressContext &ctx) {
-  if (atoi(ctx.value.c_str()) == g_settings.onionhen_game_opts) {
-    LOG_WARN("OnionHEN Game Options already %s",
-                g_settings.onionhen_game_opts ? "Enabled" : "Disabled");
+  if (atoi(ctx.value.c_str()) == g_settings.hen331_game_opts) {
+    LOG_WARN("331HEN Game Options already %s",
+                g_settings.hen331_game_opts ? "Enabled" : "Disabled");
     return OnPressResult::EarlyReturn;
   }
-  g_settings.onionhen_game_opts = !g_settings.onionhen_game_opts;
-  LOG_DEBUG("OnionHEN Game Options: %s",
-              g_settings.onionhen_game_opts ? "Enabled" : "Disabled");
+  g_settings.hen331_game_opts = !g_settings.hen331_game_opts;
+  LOG_DEBUG("331HEN Game Options: %s",
+              g_settings.hen331_game_opts ? "Enabled" : "Disabled");
   return OnPressResult::Handled;
 }
 

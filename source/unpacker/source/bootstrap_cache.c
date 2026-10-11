@@ -14,9 +14,9 @@
 #include <unistd.h>
 
 bool bootstrap_cache_prepare_dir(void) {
-  if (mkdir_tree(ONIONHEN_USER_DATA_DIR))
+  if (mkdir_tree(HEN331_USER_DATA_DIR))
     return true;
-  LOG_WARN("bootstrap cache: cannot create %s (%s)", ONIONHEN_USER_DATA_DIR,
+  LOG_WARN("bootstrap cache: cannot create %s (%s)", HEN331_USER_DATA_DIR,
            strerror(errno));
   return false;
 }

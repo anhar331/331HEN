@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
-# Sync / build external dependencies for OnionHEN.
+# Sync / build external dependencies for 331HEN.
 #
 # Embedded payload input: kstuff.elf
-# Also built from source: onion_elfldr.elf (private 9020 runtime loader)
+# Also built from source: 331HEN_ldr.elf (private 9020 runtime loader)
 # Removed: external elfldr.elf (9021 service), ps5debug, ps5-app-dumper, Byepervisor/hen.bin
 #
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 TP="${ROOT}/third_party"
-CACHE="${ONIONHEN_CACHE_DIR:-${ROOT}/.cache/dependencies}"
+CACHE="${HEN331_CACHE_DIR:-${ROOT}/.cache/dependencies}"
 
 PS5_PAYLOAD_SDK="${PS5_PAYLOAD_SDK:-}"
 FROM_SOURCE=0
@@ -29,16 +29,16 @@ die()  { printf '\033[1;31m[error]\033[0m %s\n' "$*" >&2; exit 1; }
 
 usage() {
   cat <<EOF
-Sync OnionHEN external dependencies from open-source upstreams.
+Sync 331HEN external dependencies from open-source upstreams.
 
 Submodules (under third_party/):
   kstuff-lite      https://github.com/EchoStretch/kstuff-lite
 Runtime-only external dependency:
   elfldr @ 9021    https://github.com/ps5-payload-dev/elfldr
-                  Required only for initial bootstrap; OnionHEN starts
-                  onion_elfldr.elf @ 9020 for runtime launches.
+                  Required only for initial bootstrap; 331HEN starts
+                  331HEN_ldr.elf @ 9020 for runtime launches.
 
-Removed from OnionHEN (not synced):
+Removed from 331HEN (not synced):
   external elfldr.elf (9021 service), ps5debug, ps5-app-dumper, Byepervisor/hen.bin
 
 Options:
@@ -106,7 +106,7 @@ download_verified() {
 stub() {
   local dest="$1" name="$2"
   mkdir -p "$(dirname "${dest}")"
-  printf 'OnionHEN-STUB:%s\0' "${name}" > "${dest}"
+  printf '331HEN-STUB:%s\0' "${name}" > "${dest}"
   warn "STUB ${dest} (not for real hardware)"
 }
 
@@ -128,11 +128,11 @@ kstuff_looks_cached() {
   [[ -f "${path}" ]] || return 1
   local sz
   sz="$(wc -c < "${path}" | tr -d ' ')"
-  # Reject empty / OnionHEN-STUB placeholders from --stub-missing.
+  # Reject empty / 331HEN-STUB placeholders from --stub-missing.
   if [[ "${sz}" -lt "${KSTUFF_MIN_BYTES}" ]]; then
     return 1
   fi
-  if head -c 16 "${path}" 2>/dev/null | grep -q 'OnionHEN-STUB'; then
+  if head -c 16 "${path}" 2>/dev/null | grep -q '331HEN-STUB'; then
     return 1
   fi
   return 0
@@ -181,7 +181,7 @@ sync_kstuff() {
 }
 
 main() {
-  log "OnionHEN dependency sync"
+  log "331HEN dependency sync"
   echo "  third_party = ${TP}"
   echo "  cache       = ${CACHE}"
 

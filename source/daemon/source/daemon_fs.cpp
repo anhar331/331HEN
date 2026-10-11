@@ -308,7 +308,7 @@ static void shutdown_restart_shellui(void) {
 }
 
 /**
- * Tear down userland OnionHEN only.
+ * Tear down userland 331HEN only.
  *
  * Never SIGKILL kstuff: unloading HV/kernel patches from userland leaves
  * half-torn fd/budget state (fdescfree BUDGET_FD_FILE) and panics. kstuff
