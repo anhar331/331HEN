@@ -116,6 +116,7 @@ bool model(ps5ui::Node &out) {
 void generate_game_patches_xml(std::string &xml) {
   ps5ui::Node out;
   refresh_requested = true;
+  if (selected_title.empty()) games_offset = 0;
   model(out);
   xml = onion::shellui::settings::publish(out, model);
 }
@@ -147,6 +148,7 @@ bool game_patch_press(OnPressContext &ctx) {
   if (ctx.id == "id_gp_refresh") {
     ctx.dirty = false;
     refresh_requested = true;
+    if (selected_title.empty()) games_offset = 0;
     onion::shellui::settings::refresh(ctx.instance);
     return true;
   }
