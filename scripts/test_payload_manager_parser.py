@@ -2,6 +2,7 @@
 """Compile and exercise the pinned official Payload Manager C JSON parser."""
 import json
 import subprocess
+import sys
 import tempfile
 import urllib.request
 from pathlib import Path
@@ -12,7 +13,8 @@ BASE = f"https://raw.githubusercontent.com/itsPLK/ps5-payload-manager/{UPSTREAM}
 
 
 def main():
-    document = json.loads((ROOT / "payloads.json").read_text())
+    catalog_path = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else ROOT / "payloads.json"
+    document = json.loads(catalog_path.read_text())
     expected = document["payloads"][0]
     with tempfile.TemporaryDirectory() as directory:
         work = Path(directory)
@@ -53,7 +55,7 @@ int main(int argc, char **argv) {
                         "-fsanitize=address,undefined", "-fno-omit-frame-pointer",
                         "-I", str(work), str(work / "parser.c"), str(work / "json_helpers.c"),
                         str(work / "main.c"), "-o", str(binary)], check=True)
-        subprocess.run([str(binary), str(ROOT / "payloads.json"), expected["url"],
+        subprocess.run([str(binary), str(catalog_path), expected["url"],
                         expected["checksum"], expected["version"], expected["category"]], check=True)
         # Verify the mirror's array layout works as well as the custom wrapper.
         array = work / "array.json"
