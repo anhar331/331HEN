@@ -8,6 +8,16 @@
       "approved_by": "anhar331",
       "evidence": "Owner requested distribution of the preserved existing working 331HEN without substituting the untested Game Patches binary. Owner reports the existing project works on PS5; Codex did not perform hardware testing or independently confirm the exact hash on hardware.",
       "ps5_runtime_tested_by_codex": false
+    },
+    {
+      "tag": "v0.0.13-331.3",
+      "sha256": "71b022ecdc5d5330c3c059e0cf1759306126efc548414fe56afb26a701c0a748",
+      "firmware": "12.70",
+      "evidence": "Owner reports Preview v0.0.13-331.3 launched successfully twice including after reboot on PS5 firmware 12.70, and explicitly requests it as default. Game Patches operation, FPS effects and full feature regression were not reported tested. Codex did not perform hardware testing or independently attest the loaded console file hash.",
+      "kind": "hardware-tested",
+      "ps5_runtime_tested": true,
+      "approved_by": "anhar331",
+      "approved_at": "2026-10-11T21:03:03.351226+00:00"
     }
   ]
 }

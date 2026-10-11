@@ -3,15 +3,15 @@
   "payloads": [
     {
       "name": "331HEN",
-      "filename": "331HEN_v0.0.13-331.2.elf",
-      "url": "https://github.com/anhar331/331HEN/releases/download/v0.0.13-331.2/331HEN.elf",
-      "source": "https://github.com/anhar331/331HEN/releases/tag/v0.0.13-331.2",
-      "source_direct": "https://github.com/anhar331/331HEN/releases/download/v0.0.13-331.2/331HEN.elf",
-      "description": "Preserved existing 331HEN build; PS5 12.70; excludes the untested Game Patches experiment.",
+      "filename": "331HEN_v0.0.13-331.3.elf",
+      "url": "https://github.com/anhar331/331HEN/releases/download/v0.0.13-331.3/331HEN.elf",
+      "source": "https://github.com/anhar331/331HEN/releases/tag/v0.0.13-331.3",
+      "source_direct": "https://github.com/anhar331/331HEN/releases/download/v0.0.13-331.3/331HEN.elf",
+      "description": "331HEN for PS5 12.70; exact ELF approved after owner-reported PS5 hardware testing.",
       "last_update": "2026-10-11",
-      "version": "v0.0.13-331.2",
+      "version": "v0.0.13-331.3",
       "category": "Homebrew Enablers",
-      "checksum": "72f00d524636f8c96746d551fb495c1af319048a6af3703ffe5ae19e6abc197d"
+      "checksum": "71b022ecdc5d5330c3c059e0cf1759306126efc548414fe56afb26a701c0a748"
     },
     {
       "name": "331HEN Preview",
