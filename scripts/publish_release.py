@@ -201,8 +201,11 @@ def main():
                       f"git@github.com:{REPOSITORY}.git"]:
         raise RuntimeError("Origin must be the existing anhar331/331HEN repository")
     repo = json.loads(gh("api", f"repos/{REPOSITORY}"))
-    if repo["private"] or not repo.get("permissions", {}).get("push"):
-        raise RuntimeError("A public destination with push permission is required")
+    # Installation GITHUB_TOKEN responses can omit user-role permissions.
+    # The release API enforces contents:write; an absent role field is not an
+    # authorization denial and must not reject an otherwise valid workflow.
+    if repo["private"] or repo["full_name"] != REPOSITORY:
+        raise RuntimeError("The existing public anhar331/331HEN destination is required")
     tags = gh("api", f"repos/{REPOSITORY}/tags", "--paginate", "--jq", ".[].name").splitlines()
     releases = gh("api", f"repos/{REPOSITORY}/releases", "--paginate", "--jq", ".[].tag_name").splitlines()
     tag = next_tag(tags + releases)

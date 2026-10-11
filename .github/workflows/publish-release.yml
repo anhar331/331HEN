@@ -13,7 +13,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5 (Node 24)
         with:
           submodules: recursive
           # The BearSSL server cannot fetch an old unadvertised SHA from a
@@ -34,3 +34,12 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: python3 scripts/publish_release.py --elf build/bin/331HEN.elf --tests-dir .cache/release-tests
+      - name: Failure diagnostics
+        if: failure()
+        run: |
+          for log in .cache/release-tests/*.log; do
+            if [ -f "$log" ]; then
+              echo "$log"
+              tail -n 60 "$log"
+            fi
+          done
