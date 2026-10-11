@@ -1,0 +1,14 @@
+{
+  "tag": "autoloader-v0.6.1-331.1",
+  "title": "331HEN Autoloader Installer v0.6.1-331.1",
+  "elf": "331HEN-Autoloader-Installer_v0.6.1-331.1.elf",
+  "firmware": "12.70",
+  "runtime_tested": false,
+  "assets": {
+    "SHA256SUMS.txt": "a6c8ec8f8e56250dc72d7a5267d666e3908b632a5c75bfe6125aea58ec5ccc51",
+    "BUILD-REPORT.md": "36b168f81aad31432554a1165663adc96f6388b6ffc6525c4935037ab341d912",
+    "331HEN-Autoloader-Source_v0.6.1-331.1.tar.gz": "de2d38f2cfeadf898f5921aaea0d9a86081de8fd06e63906dc00b40b2daf8573",
+    "331HEN-Autoloader-Installer_v0.6.1-331.1.elf": "0e6e34bdf6dc583db09639689655f1fb88a68fe1d20e4dd950d5bd5c277d5cd0",
+    "INSTALL-AR.md": "9c0cff20ae1b2b16ecbb471e19b679e8bbc022e291e46a3b3cf18a6f2fe6c868"
+  }
+}
