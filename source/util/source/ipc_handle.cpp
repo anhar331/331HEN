@@ -124,11 +124,13 @@ void handleIPC(clientArgs *client, std::string &inputStr,
     std::string response;
     if (command == BREW_UTIL_PATCH_GAMES)
       response = hen331::patches::games(static_cast<size_t>(
-          std::max(0, onion_cjson::int_item(my_json.get(), "offset", 0))));
+          std::max(0, onion_cjson::int_item(my_json.get(), "offset", 0))),
+          onion_cjson::bool_item(my_json.get(), "refresh", false));
     else if (command == BREW_UTIL_PATCH_LIST)
       response = hen331::patches::list(static_cast<size_t>(
           std::max(0, onion_cjson::int_item(my_json.get(), "offset", 0))),
-          onion_cjson::string_item(my_json.get(), "title", ""));
+          onion_cjson::string_item(my_json.get(), "title", ""),
+          onion_cjson::bool_item(my_json.get(), "refresh", false));
     else if (command == BREW_UTIL_PATCH_TOGGLE)
       response = hen331::patches::toggle(
           onion_cjson::string_item(my_json.get(), "key", ""),

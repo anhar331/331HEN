@@ -169,13 +169,15 @@ def prepare(elf, tests_dir, tag, commit):
         "Raw test/build logs are included. No PS5 runtime test was performed. "
         "The original stable ELF is retained locally and is not this asset.\n")
     notes = (
-        f"# 331HEN {tag} — Stability refinement\n\n"
+        f"# 331HEN {tag} — XML refresh and compatible game picker\n\n"
         "**Experimental pre-release. Target PS5 firmware 12.70; this updated ELF is "
         "NOT tested on PS5 hardware.** Keep your known-working payload.\n\n"
         "Installed-game selection, persistent pre-launch toggles, exact game/version matching, "
         "real process-memory execution with readback/rollback, cheat overlap protection "
         "and native GitHub collection updates. Bloodborne CUSA00900 / 01.09 definitions "
-        "are bundled unchanged.\n\n"
+        "are bundled unchanged. Local custom XML survives collection updates; native Reload reads new XML "
+        "without reboot. An experimental Ghost of Yotei PPSA26344 / 01.008.000 skip definition "
+        "is bundled OFF by default and is NOT PS5-tested. No separate patch installer is needed.\n\n"
         "**Limitations:** guaranteed patch-before-entry launch timing is absent; "
         "mask/cave and sprx operations are unsupported. Memory readback is not proof of "
         "FPS or startup effect. See KNOWN-LIMITATIONS.md.\n\n"
@@ -232,7 +234,7 @@ def main():
     # No --clobber, update, deletion, forced tag or stable promotion exists here.
     subprocess.run(["gh", "release", "create", tag, *assets, "--repo", REPOSITORY,
                     "--target", commit, "--prerelease", "--latest=false",
-                    "--title", f"331HEN {tag} — Stability refinement",
+                    "--title", f"331HEN {tag} — XML refresh and compatible game picker",
                     "--notes-file", str(destination / "RELEASE-NOTES.md")], check=True)
     release = json.loads(gh("api", f"repos/{REPOSITORY}/releases/tags/{tag}"))
     if release["draft"] or not release["prerelease"]:

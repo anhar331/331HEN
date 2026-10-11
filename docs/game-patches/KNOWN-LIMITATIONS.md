@@ -1,20 +1,11 @@
 # Known limitations
 
-- This is one experimental ELF for hardware testing. It contains a real native runtime executor, not a UI-only XML browser. PS5 firmware 12.70 execution remains untested in this environment.
-- Guaranteed patch-before-entry launch timing is not implemented. The existing dispatcher observes the process after exec. Closing/relaunching the game persists/reapplies selections, but a strict early-startup patch may still be too late. No safe existing pre-entry hook was available without adding the separate upstream ShellCore integration. Startup-only effects are not claimed compatible.
-- Only exact-version eboot.bin direct-address definitions execute. Other executables/modules, sprx, mask scans/caves, wildcard versions, 120 Hz or display/kernel extras are unsupported. The complete database may contain those definitions; unsupported entries are clearly labelled.
-- Application depends on the existing 331HEN process-memory backend, valid module section sizes, verified lifecycle identity, installed/available launched metadata and the normal AppJailbreak/ptrace capability. Missing/uncertain identity or mappings fails closed. No offsets are guessed.
-- A game running when util starts must be restarted before patch writes are permitted. This prevents false original-byte recovery after payload/util restart. Closing/restarting the game does not require rebooting the PS5.
-- Restoring instruction bytes cannot undo initialized game state or an effect that already occurred. Restart the game when needed. Original-byte ownership is in memory for the current process generation, not a durable cross-util memory journal.
-- Conflicts are detected for overlapping owned native patches/cheats and known active patch-server names. Unrelated semantic conflicts, modified executables with unchanged title/version and unknown external memory writers are not inferred from metadata. There is no upstream executable cryptographic hash to verify.
-- The upstream Bloodborne 60 FPS note warns of a possible softlock in Laurence's optional DLC cinematic. Hardware performance and this issue were not tested here.
-- PS5 TLS/DNS/storage behavior remains to test. GitHub rate limits, unavailable Internet, incorrect console time, exhausted storage or malformed newer upstream content produce failure rather than replacing the working collection.
-- Temporary files and snapshot pointers use fsync plus atomic rename, but the parent directory is not fsynced; abrupt power loss durability is not guaranteed. Storage exhaustion was represented by write-failure paths, not by filling a real PS5 disk.
-- The native page gathers at most 256 matching definitions. The installer caps archive entries, per-file bytes and total extraction. All 508 definitions in the inspected source snapshot installed; this is not proof that all execute.
-- runtime.log is append-only and has no dedicated rotation. General project logging remains bounded by its existing policy.
-- A transient unsanitized mock async-status failure was not reproduced in ten repeat runs or final sanitized runs. A long-running hardware stress test remains outstanding.
-- The current XML database repository has no explicit root LICENSE at the inspected revision. Its patch Metadata authors and original XML are preserved; the historical console-game-patches MIT license is not assumed to license a different repository.
+This updated ELF and the Ghost skip patch have NOT been tested on PS5. Firmware target is 12.70; embedded kstuff v1.10 is unchanged. A clean exploit session is needed to start the new HEN binary once; subsequent XML edits can be refreshed without rebooting the console.
 
-- The owner tested the earlier experimental ELF: first load crashed, next load worked, collection download succeeded, and the running-game selector failed. The revised ELF has not been hardware-tested. No crash-free claim is made.
-- Installed-game discovery checks normal internal and ext0/ext1 application roots and requires an accessible regular app.pkg or eboot.bin. Disc-only, proprietary/alternative mount layouts, inaccessible external storage and metadata with conflicting versions can be absent or blocked. Unknown versions never receive patches.
-- The newer corrected kstuff-lite v1.11 asset declares 12.70 support, but it is a substantial kernel/ShellCore change and its earlier asset had a confirmed 12.70 bug. The current v1.10 does not contain the affected gadget; no evidence justifies substituting it in this refinement.
+Some installation layouts/disc-only/external metadata may be unavailable to the existing installed-game resolver. Unknown or mismatched versions are hidden from the compatible-game picker. An empty picker is not proof that the user has no games. Only supported exact-version eboot.bin definitions qualify; mask/cave/sprx operations remain unsupported.
+
+Launch patches still require game relaunch if enabled after startup. Guaranteed pre-entry timing and all-game runtime stability are unproven. Memory verification does not prove FPS, skip UI or story progression. Ghost authored unskippable-scene restrictions remain intact; no speed/hotkey feature is added. The XML schema uses ID/version matching but does not enforce original executable SHA/bytes, so another modified build of the same version needs separate verification.
+
+Native page refresh may report malformed XML or storage errors. Bounded indexing accepts at most 4096 XML files / 65536 definitions. It scans on explicit refresh/first page, not every continuation. Large collections can still take longer on console storage than Linux fixtures.
+
+Keep the known-working release. Do not load both HEN versions in one session. Default source is not promoted without owner hardware testing.

@@ -21,6 +21,7 @@ extern "C" int pt_detach_proc(int, int);
 #include <onion/notify.h>
 #include <onion/proc_query.h>
 #include <set>
+#include <sstream>
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <thread>
@@ -29,6 +30,8 @@ extern "C" int sceShellCoreUtilGetAppLaunchedParamString(uint32_t, const char *,
 extern "C" {
 __asm__(".pushsection .rodata\n.global gp_bloodborne_start\ngp_bloodborne_start:\n.incbin \"" GP_BLOODBORNE_XML "\"\n.global gp_bloodborne_end\ngp_bloodborne_end:\n.popsection\n");
 extern const unsigned char gp_bloodborne_start[], gp_bloodborne_end[];
+__asm__(".pushsection .rodata\n.global gp_yotei_start\ngp_yotei_start:\n.incbin \"" GP_YOTEI_XML "\"\n.global gp_yotei_end\ngp_yotei_end:\n.popsection\n");
+extern const unsigned char gp_yotei_start[], gp_yotei_end[];
 }
 namespace hen331::patches {
 namespace {
@@ -44,6 +47,9 @@ Engine engine;
 Target current, pending;
 InstalledGame selected;
 std::vector<Patch> selected_catalog, runtime_catalog;
+std::set<std::pair<std::string, std::string>> available_versions;
+std::string availability_dir, availability_error;
+bool availability_valid = false;
 std::map<std::string, std::string> states;
 std::string selected_error, runtime_status = "Launch a selected game to apply saved patches";
 std::string update_status = "Collection not downloaded";
@@ -65,7 +71,7 @@ void log(const std::string &s) {
   if (f) { fprintf(f, "%s\n", s.c_str()); fclose(f); }
 }
 bool dirs() {
-  for (const auto &p : {root.substr(0, root.find_last_of('/')), root, root + "/xml", root + "/config", root + "/cache", root + "/logs"}) {
+  for (const auto &p : {root.substr(0, root.find_last_of('/')), root, root + "/xml", root + "/custom", root + "/config", root + "/cache", root + "/logs"}) {
     struct stat st{};
     if (lstat(p.c_str(), &st) == 0) { if (!S_ISDIR(st.st_mode)) return false; }
     else if (mkdir(p.c_str(), 0700)) return false;
@@ -86,26 +92,61 @@ std::string selection_token() {
 bool enabled(const Patch &p, const std::string &title) {
   return read_file(root + "/config/" + title + "-" + p.key) == "1\n";
 }
-void load(const std::string &title, const std::string &version, std::vector<Patch> &out, std::string &error) {
-  out.clear(); error.clear();
+std::vector<std::string> collection_dirs() {
   std::string dir = active_dir(root);
   if (dir.empty()) dir = root + "/xml";
-  DIR *d = opendir(dir.c_str());
-  if (!d) { error = "Patch XML directory unavailable"; return; }
-  std::set<std::string> seen;
-  while (auto *e = readdir(d)) {
-    std::string n = e->d_name;
-    if (!n.ends_with(".xml")) continue;
-    struct stat st{}; std::string file = dir + "/" + n;
-    if (lstat(file.c_str(), &st) || !S_ISREG(st.st_mode) || st.st_size > 2 * 1024 * 1024) continue;
-    std::vector<Patch> parsed; std::string parse_error;
-    if (!parse(read_file(file), parsed, parse_error)) { error = n + ": " + parse_error; continue; }
-    for (auto &patch : parsed)
-      if (matches(patch, title, version) && seen.insert(patch.key).second) out.push_back(std::move(patch));
-  }
-  closedir(d);
+  return {dir, root + "/custom"};
 }
-bool select(const std::string &title) {
+// Stream each file once. Local definitions survive downloaded collection changes.
+void load(const std::string &title, const std::string &version, std::vector<Patch> &out, std::string &error,
+          bool metadata_only = false) {
+  out.clear(); error.clear(); std::set<std::string> seen;
+  size_t files = 0;
+  for (const auto &dir : collection_dirs()) {
+    DIR *d = opendir(dir.c_str());
+    if (!d) { if (dir != root + "/custom") error = "Patch XML directory unavailable"; continue; }
+    while (auto *e = readdir(d)) {
+      std::string n = e->d_name;
+      if (!n.ends_with(".xml")) continue;
+      if (++files > 4096) { error = "Patch collection exceeds indexing limit"; break; }
+      struct stat st{}; std::string file = dir + "/" + n;
+      if (lstat(file.c_str(), &st) || !S_ISREG(st.st_mode) || st.st_size > 2 * 1024 * 1024) continue;
+      std::vector<Patch> parsed; std::string parse_error;
+      if (!parse(read_file(file), parsed, parse_error)) { error = n + ": " + parse_error; continue; }
+      for (auto &patch : parsed) {
+        if ((metadata_only || matches(patch, title, version)) && seen.insert(patch.key).second) {
+          if (metadata_only) { patch.lines.clear(); patch.lines.shrink_to_fit(); patch.note.clear(); }
+          out.push_back(std::move(patch));
+        }
+      }
+      if (out.size() > 65536) { error = "Patch metadata exceeds indexing limit"; break; }
+    }
+    closedir(d);
+    if (files > 4096 || out.size() > 65536) { out.clear(); return; }
+  }
+}
+// Compact metadata index: parse once per explicit refresh, not per installed game.
+void refresh_availability(bool force) {
+  auto dirs = collection_dirs(); std::string dir = dirs.front();
+  if (!force && availability_valid && availability_dir == dir) return;
+  available_versions.clear(); availability_error.clear(); availability_dir = dir;
+  availability_valid = true;
+  std::vector<Patch> metadata;
+  load("", "", metadata, availability_error, true);
+  for (const auto &patch : metadata) {
+    if (!patch.unsupported.empty()) continue;
+    std::istringstream versions(patch.version); std::string version;
+    while (std::getline(versions, version, ',')) {
+      auto begin = version.find_first_not_of(" \t\r\n"), end = version.find_last_not_of(" \t\r\n");
+      if (begin == std::string::npos) continue;
+      std::string exact = version.substr(begin, end - begin + 1);
+      for (const auto &title : patch.titles) {
+        if (matches(patch, title, exact)) available_versions.emplace(title, exact);
+      }
+    }
+  }
+}
+bool select(const std::string &title, bool refresh = false) {
   InstalledGame actual; std::string error;
   if (!installed_game(title, actual, error, GP_GAME_ROOT)) {
     selected = {}; selected_catalog.clear(); selected_error = error; return false;
@@ -113,7 +154,7 @@ bool select(const std::string &title) {
   if (actual.version.empty() || actual.version == "unknown") {
     selected = actual; selected_catalog.clear(); selected_error = "Installed game version unavailable; patch matching blocked"; return false;
   }
-  if (selected.title != actual.title || selected.version != actual.version || selected.metadata_path != actual.metadata_path) {
+  if (refresh || selected.title != actual.title || selected.version != actual.version || selected.metadata_path != actual.metadata_path) {
     selected = std::move(actual);
     load(selected.title, selected.version, selected_catalog, selected_error);
   }
@@ -238,6 +279,7 @@ void updater_body() {
                         " patches; revision " + sha;
         selected = {};
         selected_catalog.clear();
+        availability_valid = false;
       }
       unlink((root + "/cache/download.zip").c_str());
     }
@@ -278,14 +320,25 @@ void initialize() {
     std::vector<Patch> patches; std::string error;
     if (parse(xml, patches, error)) atomic_write(root + "/xml/Bloodborne-Orbis.xml", xml);
   }
-  update_status = "Bundled Bloodborne collection; download for all games";
+  const std::string local_yotei = root + "/custom/GhostYotei-PPSA26344-TEST.xml";
+  if (access(local_yotei.c_str(), F_OK) != 0) {
+    std::string xml(reinterpret_cast<const char *>(gp_yotei_start), gp_yotei_end - gp_yotei_start);
+    std::vector<Patch> patches; std::string error;
+    if (parse(xml, patches, error)) atomic_write(local_yotei, xml);
+  }
+  update_status = "Bundled Bloodborne and experimental Ghost Yotei definitions; download to update the collection";
 }
-std::string games(size_t offset) {
+std::string games(size_t offset, bool refresh) {
   std::lock_guard<std::mutex> lock(mu);
   auto catalog = installed_games(GP_GAME_ROOT);
+  refresh_availability(refresh && offset == 0);
+  std::erase_if(catalog.games, [](const InstalledGame &game) {
+    return !available_versions.contains({game.title, game.version});
+  });
+  if (!availability_error.empty()) catalog.warnings.insert(catalog.warnings.begin(), availability_error);
   cJSON *j = cJSON_CreateObject();
   cJSON_AddStringToObject(j, "collection", update_status.c_str());
-  cJSON_AddStringToObject(j, "status", catalog.games.empty() ? "No installed games with verified metadata found" : "Choose a game and save patches before launching it");
+  cJSON_AddStringToObject(j, "status", catalog.games.empty() ? "No installed games with supported patches for their exact versions" : "Choose a game with compatible patches and save selections before launching it");
   if (!catalog.warnings.empty()) cJSON_AddStringToObject(j, "warning", catalog.warnings.front().substr(0, 180).c_str());
   cJSON *items = cJSON_AddArrayToObject(j, "games");
   size_t end = std::min(catalog.games.size(), offset + 4);
@@ -300,10 +353,10 @@ std::string games(size_t offset) {
   cJSON_AddNumberToObject(j, "next", end < catalog.games.size() ? static_cast<int>(end) : -1);
   return onion_cjson::print_owned(j);
 }
-std::string list(size_t offset, const std::string &title) {
+std::string list(size_t offset, const std::string &title, bool refresh) {
   std::lock_guard<std::mutex> lock(mu);
   std::string requested = title.empty() ? selected.title : title;
-  bool ready = initialized && select(requested);
+  bool ready = initialized && select(requested, refresh && offset == 0);
   cJSON *j = cJSON_CreateObject();
   cJSON_AddStringToObject(j, "collection", update_status.c_str());
   std::string status = !ready ? selected_error : selected_catalog.empty() ? "No compatible patches found." : "Save selections, then launch or restart the game. Startup effects are not guaranteed.";

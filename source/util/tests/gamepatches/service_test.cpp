@@ -121,6 +121,15 @@ std::string field(const std::string &json, const char *key) {
   onion_cjson::Root j(json);
   return onion_cjson::string_item(j.get(), key, "");
 }
+std::string all_patches(const std::string &title) {
+ std::string result;size_t offset=0;
+ for(unsigned page=0;page<128;++page){auto reply=list(offset,title);result+=reply;
+  onion_cjson::Root j(reply);int next=onion_cjson::int_item(j.get(),"next",-1);
+  if(next<0||size_t(next)<=offset) break;
+  offset=size_t(next);
+ }
+ return result;
+}
 void wait_download() {
   for (int i = 0; i < 500; ++i) {
     if (field(list(0), "collection").find("Downloading") == std::string::npos)
@@ -144,12 +153,32 @@ void new_process() {
  ++pid;timeval now{};gettimeofday(&now,nullptr);
  generation=(uint64_t(now.tv_sec+2)<<32)|uint64_t(now.tv_usec);ram.clear();running=true;
 }
+void installed_ps5(const std::string &title, const std::string &name, const std::string &ver) {
+ const std::string base = "/tmp/hen331-service-test";
+ std::filesystem::create_directories(base + "/user/app/" + title);
+ std::ofstream(base + "/user/app/" + title + "/app.pkg") << "installed";
+ std::filesystem::create_directories(base + "/system_data/priv/appmeta/" + title);
+ std::ofstream(base + "/system_data/priv/appmeta/" + title + "/param.json")
+   << "{\"titleId\":\"" << title << "\",\"titleName\":\"" << name
+   << "\",\"contentVersion\":\"" << ver << "\"}";
+}
 int main(int argc, char **argv) {
  assert(argc==2);zip=file(argv[1]);
  std::filesystem::remove_all("/tmp/hen331-service-test");
  std::filesystem::create_directories("/tmp/hen331-service-test/user/app/CUSA00900");
  std::ofstream("/tmp/hen331-service-test/user/app/CUSA00900/app.pkg")<<"installed";
+ // Synthetic IDs below are fixture applications, not real-game compatibility claims.
+ installed_ps5("PPSA90001", "YouTube fixture", "01.000.000");
+ installed_ps5("PPSA90002", "Hollow Knight fixture", "01.000.000");
+ installed_ps5("PPSA26344", "Ghost of Yotei", "01.008.000");
  metadata("01.09");initialize();initialize();
+ assert(!file("/tmp/hen331-service-test/patches/custom/GhostYotei-PPSA26344-TEST.xml").empty());
+ std::string picker=games(0,true);assert(picker.find("CUSA00900")!=std::string::npos);
+ assert(picker.find("PPSA26344")!=std::string::npos);
+ assert(picker.find("PPSA90001")==std::string::npos&&picker.find("PPSA90002")==std::string::npos);
+ installed_ps5("PPSA26344", "Ghost of Yotei", "01.009.000");assert(games(0).find("PPSA26344")==std::string::npos);
+ installed_ps5("PPSA26344", "Ghost of Yotei", "01.008.000");
+ assert(games(0).find("PPSA26344")!=std::string::npos);
  assert(!file("/tmp/hen331-service-test/patches/xml/Bloodborne-Orbis.xml").empty());
  running=false;assert(field(games(0),"status").find("Choose")!=std::string::npos);
  std::string key,token=field(list(0,"CUSA00900"),"session");assert(!token.empty());
@@ -161,6 +190,28 @@ int main(int argc, char **argv) {
  running=true;assert(field(launch(pid,10,generation,"CUSA00900",version),"status").find("predates")!=std::string::npos);assert(writes==0);
  new_process();assert(field(launch(pid,10,generation,"CUSA00900",version),"status").find("scheduled")!=std::string::npos);tick();assert(writes>0);
  int n=writes;launch(pid,10,generation,"CUSA00900",version);tick();assert(writes==n);
+ // Add XML after selection while a patch is active: refresh must never reset live ownership.
+ const std::string added="/tmp/hen331-service-test/patches/custom/Added-TEST.xml";
+ const std::string local_xml="<Patch><TitleID><ID>CUSA00900</ID></TitleID><Metadata Name='Locally added refresh fixture' AppVer='01.09' AppElf='eboot.bin'><PatchList><Line Type='bytes' Address='0x400080' Value='90'/></PatchList></Metadata></Patch>";
+ std::ofstream(added)<<local_xml;
+ assert(all_patches("CUSA00900").find("Locally added refresh fixture")==std::string::npos);
+ auto owned_before=hen331::memorycoord::patches();auto ram_before=ram;
+ installed_ps5("PPSA90003", "Late-supported fixture", "01.000.000");
+ assert(games(0).find("PPSA90003")==std::string::npos);
+ const std::string late="/tmp/hen331-service-test/patches/custom/LateSupported.xml";
+ std::ofstream(late)<<"<Patch><TitleID><ID>PPSA90003</ID></TitleID><Metadata Name='Late supported fixture' AppVer='01.000.000' AppElf='eboot.bin' ImageBase='0x0'><PatchList><Line Type='bytes' Address='0x100' Value='90'/></PatchList></Metadata></Patch>";
+ assert(games(0).find("PPSA90003")==std::string::npos);
+ assert(games(0,true).find("PPSA90003")!=std::string::npos);
+ assert(writes==n&&ram==ram_before);
+ std::string refreshed=list(0,"CUSA00900",true);
+ assert(all_patches("CUSA00900").find("Locally added refresh fixture")!=std::string::npos);
+ assert(field(refreshed,"session")!=token);assert(writes==n&&ram==ram_before);
+ assert(hen331::memorycoord::patches().size()==owned_before.size());
+ assert(field(toggle(key,token,false),"status").find("changed")!=std::string::npos);
+ token=field(refreshed,"session");
+ std::filesystem::remove(added);list(0,"CUSA00900",true);
+ token=field(list(0,"CUSA00900"),"session");
+
  assert(field(toggle(key,token,false),"status").starts_with("Saved OFF"));assert(writes==n); // No live restoration of startup state.
  game_context_t game{};game.pid=pid;game.appid=10;strcpy(game.process_name,"eboot.bin");
  onion_patch_t patch{};patch.offset=0x00fbc40f-0x400000;patch.on_len=patch.off_len=2;patch.on[0]=0xab;
@@ -183,5 +234,8 @@ int main(int argc, char **argv) {
  assert(field(list(0,"CUSA00900"),"collection").find("previous collection preserved")!=std::string::npos);assert(active_dir("/tmp/hen331-service-test/patches")==active);
  network_failure=false;download();wait_download();assert(active_dir("/tmp/hen331-service-test/patches")==active);
  assert(file("/tmp/hen331-service-test/patches/config/CUSA00900-"+key)=="1\n");
+ assert(games(0,true).find("PPSA26344")!=std::string::npos); // local XML survives collection replacement.
+ assert(list(0,"PPSA26344",true).find("Enable existing cutscene skip permission")!=std::string::npos);
+ assert(list(0,"PPSA26344").find("\"enabled\":true")==std::string::npos);
  std::cout<<"PASS: service offline selection, persistence, verified launches, inherited/duplicate/mismatched processes, cheat overlap, failure/retry and settings preservation\n";
 }

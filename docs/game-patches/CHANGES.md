@@ -1,12 +1,10 @@
-# Current refinement changes
+# XML refresh and compatible-game picker
 
-- Native Game Patches now selects an installed game before launch. ON/OFF choices are persistent; selecting a patch does not write into a running process.
-- Strict installed APP_VER/contentVersion metadata and package/executable installation evidence replace the running-game-only selector. Cached metadata alone does not count as installation.
-- Daemon lifecycle sends PID, app ID, Title ID, launched version and exact process-generation strings. Util validates process identity without SystemService BigApp calls under PTRACE_AUTHID.
-- Corrected SYS_dl_get_info_2 section ABI (32-bit size and protection, 16-byte record). Module lookup now checks syscall errors, handle counts and string bounds.
-- Prevented retry injection into the same ShellUI PID after an uncertain/failed attempt; a late ready marker is accepted.
-- Bootstrapper waits for its previously owned services to exit and refuses overlapping replacements. Injector refuses missing pthread_create or unavailable credential backup, propagates detach/restore failures; owned ptrace attach cleanup was tightened.
-- Startup logs distinguish embedded kstuff, custom override and already-active kstuff. Embedded v1.10, kernel patches/offsets, cheat storage and existing branding/credits are preserved.
-- New installed-game, offline selection/runtime, native navigation and module ABI tests accompany existing host regression tests.
+Compared with working v0.0.13-331.3:
 
-These fixes address demonstrated source defects and crash risks. They do not establish the actual cause of the owner's hardware crash or prove that the new ELF is stable.
+- Game Patches lists only installed titles with at least one supported definition matching the exact installed version. Titles without patches and unsupported-only/mismatched definitions are omitted. This applies to applications such as YouTube and games such as Hollow Knight according to the actual collection, not a hardcoded name blacklist.
+- Opening the native page or pressing Reload re-reads metadata/definitions; adding XML no longer requires restarting the PS5. Pagination and ordinary toggle redraws reuse the snapshot. A changed snapshot invalidates stale selection tokens.
+- Refresh only updates UI selection state; it does not replace the active runtime catalog, original bytes, memory coordinator or enabled settings.
+- Local XML in /data/331HEN/patches/custom is merged with the selected downloaded collection, deduplicated by patch identity and preserved during collection updates. Existing xml/config/cache/log paths remain supported.
+- A default-OFF experimental Ghost of Yotei PPSA26344 / 01.008.000 skip-permission definition is bundled and installed locally if absent. No standalone patch installer is needed for this build. The game uses its existing skip controls; no R1/x2/x4 feature.
+- Existing HEN branding, Cheats, FTP, payload loading and embedded kstuff are preserved. Working release remains the approved default; the new build is a separate preview pending PS5 testing.

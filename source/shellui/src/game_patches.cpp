@@ -8,6 +8,7 @@ namespace {
 std::map<std::string, std::string> values;
 std::string session, selected_title;
 size_t games_offset = 0;
+bool refresh_requested = true;
 bool model(ps5ui::Node &out) {
   ps5ui::Page page("id_game_patch_page", "Game Patches");
   values.clear();
@@ -15,11 +16,12 @@ bool model(ps5ui::Node &out) {
     std::string reply;
     bool ok = IPC_Client::getInstance(true).IPCSendCommand(
         BREW_UTIL_PATCH_GAMES, reply,
-        "{\"offset\":" + std::to_string(games_offset) + "}");
+        "{\"offset\":" + std::to_string(games_offset) + ",\"refresh\":" + (refresh_requested ? "true" : "false") + "}");
     onion_cjson::Root j(reply);
     if (!ok || !j) {
       page.label("id_gp_unavailable", "Installed game service unavailable");
     } else {
+      refresh_requested = false;
       page.label("id_gp_status", onion_cjson::string_item(j.get(), "status", ""))
           .label("id_gp_collection", onion_cjson::string_item(j.get(), "collection", ""));
       const std::string warning = onion_cjson::string_item(j.get(), "warning", "");
@@ -48,7 +50,7 @@ bool model(ps5ui::Node &out) {
   page.button("id_gp_choose_game", "Choose another game");
   std::string reply;
   bool ok = IPC_Client::getInstance(true).IPCSendCommand(
-      BREW_UTIL_PATCH_LIST, reply, "{\"offset\":0,\"title\":\"" + selected_title + "\"}");
+      BREW_UTIL_PATCH_LIST, reply, "{\"offset\":0,\"title\":\"" + selected_title + "\",\"refresh\":" + (refresh_requested ? "true" : "false") + "}");
   onion_cjson::Root first(reply);
   if (!ok || !first) {
     page.label("id_gp_unavailable", "Patch service unavailable",
@@ -56,6 +58,7 @@ bool model(ps5ui::Node &out) {
     out = page.root();
     return false;
   }
+  refresh_requested = false;
   session = onion_cjson::string_item(first.get(), "session", "");
   std::string title = onion_cjson::string_item(first.get(), "title", "");
   std::string version = onion_cjson::string_item(first.get(), "version", "");
@@ -70,7 +73,7 @@ bool model(ps5ui::Node &out) {
              "Startup effects: restart game required. Pre-entry timing is "
              "not guaranteed.",
              ps5ui::Style::Center)
-      .button("id_gp_refresh", "Refresh patch status");
+      .button("id_gp_refresh", "Reload patch files and status");
   int offset = 0;
   for (unsigned batch = 0; batch < 128; ++batch) {
     if (offset > 0) {
@@ -112,6 +115,7 @@ bool model(ps5ui::Node &out) {
 } // namespace
 void generate_game_patches_xml(std::string &xml) {
   ps5ui::Node out;
+  refresh_requested = true;
   model(out);
   xml = onion::shellui::settings::publish(out, model);
 }
@@ -126,6 +130,7 @@ bool game_patch_press(OnPressContext &ctx) {
   if (ctx.id == "id_gp_choose_game" || ctx.id == "id_gp_previous" ||
       ctx.id == "id_gp_next" || ctx.id.starts_with("id_gp_game_")) {
     ctx.dirty = false;
+    if (ctx.id == "id_gp_choose_game" || ctx.id.starts_with("id_gp_game_")) refresh_requested = true;
     if (ctx.id == "id_gp_choose_game") selected_title.clear();
     else if (ctx.id == "id_gp_previous") games_offset = games_offset >= 4 ? games_offset - 4 : 0;
     else if (ctx.id == "id_gp_next") {
@@ -141,6 +146,7 @@ bool game_patch_press(OnPressContext &ctx) {
   }
   if (ctx.id == "id_gp_refresh") {
     ctx.dirty = false;
+    refresh_requested = true;
     onion::shellui::settings::refresh(ctx.instance);
     return true;
   }

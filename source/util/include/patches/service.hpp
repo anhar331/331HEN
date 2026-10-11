@@ -4,8 +4,8 @@
 namespace hen331::patches {
 void initialize();
 void tick();
-std::string games(size_t offset);
-std::string list(size_t offset, const std::string &title = "");
+std::string games(size_t offset, bool refresh = false);
+std::string list(size_t offset, const std::string &title = "", bool refresh = false);
 std::string toggle(const std::string &key, const std::string &session, bool enabled);
 std::string download();
 std::string launch(int pid, int appid, uint64_t generation, const std::string &title, const std::string &version);

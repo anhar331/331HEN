@@ -138,3 +138,5 @@ onion_strip_debug(${PROJECT_NAME})
 target_compile_definitions(${PROJECT_NAME} PRIVATE GP_BLOODBORNE_XML="${CMAKE_CURRENT_SOURCE_DIR}/../../assets/gamepatches/Bloodborne-Orbis.xml")
 set_source_files_properties(${D_SRC}/patches/service.cpp PROPERTIES OBJECT_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/../../assets/gamepatches/Bloodborne-Orbis.xml")
 set_source_files_properties(${D_SRC}/patches/collection.cpp PROPERTIES COMPILE_FLAGS "-Wno-unused-function")
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE GP_YOTEI_XML="${CMAKE_CURRENT_SOURCE_DIR}/../../assets/gamepatches/GhostYotei-PPSA26344-TEST.xml")
