@@ -152,12 +152,19 @@ def experimental_item(release, record, url):
 def validate_catalog(document):
     if list(document) != ["name", "payloads"] or document["name"] != "331HEN":
         raise ValueError("Custom catalog requires name before payloads")
-    if len(document["payloads"]) not in (1, 2):
+    if not 1 <= len(document["payloads"]) <= 3:
         raise ValueError("Catalog needs one approved default and at most one separate experiment")
     limits = {"name": 128, "filename": 256, "url": 1024, "source": 1024,
               "source_direct": 1024, "description": 1024, "last_update": 64,
               "version": 64, "checksum": 65, "category": 128}
     for index, item in enumerate(document["payloads"]):
+        if item.get("name") == "331HEN Autoloader Installer":
+            try:
+                from scripts.installer_source import validate_item
+            except ModuleNotFoundError:
+                from installer_source import validate_item
+            validate_item(item)
+            continue
         name = document["name"] if index == 0 else EXPERIMENTAL_NAME
         filename = saved_filename(item["version"]) if index == 0 else experimental_filename(item["version"])
         if item.get("name") != name or item.get("filename") != filename:
@@ -208,6 +215,11 @@ def refresh(approvals, output, experiments=()):
         experimental_release = get_release(experiment["tag"])
         experimental_url = verify_asset(experimental_release, experiment, experimental=True)
         document["payloads"].append(experimental_item(experimental_release, experiment, experimental_url))
+    try:
+        from scripts.installer_source import entries
+    except ModuleNotFoundError:
+        from installer_source import entries
+    document["payloads"].extend(entries())
     validate_catalog(document)
     atomic_json(output, document)  # Never change a working source before verification.
     return document

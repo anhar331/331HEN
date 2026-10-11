@@ -1,0 +1,48 @@
+name: Publish separate Autoloader installer
+on:
+  workflow_dispatch:
+    inputs:
+      bundle_ref:
+        description: Exact commit of the verified installer/source bundle
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: 331hen-release-publishing
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          ref: ${{ inputs.bundle_ref }}
+          path: bundle
+          persist-credentials: false
+      - name: Verify and publish immutable installer assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 scripts/publish_autoloader.py bundle
+      - name: Verify the catalog and official Payload Manager
+        run: |
+          python3 scripts/update_payload_source.py
+          python3 -m unittest discover -s scripts/tests -v
+          python3 scripts/test_payload_manager_parser.py
+          python3 scripts/test_payload_manager_display.py
+      - name: Commit verified installer source entry
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git add distribution/installers.json payloads.json
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git commit -m 'Add separately verified Autoloader installer to Payload Manager'
+          git -c credential.helper='!gh auth git-credential' push origin HEAD:main
