@@ -1,4 +1,4 @@
-name: Publish separate Autoloader installer
+name: Publish separate verified installers
 on:
   workflow_dispatch:
     inputs:

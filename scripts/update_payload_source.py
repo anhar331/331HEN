@@ -152,13 +152,13 @@ def experimental_item(release, record, url):
 def validate_catalog(document):
     if list(document) != ["name", "payloads"] or document["name"] != "331HEN":
         raise ValueError("Custom catalog requires name before payloads")
-    if not 1 <= len(document["payloads"]) <= 3:
+    if not 1 <= len(document["payloads"]) <= 4:
         raise ValueError("Catalog needs one approved default and at most one separate experiment")
     limits = {"name": 128, "filename": 256, "url": 1024, "source": 1024,
               "source_direct": 1024, "description": 1024, "last_update": 64,
               "version": 64, "checksum": 65, "category": 128}
     for index, item in enumerate(document["payloads"]):
-        if item.get("name") == "331HEN Autoloader Installer":
+        if item.get("name") in ("331HEN Autoloader Installer", "331HEN Ghost Yotei SkipPatch Installer TEST"):
             try:
                 from scripts.installer_source import validate_item
             except ModuleNotFoundError:
