@@ -7,7 +7,7 @@ Source URL to paste in Manage Sources → Add a New Source:
 ## Official format verified
 
 Official default: https://itsplk.github.io/ps5-payloads-mirror/payloads.json
-Official manager source inspected at commit `e4e72dc9d831dd09ee8fabc222ad1e7f5139050e`:
+Official manager source inspected at release `v0.5.2`, commit `e4e72dc9d831dd09ee8fabc222ad1e7f5139050e`:
 
 - [Custom source specification](https://github.com/itsPLK/ps5-payload-manager/blob/e4e72dc9d831dd09ee8fabc222ad1e7f5139050e/CUSTOM_REPOSITORIES.md)
 - [Actual payload parser](https://github.com/itsPLK/ps5-payload-manager/blob/e4e72dc9d831dd09ee8fabc222ad1e7f5139050e/src/repository.c)
