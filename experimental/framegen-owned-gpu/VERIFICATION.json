@@ -16,5 +16,21 @@
   "native_stat_layout_compile_checks_passed": true,
   "gpu_execution_verified": false,
   "prior_v02_user_log": "STOP lstat lookup EPERM; no GPU initialization",
-  "unchanged_backend_host_suite_results": "10 suites passed in v0.1; GPU backend/shader unchanged in v0.3"
+  "unchanged_backend_host_suite_results": "10 suites passed in v0.1; GPU backend/shader unchanged in v0.3",
+  "owner_hardware_evidence": {
+    "diagnostic_version": "0.3",
+    "log_sha256": "77860fb05c11af3388b61d8b06f2db23c0a55d5ed67b070073afe2f05f301d54",
+    "owned_gpu_compute_readback_passed": true,
+    "input_and_guard_checks_passed": true,
+    "resource_release_reported": true,
+    "cpu_submit_to_fence_ns": 4260332,
+    "workload_pixels": 1024,
+    "gpu_shader_timing_measured": false,
+    "deployed_binary_hash_attested": false,
+    "system_close_confirmed": false,
+    "console_access_by_codex": false,
+    "presentation_verified": false,
+    "game_interception_verified": false,
+    "frame_generation_verified": false
+  }
 }

@@ -54,3 +54,7 @@ Own diagnostic code: Copyright (C) 2026 ANHAR / 331HEN, GPL-3.0-or-later. Upstre
 ## Native file probes in version 0.3
 
 The owner reported v0.2 STOP lookup errno=1 (EPERM); no GPU initialization occurred. Control probes now use native sceKernelOpen with O_NOFOLLOW/O_NONBLOCK, sceKernelFstat and sceKernelClose. SCE error codes are normalized without converting access failures into missing files. The SDK stat layout is compile-checked against the public 120-byte native layout. New control logs include raw native return values; successful operation on 12.70 remains untested. STOP and regular-empty marker requirements remain enforced.
+
+## Owner-provided v0.3 compute result
+
+The owner supplied a successful native GPU submission/completion/readback log: 1,024 pixels, unchanged inputs, intact guards and allocations_bytes=0 on close. See [the evidence summary](OWNER-HARDWARE-RESULT-v0.3.md). This qualifies the earlier untested status for this particular compute run only; deployed binary hashes and system Close Game are not attested, and there is no presentation or game-frame generation result.
