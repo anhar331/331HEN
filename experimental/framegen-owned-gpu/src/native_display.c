@@ -2,9 +2,9 @@
  * Adapted presentation sequencing from Manuel Pereira's ps5-vulkan:
  * e6d3c3f82f3c8a574e28c174b15b287f9c0ecc6d/native/present_ps5.c.
  * Uses its command arena/format/tile helpers and ps5-agc-gears public helpers.
- * Only owned CPU-authored test surfaces; no game handles, hooks or buffers. */
+ * Only owned staged GPU-readback surfaces; no game handles, hooks or buffers. */
 #include "native_display.h"
-#include "display_pattern.h"
+#include "result_scanout.h"
 #include "command_arena_ps5.h"
 #include "presentation_format_ps5.h"
 #include "color_detile.h"
@@ -45,7 +45,7 @@ static int flip(uint32_t **cursor, uint32_t capacity, uint32_t mode,
     return ps5_agc_writer_set_flip(cursor, capacity, mode, handle, index,
                                     flip_mode, token, sceAgcDcbSetFlip);
 }
-int fg_run_owned_display(int (*should_stop)(void)) {
+int fg_run_owned_display(const struct fg_result_view *view, int (*should_stop)(void)) {
     struct ps5_surface_plan plan;
     struct ps5_videoout video = {.handle = -1};
     struct ps5vk_command_arena arena = {0};
@@ -55,6 +55,12 @@ int fg_run_owned_display(int (*should_stop)(void)) {
     unsigned completed = 0;
     uint64_t last_completion = 0;
     if (!should_stop || should_stop()) return 1;
+    if (!fg_result_view_valid(view)) {
+        ps5log_line(PS5LOG_ERR, "OWNED_GPU_RESULT_INVALID no_display_allocation=1");
+        return -1;
+    }
+    const uint32_t source_fingerprint = fg_result_fingerprint(view->gpu_output);
+    ps5log_printf(PS5LOG_MARK, "OWNED_GPU_RESULT_VALIDATED pixels=1024 rgba_fnv1a=0x%08x source=post-fence-readback cpu_staging=1", source_fingerprint);
     if (ps5_surface_make_plan(0, &plan) || plan.width != FG_DISPLAY_WIDTH ||
         plan.height != FG_DISPLAY_HEIGHT) return -1;
     plan.format_word = ps5vk_native_video_format(VK_FORMAT_B8G8R8A8_UNORM);
@@ -85,13 +91,15 @@ int fg_run_owned_display(int (*should_stop)(void)) {
             for (unsigned x = 0; x < plan.width; ++x) {
                 size_t offset = ps5vk_color_64k_rx_offset(4, x, y, plan.width);
                 if (offset > plan.tiled_footprint - sizeof(uint32_t)) goto cleanup;
-                uint32_t pixel = fg_display_pixel(frame, x, y);
+                uint32_t pixel = fg_result_view_pixel(view, frame, x, y);
                 memcpy(pixels + offset, &pixel, sizeof(pixel));
             }
+        if (!fg_result_scanout_verify(view,frame,pixels,plan.tiled_footprint)) goto cleanup;
+        ps5log_printf(PS5LOG_MARK, "OWNED_RESULT_SCANOUT_PASS mode=%u source_texels=%u stage=cpu-readback-to-tiled", frame, frame ? 1024u : 3072u);
         flush(pixels, plan.tiled_footprint + 256);
     }
     guards_ready = 1;
-    ps5log_line(PS5LOG_MARK, "OWNED_DISPLAY_IMAGES width=1920 height=1080 cpu_authored=1 format=BGRA8 surfaces=2");
+    ps5log_line(PS5LOG_MARK, "OWNED_DISPLAY_IMAGES width=1920 height=1080 source=verified-gpu-readback cpu_staging=1 format=BGRA8 surfaces=2");
     VkResult created = ps5vk_command_arena_create(&arena);
     if (created == VK_ERROR_DEVICE_LOST) retain("arena-create", created);
     if (created != VK_SUCCESS) goto cleanup;
@@ -152,6 +160,8 @@ int fg_run_owned_display(int (*should_stop)(void)) {
         last_completion = finished_at;
         sleep(1); /* Deliberately slow visual inspection, not an FPS benchmark. */
     }
+    if (!fg_result_view_valid(view) || fg_result_fingerprint(view->gpu_output) != source_fingerprint)
+        retain("readback-source-mutated", -1);
     result = 0;
 cleanup:
     if (video_attempted) {
