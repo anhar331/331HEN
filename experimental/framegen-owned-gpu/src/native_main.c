@@ -6,6 +6,7 @@
 #include "ps5log.h"
 #include "control.h"
 #include "native_file_probe.h"
+#include "native_display.h"
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
@@ -17,7 +18,7 @@ static int stop(void){struct stat st;errno=0;if(file_probe("/data/331FrameGen/ST
 #define CHECK(call) do{VkResult r=(call);if(r!=VK_SUCCESS){ps5log_printf(PS5LOG_ERR,"FAIL operation=%s result=%d",#call,r);goto cleanup;}}while(0)
 int main(void){
  if(fg_log_open())_exit(0);
- ps5log_line(PS5LOG_MARK,"331_FRAMEGEN_DIAGNOSTIC version=0.3 source=owned-synthetic-images game_capture=0 presentation=0 frame_generation=0");
+ ps5log_line(PS5LOG_MARK,"331_FRAMEGEN_DIAGNOSTIC version=0.4 source=owned-synthetic-images game_capture=0 presentation=experimental-owned-only frame_generation=0");
  const char *enable_paths[2]={"/app0/ENABLE_GPU_TEST","/data/homebrew/PPSA99993-app/ENABLE_GPU_TEST"};
  struct fg_control_result control=fg_control_check("/data/331FrameGen/STOP",enable_paths[0],enable_paths[1],file_probe);
  ps5log_printf(PS5LOG_MARK,"CONTROL_GATE decision=%d stop_lookup_errno=%d",control.state,control.stop_error);
@@ -53,6 +54,10 @@ int main(void){
  if(!fg_verify(mapped[0]+FG_GUARD,mapped[1]+FG_GUARD,mapped[2]+FG_GUARD)){ps5log_line(PS5LOG_ERR,"READBACK_MISMATCH");goto cleanup;}
  for(unsigned b=0;b<3;b++)for(unsigned i=0;i<FG_MEMORY_BYTES/4;i++)if((i<FG_GUARD||i>=FG_GUARD+FG_PIXELS)&&mapped[b][i]!=0xcdcdcdcdu){ps5log_line(PS5LOG_ERR,"GUARD_MISMATCH");goto cleanup;}
  success=1;ps5log_printf(PS5LOG_MARK,"OWNED_BLEND_READBACK_PASS pixels=1024 input_unchanged=1 guards=1 cpu_submit_to_fence_ns=%llu gpu_timestamp=0 displayed_frames=0 game_frames=0",(unsigned long long)(finished-submit_start));
+ const char *display_paths[2]={"/app0/ENABLE_DISPLAY_TEST","/data/homebrew/PPSA99993-app/ENABLE_DISPLAY_TEST"};
+ struct fg_control_result display_control=fg_control_check("/data/331FrameGen/STOP",display_paths[0],display_paths[1],file_probe);
+ if(display_control.state==FG_CONTROL_ENABLED){ps5log_printf(PS5LOG_MARK,"OWNED_DISPLAY_ENABLED marker=%s",display_control.selected_path);int display_result=fg_run_owned_display(stop);ps5log_printf(PS5LOG_MARK,"OWNED_DISPLAY_RESULT result=%d",display_result);}
+ else ps5log_printf(PS5LOG_MARK,"OWNED_DISPLAY_DISABLED decision=%d stop_lookup_errno=%d explicit_display_marker_required=1",display_control.state,display_control.stop_error);
  cleanup:
  if(pending)retain("SUBMIT_OWNERSHIP_UNKNOWN: no resource release");
  if(device){if(fence)vkDestroyFence(device,fence,0);if(cp)vkDestroyCommandPool(device,cp,0);if(dp)vkDestroyDescriptorPool(device,dp,0);for(unsigned i=0;i<3;i++){if(mapped[i])vkUnmapMemory(device,memories[i]);if(buffers[i])vkDestroyBuffer(device,buffers[i],0);if(memories[i])vkFreeMemory(device,memories[i],0);}if(pipeline)vkDestroyPipeline(device,pipeline,0);if(shader)vkDestroyShaderModule(device,shader,0);if(layout)vkDestroyPipelineLayout(device,layout,0);if(sl)vkDestroyDescriptorSetLayout(device,sl,0);vkDestroyDevice(device,0);}if(instance)vkDestroyInstance(instance,0);ps5log_printf(PS5LOG_MARK,"DIAGNOSTIC_FINISHED readback_pass=%d hardware_result_not_assumed=1",success);ps5log_close("Close this diagnostic with system Close Game");for(;;)sleep(1);
