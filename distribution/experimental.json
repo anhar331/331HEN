@@ -1,8 +1,8 @@
 {
   "experiments": [
     {
-      "tag": "v0.0.13-331.4",
-      "sha256": "1bceb3c84335f2521b73c9ab6d6e792d70a21852d9c83bd9d4c47baeaba88678",
+      "tag": "v0.0.13-331.5",
+      "sha256": "224341a9ec058b6aa9066575124ff55dd8ca0d6756309a7cf0903877e6431119",
       "firmware": "12.70",
       "kind": "experimental",
       "ps5_runtime_tested": false,

@@ -15,15 +15,15 @@
     },
     {
       "name": "331HEN Preview",
-      "filename": "331HEN-Preview_v0.0.13-331.4.elf",
-      "url": "https://github.com/anhar331/331HEN/releases/download/v0.0.13-331.4/331HEN.elf",
-      "source": "https://github.com/anhar331/331HEN/releases/tag/v0.0.13-331.4",
-      "source_direct": "https://github.com/anhar331/331HEN/releases/download/v0.0.13-331.4/331HEN.elf",
+      "filename": "331HEN-Preview_v0.0.13-331.5.elf",
+      "url": "https://github.com/anhar331/331HEN/releases/download/v0.0.13-331.5/331HEN.elf",
+      "source": "https://github.com/anhar331/331HEN/releases/tag/v0.0.13-331.5",
+      "source_direct": "https://github.com/anhar331/331HEN/releases/download/v0.0.13-331.5/331HEN.elf",
       "description": "EXPERIMENTAL refined 331HEN; PS5 12.70; NOT PS5-tested. Separate payload; keep your working version and use a separate session.",
       "last_update": "2026-10-12",
-      "version": "v0.0.13-331.4",
+      "version": "v0.0.13-331.5",
       "category": "Experimental Payloads",
-      "checksum": "1bceb3c84335f2521b73c9ab6d6e792d70a21852d9c83bd9d4c47baeaba88678"
+      "checksum": "224341a9ec058b6aa9066575124ff55dd8ca0d6756309a7cf0903877e6431119"
     },
     {
       "name": "331HEN Autoloader Installer",
