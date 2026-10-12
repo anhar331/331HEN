@@ -1,8 +1,8 @@
-# 331 FrameGen — owned-image GPU diagnostic 0.1
+# 331 FrameGen — owned-image GPU diagnostic 0.2
 
 This is an isolated native PS5 **application**, not a 331HEN replacement or a Payload Manager ELF payload. Its only GPU workload computes a per-channel integer average of two CPU-authored 32×32 RGBA images into a third buffer. It checks 1,024 output pixels, unchanged inputs and surrounding guards after a completion fence. This is a numerical GPU substrate experiment, not motion estimation, game capture or frame generation.
 
-No VideoOut handle is opened; presentation is explicitly unavailable. No game is hooked, no original game files are changed, and no kstuff/kernel modifications are included. GPU execution is OFF by default. A successful build or host compiler test does not prove native GPU operation on firmware 12.70.
+No VideoOut handle is opened; presentation is explicitly unavailable. No game is hooked, no original game files are changed, and no kstuff/kernel modifications are included. GPU execution is OFF by default. Version 0.2 logs each control lookup separately and honors STOP before checking either marker; unexpected STOP lookup errors disable initialization. A successful build or host compiler test does not prove native GPU operation on firmware 12.70.
 
 ## Outputs
 
@@ -18,7 +18,7 @@ PPSA99993 is a development identity, not a Sony assignment. Do not overwrite an 
 1. Keep the existing tested HEN. Close all games. This diagnostic does not require a new HEN build or game patch.
 2. Use the existing native directory-homebrew loader (the same kind of loader used for extracted titles). Copy `PPSA99993-app` intact to `/data/homebrew/PPSA99993-app`; the companion `sce_module/libc.prx` is required. Do not install it over another title. Loader-specific registration may be necessary; this package is not an installer.
 3. For an optional loader-only check, launch without an enable marker. No AGC init or GPU commands are issued; it records DISABLED then waits for system Close Game. No picture is expected.
-4. For the actual compute test, place an empty file named `ENABLE_GPU_TEST` in the application directory, where it appears as `/app0/ENABLE_GPU_TEST`. Ensure `/data/331FrameGen/STOP` is absent. Launch the diagnostic once.
+4. For the actual compute test, place an empty file named `ENABLE_GPU_TEST` in the application directory, where it normally appears as `/app0/ENABLE_GPU_TEST`. Version 0.2 also checks the exact installed location `/data/homebrew/PPSA99993-app/ENABLE_GPU_TEST` when the loader does not expose the mount. Both paths require a regular empty file. Ensure `/data/331FrameGen/STOP` is absent. Launch the diagnostic once.
 5. It performs one compute dispatch (16 groups of 64 threads). It waits up to five seconds for the Vulkan fence, validates readback and guards, releases resources on confirmed completion, then waits for system **Close Game**. There is no rendered screen or controller UI.
 6. Close the app through the system. Retrieve `/data/331FrameGen/diagnostic.log` through existing FTP. Required success evidence: `OWNED_BLEND_READBACK_PASS`, intact inputs/guards and `DIAGNOSTIC_FINISHED readback_pass=1`, accompanied by the exact ELF/FSELF hashes. Confirm the system remains responsive and the app closes normally. No result is assumed in advance.
 7. Remove the enable marker after the test. An existing `/data/331FrameGen/STOP` prevents initialization/submission; it cannot abort already submitted GPU work. On unknown submission ownership or a timeout the code retains resources instead of freeing in-flight memory. Do not repeat a failed test blindly; retain its log.

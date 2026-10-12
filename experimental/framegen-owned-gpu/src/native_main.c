@@ -4,18 +4,25 @@
 #include "owned_reference.h"
 #include "owned_shader.h"
 #include "ps5log.h"
+#include "control.h"
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
 static uint64_t now_ns(void){struct timespec t={0};clock_gettime(CLOCK_MONOTONIC,&t);return (uint64_t)t.tv_sec*1000000000u+(uint64_t)t.tv_nsec;}
 static void retain(const char* reason){ps5log_line(PS5LOG_ERR,reason);ps5log_close("Resources retained until system Close Game; no unsafe in-flight free");for(;;)sleep(1);}
-static int stop(void){return access("/data/331FrameGen/STOP",F_OK)==0;}
+static int stop(void){struct stat st;errno=0;if(lstat("/data/331FrameGen/STOP",&st)==0)return 1;return errno!=ENOENT&&errno!=ENOTDIR;}
 #define CHECK(call) do{VkResult r=(call);if(r!=VK_SUCCESS){ps5log_printf(PS5LOG_ERR,"FAIL operation=%s result=%d",#call,r);goto cleanup;}}while(0)
 int main(void){
  if(fg_log_open())_exit(0);
- ps5log_line(PS5LOG_MARK,"331_FRAMEGEN_DIAGNOSTIC version=0.1 source=owned-synthetic-images game_capture=0 presentation=0 frame_generation=0");
- if(access("/app0/ENABLE_GPU_TEST",F_OK)||stop()){ps5log_close("DISABLED: explicit ENABLE_GPU_TEST marker required and STOP must be absent");for(;;)sleep(1);}
+ ps5log_line(PS5LOG_MARK,"331_FRAMEGEN_DIAGNOSTIC version=0.2 source=owned-synthetic-images game_capture=0 presentation=0 frame_generation=0");
+ const char *enable_paths[2]={"/app0/ENABLE_GPU_TEST","/data/homebrew/PPSA99993-app/ENABLE_GPU_TEST"};
+ struct fg_control_result control=fg_control_check("/data/331FrameGen/STOP",enable_paths[0],enable_paths[1],lstat);
+ ps5log_printf(PS5LOG_MARK,"CONTROL_STOP state=%d errno=%d",control.state,control.stop_error);
+ if(control.state==FG_CONTROL_STOPPED||control.state==FG_CONTROL_STOP_ERROR){ps5log_close("DISABLED: STOP present or STOP lookup failed; no GPU initialization");for(;;)sleep(1);}
+ for(unsigned i=0;i<2;i++)ps5log_printf(PS5LOG_MARK,"CONTROL_ENABLE path=%s result=%d errno=%d regular_empty=%d",enable_paths[i],control.markers[i].result,control.markers[i].error,control.markers[i].valid);
+ if(control.state!=FG_CONTROL_ENABLED){ps5log_close("DISABLED: no regular empty enable marker in either known application path");for(;;)sleep(1);}
+ ps5log_printf(PS5LOG_MARK,"CONTROL_ENABLED marker=%s",control.selected_path);
  VkInstance instance=0;VkDevice device=0;VkShaderModule shader=0;VkDescriptorSetLayout sl=0;VkPipelineLayout layout=0;VkPipeline pipeline=0;VkDescriptorPool dp=0;VkCommandPool cp=0;VkFence fence=0;
  VkBuffer buffers[3]={0};VkDeviceMemory memories[3]={0};uint32_t* mapped[3]={0};VkMappedMemoryRange ranges[3]={{0}};int pending=0,success=0;
  VkInstanceCreateInfo ici={.sType=VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO};CHECK(vkCreateInstance(&ici,0,&instance));
