@@ -66,3 +66,13 @@ Raw GitHub and asset downloads must be reachable from the PS5's network. Cloud v
 The owner requested the old Game Patches TEST catalog item removed. New refinements use 331HEN Preview, saved into the distinct 331HEN-Preview family. The publisher updates that entry only after the compiled release asset and reports are publicly verified. The 331HEN default stays on the exact preserved baseline until a new ELF is tested and explicitly approved. Historical releases/assets are retained; removing the catalog item does not remove files already installed on the console.
 
 This refinement retains native Game Patches, now with installed-game selection and persistent pre-launch settings. It does not guarantee pre-entry application or eliminate every crash. See the integration/limitations reports and single-session hardware-test instructions.
+
+### Alternate public JSON host
+
+If the PS5 manager cannot fetch raw.githubusercontent.com while other sources work, try the verified mirror:
+
+https://cdn.jsdelivr.net/gh/anhar331/331HEN@main/payloads.json
+
+This serves the same public repository JSON; ELF URLs and approved hashes do not change. Linux checks use the official C parser and the manager's pldmgr/1.0 user agent. PS5 connectivity still requires a console check; Fetch failed can also indicate local source-cache read/write failure. Removing a custom source entry does not uninstall payloads according to official sources_remove().
+
+verify-source-mirror.yml purges/checks the CDN after main payloads.json updates or successful release/source publishing workflows, including GitHub-token commits which do not themselves trigger ordinary push workflows. A failed mirror check does not modify the primary catalog or approve a new binary.

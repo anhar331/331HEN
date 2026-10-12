@@ -1,0 +1,31 @@
+name: Refresh and verify Payload Manager CDN mirror
+on:
+  push:
+    branches: [main]
+    paths:
+      - payloads.json
+      - scripts/verify_payload_source_mirror.py
+      - .github/workflows/verify-source-mirror.yml
+  workflow_run:
+    workflows:
+      - Publish 331HEN pre-release
+      - Update approved Payload Manager source
+      - Publish separate verified installers
+    types: [completed]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: 331hen-source-mirror
+  cancel-in-progress: false
+jobs:
+  verify:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          ref: main
+          persist-credentials: false
+      - run: python3 scripts/verify_payload_source_mirror.py
