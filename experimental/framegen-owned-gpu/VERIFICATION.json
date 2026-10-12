@@ -1,7 +1,7 @@
 {
   "diagnostic_version": "0.3",
   "stage": "owned-image compute diagnostic only",
-  "ps5_tested": false,
+  "ps5_tested": true,
   "game_interception": false,
   "presentation": false,
   "frame_generation": false,
@@ -14,7 +14,7 @@
   "native_api_mock_scenarios_passed": 11,
   "control_sanitizers": "ASan/UBSan",
   "native_stat_layout_compile_checks_passed": true,
-  "gpu_execution_verified": false,
+  "gpu_execution_verified": true,
   "prior_v02_user_log": "STOP lstat lookup EPERM; no GPU initialization",
   "unchanged_backend_host_suite_results": "10 suites passed in v0.1; GPU backend/shader unchanged in v0.3",
   "owner_hardware_evidence": {
@@ -32,5 +32,7 @@
     "presentation_verified": false,
     "game_interception_verified": false,
     "frame_generation_verified": false
-  }
+  },
+  "hardware_verification_basis": "Owner-provided v0.3 log: one 1024-pixel owned-buffer compute/readback run; no independent console access or deployment hash attestation",
+  "ps5_tested_by_codex": false
 }
