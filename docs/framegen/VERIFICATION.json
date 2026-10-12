@@ -1,0 +1,71 @@
+{
+  "decision": "NO-GO for game-frame interception/insertion prototype with currently verified interfaces",
+  "source_analysis_completed": true,
+  "framegen_prototype_implemented": false,
+  "framegen_prototype_compiled": false,
+  "game_gpu_interception_verified": false,
+  "game_frame_insertion_verified": false,
+  "frame_generation_verified": false,
+  "ps5_hardware_tested": false,
+  "analyzed_source_revision": "124382963abdf1298627743b297d0ff25f29eae7",
+  "baseline_build_passed": true,
+  "baseline_tests": {
+    "passed": true,
+    "elf_sha256": "224341a9ec058b6aa9066575124ff55dd8ca0d6756309a7cf0903877e6431119",
+    "regression_cases": 444,
+    "installed_game_checks": 280,
+    "patch_sanitizers_passed": true,
+    "live_linux_https_passed": true,
+    "target_firmware": "12.70",
+    "ps5_runtime_tested": false,
+    "checked_at": "2026-10-12T17:20:15.208728+00:00"
+  },
+  "publishing_safeguard_tests_passed": 19,
+  "reference_downloads_verified": 27,
+  "preserved_files": [
+    {
+      "path": "Release/331HEN.elf",
+      "sha256": "72f00d524636f8c96746d551fb495c1af319048a6af3703ffe5ae19e6abc197d",
+      "unchanged": true
+    },
+    {
+      "path": "Release/331HEN-Refined-PREVIEW.elf",
+      "sha256": "71b022ecdc5d5330c3c059e0cf1759306126efc548414fe56afb26a701c0a748",
+      "unchanged": true
+    },
+    {
+      "path": "Release/331HEN-Homebrew-Discovery-TEST.elf",
+      "sha256": "224341a9ec058b6aa9066575124ff55dd8ca0d6756309a7cf0903877e6431119",
+      "unchanged": true
+    },
+    {
+      "path": ".cache/dependencies/kstuff.elf",
+      "sha256": "82cbb1e70f8a562317d6b65269cf6aa0d7d94e22df4f1ac89a260ca0ec261252",
+      "unchanged": true
+    }
+  ],
+  "new_framegen_elf": null,
+  "memory_estimates": [
+    {
+      "width": 1920,
+      "height": 1080,
+      "rgba8_three_surfaces_mib": 23.73,
+      "rgba16f_three_surfaces_mib": 47.46,
+      "measured": false
+    },
+    {
+      "width": 2560,
+      "height": 1440,
+      "rgba8_three_surfaces_mib": 42.19,
+      "rgba16f_three_surfaces_mib": 84.38,
+      "measured": false
+    },
+    {
+      "width": 3840,
+      "height": 2160,
+      "rgba8_three_surfaces_mib": 94.92,
+      "rgba16f_three_surfaces_mib": 189.84,
+      "measured": false
+    }
+  ]
+}
