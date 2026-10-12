@@ -1,0 +1,8 @@
+{
+ "ps5-vulkan":{"url":"https://github.com/mpereiraesaa/ps5-vulkan","commit":"e6d3c3f82f3c8a574e28c174b15b287f9c0ecc6d"},
+ "ps5-native-app-boilerplate":{"url":"https://github.com/mpereiraesaa/ps5-native-app-boilerplate","commit":"37dd53602bdead63936f718004555ba10154be48"},
+ "ps5-agc-gears":{"url":"https://github.com/mpereiraesaa/ps5-agc-gears","commit":"1ae1f9182abd2770c131b97419034fb85173c2dc"},
+ "opengnm-psbc":{"url":"https://github.com/mpereiraesaa/opengnm-psbc","commit":"4fe7264a0cab9feb531a156e8a810b3e39cfe42c"},
+ "opengnm":{"url":"https://github.com/PS4-OpenGNM/opengnm","commit":"4b295ca54c82c83acf308d1c646a2dfa9ae57350"},
+ "sdk":{"url":"https://github.com/ps5-payload-dev/sdk/releases/tag/v0.44","version":"0.44"}
+}

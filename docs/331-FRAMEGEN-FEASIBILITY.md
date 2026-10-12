@@ -144,3 +144,7 @@ Pinned URLs and download hashes are recorded in `framegen/REFERENCES.json`. Publ
 - [Existing kstuff-lite v1.10 source](https://github.com/EchoStretch/kstuff-lite/tree/3b2ab4a16ba43c8ab38daf7ec83cc297014e0e47).
 
 331HEN retains OnionHEN developer attribution and GPL-3.0 licensing. Public references have their own licenses (including GPL-compatible homebrew sources and per-file FidelityFX notices). No third-party implementation code, Sony modules, private credentials or game binaries are incorporated by this research change. Any future reuse must preserve the exact applicable notices and source obligations.
+
+## Subsequent isolated compute diagnostic (0.1)
+
+A separate native application was compiled after this research: [331 FrameGen owned-image GPU diagnostic](../experimental/framegen-owned-gpu/README.md). It prepares two synthetic CPU-authored RGBA images and a real candidate GPU shader for integer blending, with fence/readback/guard checks. Native ELF/FSELF linking, exact shader compilation to gfx1013 and ten host backend suites passed. GPU execution on PS5, owned-image presentation and game-frame interception remain unverified. This is not a FrameGen implementation and does not reopen the system-wide implementation gate. It is excluded from every 331HEN runtime/build target; no HEN release asset or payload catalog was changed.
