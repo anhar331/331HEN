@@ -1,5 +1,5 @@
 {
-  "diagnostic_version": "0.2",
+  "diagnostic_version": "0.3",
   "stage": "owned-image compute diagnostic only",
   "ps5_tested": false,
   "game_interception": false,
@@ -8,11 +8,13 @@
   "native_title": "PPSA99993",
   "gpu_dispatch_default_enabled": false,
   "shader_sha256": "9706ef9b8d76dde8451bfd5eafab0d18f411563914a0985768db8c8ce6eeb2f5",
-  "elf_sha256": "509d2beecdf250283119b184e1dbc3080dd828e3c2ef1ee3a38787e1c75fb5f1",
-  "native_fself_sha256": "0daf05f29aa55193020ff5fa58f6746c2d835d426f9efc5a2ac4a01e61d22164",
-  "marker_tests_passed": 12,
-  "marker_tests_sanitizers": "ASan/UBSan",
+  "elf_sha256": "58ae8d634e85afab35a3e07e8e2c809242e23ef5e74b58b29ecac9490b5151e4",
+  "native_fself_sha256": "1fb55461b18c00a8bc6812d9c5bfa2189e948c225811b80cafbabf0cefae8c2f",
+  "control_filesystem_scenarios_passed": 12,
+  "native_api_mock_scenarios_passed": 11,
+  "control_sanitizers": "ASan/UBSan",
+  "native_stat_layout_compile_checks_passed": true,
   "gpu_execution_verified": false,
-  "prior_v01_user_log": "Application startup reported; DISABLED before GPU initialization",
-  "unchanged_backend_host_suite_results": "10 suites passed in v0.1; no backend or shader changes in v0.2"
+  "prior_v02_user_log": "STOP lstat lookup EPERM; no GPU initialization",
+  "unchanged_backend_host_suite_results": "10 suites passed in v0.1; GPU backend/shader unchanged in v0.3"
 }

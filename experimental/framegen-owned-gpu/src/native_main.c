@@ -5,20 +5,22 @@
 #include "owned_shader.h"
 #include "ps5log.h"
 #include "control.h"
+#include "native_file_probe.h"
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
 static uint64_t now_ns(void){struct timespec t={0};clock_gettime(CLOCK_MONOTONIC,&t);return (uint64_t)t.tv_sec*1000000000u+(uint64_t)t.tv_nsec;}
 static void retain(const char* reason){ps5log_line(PS5LOG_ERR,reason);ps5log_close("Resources retained until system Close Game; no unsafe in-flight free");for(;;)sleep(1);}
-static int stop(void){struct stat st;errno=0;if(lstat("/data/331FrameGen/STOP",&st)==0)return 1;return errno!=ENOENT&&errno!=ENOTDIR;}
+static int file_probe(const char *path,struct stat *st){struct fg_native_probe_trace trace;int rc=fg_native_file_probe(path,st,&trace);int saved=errno;ps5log_printf(PS5LOG_MARK,"CONTROL_NATIVE_FILE path=%s open_rc=0x%08x stat_rc=0x%08x close_rc=0x%08x result=%d errno=%d",path,(unsigned)trace.open_rc,(unsigned)trace.stat_rc,(unsigned)trace.close_rc,rc,rc?saved:0);errno=saved;return rc;}
+static int stop(void){struct stat st;errno=0;if(file_probe("/data/331FrameGen/STOP",&st)==0)return 1;return errno!=ENOENT&&errno!=ENOTDIR;}
 #define CHECK(call) do{VkResult r=(call);if(r!=VK_SUCCESS){ps5log_printf(PS5LOG_ERR,"FAIL operation=%s result=%d",#call,r);goto cleanup;}}while(0)
 int main(void){
  if(fg_log_open())_exit(0);
- ps5log_line(PS5LOG_MARK,"331_FRAMEGEN_DIAGNOSTIC version=0.2 source=owned-synthetic-images game_capture=0 presentation=0 frame_generation=0");
+ ps5log_line(PS5LOG_MARK,"331_FRAMEGEN_DIAGNOSTIC version=0.3 source=owned-synthetic-images game_capture=0 presentation=0 frame_generation=0");
  const char *enable_paths[2]={"/app0/ENABLE_GPU_TEST","/data/homebrew/PPSA99993-app/ENABLE_GPU_TEST"};
- struct fg_control_result control=fg_control_check("/data/331FrameGen/STOP",enable_paths[0],enable_paths[1],lstat);
- ps5log_printf(PS5LOG_MARK,"CONTROL_STOP state=%d errno=%d",control.state,control.stop_error);
+ struct fg_control_result control=fg_control_check("/data/331FrameGen/STOP",enable_paths[0],enable_paths[1],file_probe);
+ ps5log_printf(PS5LOG_MARK,"CONTROL_GATE decision=%d stop_lookup_errno=%d",control.state,control.stop_error);
  if(control.state==FG_CONTROL_STOPPED||control.state==FG_CONTROL_STOP_ERROR){ps5log_close("DISABLED: STOP present or STOP lookup failed; no GPU initialization");for(;;)sleep(1);}
  for(unsigned i=0;i<2;i++)ps5log_printf(PS5LOG_MARK,"CONTROL_ENABLE path=%s result=%d errno=%d regular_empty=%d",enable_paths[i],control.markers[i].result,control.markers[i].error,control.markers[i].valid);
  if(control.state!=FG_CONTROL_ENABLED){ps5log_close("DISABLED: no regular empty enable marker in either known application path");for(;;)sleep(1);}
