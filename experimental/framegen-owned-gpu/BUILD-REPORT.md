@@ -17,3 +17,5 @@ The private upstream network logger was replaced with an independently authored 
 Initial build fixes: add missing transfer-layout source dependencies; compile a deliberately unavailable WSI adapter for compute-only scope; provide the build container's CA trust for downloads; apply repository-scoped Git safe-directory settings. Host fixture compiler issues were resolved using GCC O0 sanitizers; native fixed-aperture fixtures use their documented UBSan mode. All final selected suites passed.
 
 This is a native application ELF, not a payload ELF. Never send it through Payload Manager or replace 331HEN. The complete native title directory is PPSA99993-app. GPU execution is disabled without an explicit /app0/ENABLE_GPU_TEST marker and an absent STOP file. See README.md for a single bounded hardware test and failure/resource-retention behavior.
+
+FSELF extraction check: all five loadable ELF segments are byte-identical to the compiled native ELF. The reconstructed non-loadable trailer differs, so whole-file identity is not claimed. See extraction-check.json.

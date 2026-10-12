@@ -23,5 +23,8 @@
   "game_frame_interception_verified": false,
   "frame_insertion_verified": false,
   "firmware_target": "12.70",
-  "compatibility_on_target_verified": false
+  "compatibility_on_target_verified": false,
+  "extracted_fself_load_segments_identical": true,
+  "extracted_whole_elf_identical": false,
+  "extraction_note": "Only reconstructed non-loadable trailer differs; all five PT_LOAD segments match."
 }
