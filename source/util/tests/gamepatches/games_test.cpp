@@ -115,6 +115,27 @@ int main() {
   install(root, "CUSA00900");
 
   install(root, "PPSA12345");
+  const std::string yotei_app = root.string() + "/data/homebrew/PPSA26344-app";
+  const std::string yotei_meta = R"({"titleId":"PPSA26344","contentVersion":"01.008.000","originContentVersion":"01.000.000","targetContentVersion":"01.007.000","localizedParameters":{"defaultLanguage":"en-US","en-US":{"titleName":"Ghost of Yōtei"}}})";
+  write(yotei_app + "/sce_sys/param.json", yotei_meta);
+  check(!contains(installed_games(root.string()), "PPSA26344"),
+        "extracted metadata without an executable is not installation evidence");
+  write(yotei_app + "/eboot.bin", "installed executable");
+  check(installed_game("PPSA26344", game, error, root.string()) &&
+            game.version == "01.008.000" && game.name == "Ghost of Yōtei" &&
+            error.empty() && game.install_path == yotei_app,
+        "homebrew title-app layout uses exact contentVersion and localized name");
+  check(contains(installed_games(root.string()), "PPSA26344"),
+        "homebrew title-app layout is enumerated in installed picker");
+  fs::rename(yotei_app, root.string() + "/data/homebrew/PPSA26344-wrong");
+  check(!contains(installed_games(root.string()), "PPSA26344"),
+        "unrecognized directory suffix is not guessed as an installation");
+  fs::rename(root.string() + "/data/homebrew/PPSA26344-wrong", yotei_app);
+  fs::remove(yotei_app + "/eboot.bin");
+  fs::create_symlink(root.string() + "/user/app/PPSA12345/app.pkg", yotei_app + "/eboot.bin");
+  check(!installed_game("PPSA26344", game, error, root.string()),
+        "homebrew executable symlinks cannot prove installation");
+  fs::remove_all(yotei_app);
   write(root.string() + "/system_data/priv/appmeta/PPSA12345/param.json",
         R"({"titleId":"PPSA12345","contentVersion":"01.005.000","localizedParameters":{"defaultLanguage":"en-US","en-US":{"titleName":"Native Game"}}})");
   check(installed_game("PPSA12345", game, error, root.string()) &&

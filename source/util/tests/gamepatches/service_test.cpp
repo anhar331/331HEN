@@ -155,6 +155,15 @@ void new_process() {
 }
 void installed_ps5(const std::string &title, const std::string &name, const std::string &ver) {
  const std::string base = "/tmp/hen331-service-test";
+ if (title == "PPSA26344") {
+   const std::string app = base + "/data/homebrew/" + title + "-app";
+   std::filesystem::create_directories(app + "/sce_sys");
+   std::ofstream(app + "/eboot.bin") << "installed";
+   std::ofstream(app + "/sce_sys/param.json")
+     << "{\"titleId\":\"" << title << "\",\"titleName\":\"" << name
+     << "\",\"contentVersion\":\"" << ver << "\"}";
+   return;
+ }
  std::filesystem::create_directories(base + "/user/app/" + title);
  std::ofstream(base + "/user/app/" + title + "/app.pkg") << "installed";
  std::filesystem::create_directories(base + "/system_data/priv/appmeta/" + title);

@@ -17,7 +17,8 @@ namespace {
 constexpr size_t metadata_limit = 256 * 1024;
 constexpr size_t game_limit = 4096;
 const char *const app_roots[] = {"/user/app", "/mnt/ext0/user/app",
-                                "/mnt/ext1/user/app", "/system_ex/app"};
+                                "/mnt/ext1/user/app", "/system_ex/app",
+                                "/data/homebrew"};
 const char *const meta_roots[] = {"/system_data/priv/appmeta",
                                  "/system_data/priv/appmeta/external",
                                  "/user/appmeta"};
@@ -269,6 +270,8 @@ std::vector<std::string> installs(const std::string &root,
   std::vector<std::string> result;
   for (const char *base : app_roots) {
     std::string app = root + base + "/" + title;
+    if (std::string(base) == "/data/homebrew")
+      app += "-app";
     if (!safe_directory(app))
       continue;
     if (regular_file(app + "/app.pkg") || regular_file(app + "/eboot.bin") ||
@@ -368,6 +371,11 @@ InstalledGameCatalog installed_games(const std::string &filesystem_root) {
       continue;
     while (const dirent *entry = readdir(directory)) {
       std::string title = entry->d_name;
+      if (std::string(base) == "/data/homebrew") {
+        if (!title.ends_with("-app"))
+          continue;
+        title.resize(title.size() - 4);
+      }
       if (valid_title(title))
         titles.insert(std::move(title));
       if (titles.size() >= game_limit) {

@@ -1,4 +1,12 @@
-# XML refresh and compatible-game picker
+# Extracted-game discovery fix and compatible-game picker
+
+Compared with Preview v0.0.13-331.4:
+
+- Discover extracted games at `/data/homebrew/<TitleID>-app`, including the owner's `/data/homebrew/PPSA26344-app/sce_sys/param.json` layout.
+- Require a nonempty regular installed `eboot.bin`, `image0/eboot.bin` or `app.pkg`; cached metadata and symlinks remain insufficient. Exact Title ID and contentVersion checks remain unchanged.
+- The supplied Ghost of Yōtei metadata reads PPSA26344 / 01.008.000. Its originContentVersion and targetContentVersion are not used for compatibility.
+- Add sanitized discovery and service tests for extracted-game discovery, wrong versions, missing executables and invalid directory suffixes.
+- Existing kstuff, runtime patch engine, cheat storage, patch definitions and approved stable release remain unchanged. This updated ELF requires PS5 testing.
 
 Compared with working v0.0.13-331.3:
 

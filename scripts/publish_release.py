@@ -169,9 +169,12 @@ def prepare(elf, tests_dir, tag, commit):
         "Raw test/build logs are included. No PS5 runtime test was performed. "
         "The original stable ELF is retained locally and is not this asset.\n")
     notes = (
-        f"# 331HEN {tag} — XML refresh and compatible game picker\n\n"
+        f"# 331HEN {tag} — extracted game discovery fix\n\n"
         "**Experimental pre-release. Target PS5 firmware 12.70; this updated ELF is "
         "NOT tested on PS5 hardware.** Keep your known-working payload.\n\n"
+        "Fixes missing extracted games installed at /data/homebrew/<TitleID>-app, "
+        "including the owner's Ghost of Yotei layout. Requires a regular installed executable "
+        "and matching param.json; metadata alone is insufficient. Keeps exact version matching.\n\n"
         "Installed-game selection, persistent pre-launch toggles, exact game/version matching, "
         "real process-memory execution with readback/rollback, cheat overlap protection "
         "and native GitHub collection updates. Bloodborne CUSA00900 / 01.09 definitions "

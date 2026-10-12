@@ -40,17 +40,18 @@ c++ -std=c++20 -Wall -Wextra -Werror -Wno-unused-function -Wno-range-loop-constr
 python3 tools/validate_elf.py build/bin/331HEN.elf build/bin/bootstrapper.elf .cache/dependencies/kstuff.elf > "$release_test_dir/STATIC-VALIDATION.json"
 python3 - "$release_test_dir" <<'PY'
 from pathlib import Path
-import sys, hashlib, json, datetime
+import sys, hashlib, json, datetime, re
 p=Path(sys.argv[1])
 patch=(p/'PATCH-TESTS.log').read_text()
 reg=(p/'REGRESSION-TESTS.log').read_text()
 live=(p/'LIVE-DOWNLOAD-TESTS.log').read_text()
-assert patch.count('PASS:')==4 and 'Installed-game catalog: 273 checks passed' in patch and 'runtime error:' not in patch and 'AddressSanitizer:' not in patch
+catalog_result=re.search(r'Installed-game catalog: (\d+) checks passed',patch)
+assert patch.count('PASS:')==4 and catalog_result and int(catalog_result.group(1))>=273 and 'runtime error:' not in patch and 'AddressSanitizer:' not in patch
 assert 'All util host tests passed.' in reg and reg.count('[PASS]')>=436
 assert 'PASS:' in live
 assert hashlib.sha256(Path('.cache/dependencies/kstuff.elf').read_bytes()).hexdigest()=='82cbb1e70f8a562317d6b65269cf6aa0d7d94e22df4f1ac89a260ca0ec261252'
 result={'passed':True,'elf_sha256':hashlib.sha256(Path('build/bin/331HEN.elf').read_bytes()).hexdigest(),
-        'regression_cases':reg.count('[PASS]'),'patch_sanitizers_passed':True,'live_linux_https_passed':True,
+        'regression_cases':reg.count('[PASS]'),'installed_game_checks':int(catalog_result.group(1)),'patch_sanitizers_passed':True,'live_linux_https_passed':True,
         'target_firmware':'12.70','ps5_runtime_tested':False,
         'checked_at':datetime.datetime.now(datetime.timezone.utc).isoformat()}
 (p/'TEST-RESULTS.json').write_text(json.dumps(result,indent=2)+'\n')
